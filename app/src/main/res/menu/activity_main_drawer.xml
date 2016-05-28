@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_take_note"
+            android:icon="@drawable/ic_action_add"
+            android:title="Take note" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Gallery" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Slideshow" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Tools" />
+    </group>
+
+    <item android:title="Audio Recording">
+        <menu>
+            <item
+                android:id="@+id/nav_audio_record"
+                android:icon="@drawable/ic_action_record"
+                android:title="Audio recorder" />
+            <item
+                android:id="@+id/nav_audio_record_settings"
+                android:icon="@drawable/ic_action_gear"
+                android:title="Audio Record Settings" />
+        </menu>
+    </item>
+
+    <item android:title="Phone Recording">
+        <menu>
+            <item
+                android:id="@+id/nav_phone_record"
+                android:icon="@drawable/ic_action_phone_start"
+                android:checkable="true"
+                android:title="Record Calls?" />
+            <item
+                android:id="@+id/nav_phone_record_settings"
+                android:icon="@drawable/ic_action_gear"
+                android:title="Phone Record Settings" />
+        </menu>
+    </item>
+    <item android:title="Sync &amp; Reports">
+        <menu>
+            <item
+                android:id="@+id/nav_phone_report"
+                android:icon="@drawable/ic_action_copy"
+                android:title="Create Report" />
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_add_group"
+        android:title="Add new group" />
+    <item android:id="@+id/menu_manage_groups"
+        android:title="Manage groups" />
+    <item android:id="@+id/menu_sort_order"
+        android:title="Sort by: Time" />
+</menu>

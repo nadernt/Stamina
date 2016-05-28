@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".launcher.AddEditGroupItem">
+
+    <EditText
+        android:id="@+id/txtAddEditGroupTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView5"
+        android:inputType="textCapSentences"
+        android:maxLength="50"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Group name:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/txtErrGroupName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView5"
+        android:layout_alignBottom="@+id/textView5"
+        android:layout_marginLeft="5dp"
+        android:layout_toEndOf="@+id/textView5"
+        android:layout_toRightOf="@+id/textView5"
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="12dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/imgViewerGroupIcon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView6"
+        android:layout_marginTop="5dp"
+        android:background="#444444" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/txtAddEditGroupTitle"
+        android:layout_marginTop="15dp"
+        android:text="Group icon:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_toEndOf="@+id/textView6"
+        android:layout_toRightOf="@+id/textView6"
+        android:paddingLeft="10dp"
+        android:text="tap to change the icon."
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <com.fleecast.stamina.customgui.DragableDynamicListView
+        android:id="@+id/listviewGroupOrders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/imgViewerGroupIcon"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/white_smoke" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/listviewGroupOrders"
+        android:layout_alignEnd="@+id/listviewGroupOrders"
+        android:layout_alignRight="@+id/listviewGroupOrders"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnDeleteGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/listviewGroupOrders"
+            android:layout_toEndOf="@+id/textView5"
+            android:layout_toRightOf="@+id/textView5"
+            android:layout_weight="50"
+            android:padding="5dp"
+            android:text="Delete Group"
+            android:textColor="@color/alice_blue"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/btnSaveRename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/listviewGroupOrders"
+            android:layout_alignEnd="@+id/listviewGroupOrders"
+            android:layout_alignRight="@+id/listviewGroupOrders"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="50"
+            android:padding="5dp"
+            android:text="Save Group Changes"
+            android:textColor="@color/alice_blue"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancelChangeGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="30"
+            android:padding="5dp"
+            android:text="Close"
+            android:textColor="@color/alice_blue"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/btnSaveGroupOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="30"
+            android:padding="5dp"
+            android:text="Save Groups Order"
+            android:textColor="@color/alice_blue"
+            android:textSize="12dp" />
+
+        <Button
+            android:id="@+id/btnAddGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="30"
+            android:padding="5dp"
+            android:text="Add"
+            android:textColor="@color/alice_blue"
+            android:textSize="12dp"
+            android:visibility="visible" />
+    </LinearLayout>
+</RelativeLayout>

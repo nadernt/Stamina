@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Stamina</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_listen_for_phone_call">Record Phone Calls</string>
+
+
+    <string name="notificationTitle"></string>
+    <string name="notificationText">Tap to get more!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_black_list_manager">Block List Manager</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>

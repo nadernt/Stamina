@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle"> <!-- this is for dialog frame -->
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/anti_flash_white"/>
+            <stroke android:color="#ffa7a7a7" android:width="1dp" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/continuous_record_layout"
+    android:layout_width="64dp"
+    android:layout_height="64dp"
+    android:supportsRtl="false">
+
+    <ImageView
+        android:id="@+id/note_list_img"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/launchpad_icons_bg"
+        android:src="@drawable/continuous_record" />
+
+</RelativeLayout>
