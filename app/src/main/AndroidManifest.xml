@@ -18,14 +18,14 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
-        android:name="com.fleecast.stamina.chathead.MyApplication"
+        android:name=".chathead.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.fleecast.stamina.chathead.MainActivity"
+            android:name=".chathead.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.fleecast.stamina.launcher.LauncherDialogActivity"
+            android:name=".launcher.LauncherDialogActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
@@ -50,28 +50,28 @@
 
         </activity>
         <activity
-            android:name="com.fleecast.stamina.launcher.AddEditGroupItem"
+            android:name=".launcher.AddEditGroupItem"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name="com.fleecast.stamina.launcher.IconChooserActivity" />
-        <activity android:name="com.fleecast.stamina.notetaking.EditActivity" />
+        <activity android:name=".launcher.IconChooserActivity" />
+        <activity android:name=".notetaking.EditActivity" />
         <activity
-            android:name="com.fleecast.stamina.notetaking.AddActivity"
+            android:name=".notetaking.AddActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.fleecast.stamina.notetaking.NoteTakingRecyclerViewActivity"
+            android:name=".notetaking.NoteTakingRecyclerViewActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name="com.fleecast.stamina.notetaking.Player"
+            android:name=".notetaking.Player"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.PopPlayer" />
 
-        <service android:name="com.fleecast.stamina.chathead.ChatHeadService" />
-        <service android:name="com.fleecast.stamina.notetaking.ChatHeadRecordService" />
+        <service android:name=".chathead.ChatHeadService" />
+        <service android:name=".notetaking.ChatHeadRecordService" />
 
         <receiver
-            android:name="com.fleecast.stamina.chathead.DeviceAdminSampleReceiver"
+            android:name=".chathead.DeviceAdminSampleReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
@@ -82,10 +82,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.fleecast.stamina.notetaking.ActivityNoteTakingSettings" />
-
-        <!--This part is inside the application-->
-        <receiver android:name="com.fleecast.stamina.notetaking.PhonecallReceiver" >
+        <!-- This part is inside the application -->
+        <receiver android:name=".notetaking.PhonecallReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
@@ -95,10 +93,13 @@
         </receiver>
 
         <activity
-            android:name="com.fleecast.stamina.notetaking.BlackListManagerActivity"
-            android:label="@string/title_activity_black_list_manager"
+            android:name=".notetaking.ActivityIgnoreListManager"
+            android:label="@string/title_activity_ignore_list_manager"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".settings.ActivitySettings"
+            android:label="@string/title_activity_activity_settings"
             android:theme="@style/AppTheme"></activity>
-        <activity android:name="com.fleecast.stamina.notetaking.ActivityPhoneCallSettings" />
     </application>
 
 </manifest>

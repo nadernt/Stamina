@@ -12,7 +12,7 @@ public class ContactDbRealmStruct extends RealmObject{
     private String id;
     private String contact_name;
     private String contact_number;
-    /*private boolean blackList ;*/
+    /*private boolean ignoreList ;*/
 
 
     public String getId() {
@@ -33,12 +33,12 @@ public class ContactDbRealmStruct extends RealmObject{
     }
 
 /*
-    public boolean isBlackList() {
-        return blackList;
+    public boolean isIgnoreList() {
+        return ignoreList;
     }
 
-    public void setBlackList(boolean blackList) {
-        this.blackList = blackList;
+    public void setIgnoreList(boolean ignoreList) {
+        this.ignoreList = ignoreList;
     }
 */
 

@@ -14,15 +14,15 @@ import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
- * specified {@link com.fleecast.stamina.notetaking.ContactsListFragment.OnContactListFragmentInteractionListener}.
+ * specified {@link FragmentContactsList.OnContactListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRecyclerViewAdapter.ViewHolder> {
 
     private List<ContactStruct> mValues;
-    private final ContactsListFragment.OnContactListFragmentInteractionListener mListener;
+    private final FragmentContactsList.OnContactListFragmentInteractionListener mListener;
 
-    public ContactsRecyclerViewAdapter(List<ContactStruct> items, ContactsListFragment.OnContactListFragmentInteractionListener listener) {
+    public ContactsRecyclerViewAdapter(List<ContactStruct> items, FragmentContactsList.OnContactListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
        /* new recyclerAdapter.ClickListener() {

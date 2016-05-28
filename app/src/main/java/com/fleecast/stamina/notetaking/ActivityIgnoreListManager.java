@@ -21,9 +21,9 @@ import com.fleecast.stamina.R;
 import com.fleecast.stamina.models.ContactStruct;
 import com.fleecast.stamina.models.RealmContactHelper;
 
-public class BlackListManagerActivity extends AppCompatActivity implements
-        ContactsListFragment.OnContactListFragmentInteractionListener,
-        BlackContactFragment.OnBlackListFragmentInteractionListener {
+public class ActivityIgnoreListManager extends AppCompatActivity implements
+        FragmentContactsList.OnContactListFragmentInteractionListener,
+        FragmentIgnoreContact.OnIgnoreListFragmentInteractionListener {
 
     private RealmContactHelper realmContactHelper;
     /**
@@ -50,15 +50,15 @@ public class BlackListManagerActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_black_list_manager);
+        setContentView(R.layout.activity_ignore_list_manager);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params.setScrollFlags(0);
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -69,12 +69,12 @@ public class BlackListManagerActivity extends AppCompatActivity implements
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        realmContactHelper = new RealmContactHelper(BlackListManagerActivity.this);
+        realmContactHelper = new RealmContactHelper(ActivityIgnoreListManager.this);
 
     }
 
     @Override
-    public void onBlackListFragmentInteraction(ContactStruct item) {
+    public void onIgnoreListFragmentInteraction(ContactStruct item) {
 
         Log.e("DBG", item.getContactNumber());
         showListOfOptions(item,0);
@@ -89,20 +89,20 @@ public class BlackListManagerActivity extends AppCompatActivity implements
     }
 
     private void showListOfOptions(ContactStruct contactStruct,final int fragmentNumber){
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(BlackListManagerActivity.this);
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(ActivityIgnoreListManager.this);
 
         final ContactStruct cStr = contactStruct;
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                BlackListManagerActivity.this,
+                ActivityIgnoreListManager.this,
                 android.R.layout.simple_list_item_1);
 
-        //if(!realmContactHelper.checkIfExistsInBlockList(contactStruct.getContactNumber())) {
+        //if(!realmContactHelper.checkIfExistsInIgnoreList(contactStruct.getContactNumber())) {
         if (fragmentNumber==0) {
-            arrayAdapter.add("Remove from record block list");
+            arrayAdapter.add("Remove from record ignore list");
         }
         else {
-            arrayAdapter.add("Add to record block list");
+            arrayAdapter.add("Add to record ignore list");
 
         }
             arrayAdapter.add("Call this contact");
@@ -118,17 +118,17 @@ public class BlackListManagerActivity extends AppCompatActivity implements
                         if (itemNo != arrayAdapter.getCount()-1) {
 
                             if (fragmentNumber == 0) {
-                                Log.e("DBG", "deleteContactFromBlockList");
-                                realmContactHelper.deleteContactFromBlockList(
+                                Log.e("DBG", "deleteContactFromIgnoreList");
+                                realmContactHelper.deleteContactFromIgnoreList(
                                         cStr.getContactNumber()
                                 );
 
                                 mViewPager.setAdapter(mSectionsPagerAdapter);
 
                             } else if (fragmentNumber == 1) {
-                                Log.e("DBG", "addBlackList");
+                                Log.e("DBG", "addIgnoreList");
 
-                                realmContactHelper.addBlackList(
+                                realmContactHelper.addIgnoreList(
                                         cStr.getContactNumber(),
                                         cStr.getContactName()
                                 );
@@ -167,11 +167,11 @@ public class BlackListManagerActivity extends AppCompatActivity implements
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position==0)
             {
-                return BlackContactFragment.newInstance(position);
+                return FragmentIgnoreContact.newInstance(position);
             }
             else
             {
-                return ContactsListFragment.newInstance(position);
+                return FragmentContactsList.newInstance(position);
 
 
             }
@@ -188,7 +188,7 @@ public class BlackListManagerActivity extends AppCompatActivity implements
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "RECORD BLOCKED CONTACTS";
+                    return "RECORD IGNORED CONTACTS";
                 case 1:
                     return "ALL CONTACTS";
             }

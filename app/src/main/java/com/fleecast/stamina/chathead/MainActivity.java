@@ -28,10 +28,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.fleecast.stamina.R;
-import com.fleecast.stamina.notetaking.ActivityPhoneCallSettings;
-import com.fleecast.stamina.notetaking.AddActivity;
+import com.fleecast.stamina.notetaking.ActivityIgnoreListManager;
 import com.fleecast.stamina.notetaking.NoteTakingRecyclerViewActivity;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
+import com.fleecast.stamina.settings.ActivitySettings;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
 
@@ -106,7 +106,9 @@ public class MainActivity extends AppCompatActivity
     private void myFuckUp(){
 
 
-        startActivity(new Intent(this, AddActivity.class));
+     //   startActivity(new Intent(this, AddActivity.class));
+       /* Intent intent = new Intent(this, ActivitySettings.class);
+        startActivity(intent);*/
         //startService(new Intent(this, ChatHeadRecordService.class));
 
      /*   Context context = getApplicationContext();
@@ -361,11 +363,14 @@ if(wakeLock.isHeld()) {
                 item.setTitle("Record Calls  ✔");
             }
 
-        } else if (id == R.id.nav_phone_record_settings) {
-            Intent intent = new Intent(this, ActivityPhoneCallSettings.class);
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(this, ActivitySettings.class);
             startActivity(intent);
-        }
 
+    } else if (id == R.id.nav_phone_ignorelist) {
+        Intent intent = new Intent(this, ActivityIgnoreListManager.class);
+        startActivity(intent);
+    }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

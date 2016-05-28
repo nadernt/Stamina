@@ -26,10 +26,6 @@
                 android:id="@+id/nav_audio_record"
                 android:icon="@drawable/ic_action_record"
                 android:title="Audio recorder" />
-            <item
-                android:id="@+id/nav_audio_record_settings"
-                android:icon="@drawable/ic_action_gear"
-                android:title="Audio Record Settings" />
         </menu>
     </item>
 
@@ -39,11 +35,12 @@
                 android:id="@+id/nav_phone_record"
                 android:icon="@drawable/ic_action_phone_start"
                 android:checkable="true"
-                android:title="Record Calls?" />
+                android:title="Record calls?" />
             <item
-                android:id="@+id/nav_phone_record_settings"
-                android:icon="@drawable/ic_action_gear"
-                android:title="Phone Record Settings" />
+                android:id="@+id/nav_phone_ignorelist"
+                android:icon="@drawable/ic_action_halt"
+                android:checkable="true"
+                android:title="Ignore list" />
         </menu>
     </item>
     <item android:title="Sync &amp; Reports">
@@ -51,7 +48,15 @@
             <item
                 android:id="@+id/nav_phone_report"
                 android:icon="@drawable/ic_action_copy"
-                android:title="Create Report" />
+                android:title="Create report" />
+        </menu>
+    </item>
+    <item android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Settings" />
         </menu>
     </item>
 </menu>

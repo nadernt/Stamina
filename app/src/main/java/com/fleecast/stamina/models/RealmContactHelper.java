@@ -34,7 +34,7 @@ public class RealmContactHelper {
     }
 
 
-    public void addBlackList(String contact_number, String contact_name) {
+    public void addIgnoreList(String contact_number, String contact_name) {
 
         ContactDbRealmStruct contactDbRealmStruct = new ContactDbRealmStruct();
 
@@ -50,7 +50,7 @@ public class RealmContactHelper {
     }
 
 
-    public boolean checkIfExistsInBlockList(String contact_number) {
+    public boolean checkIfExistsInIgnoreList(String contact_number) {
 
         RealmQuery<ContactDbRealmStruct> query = realm.where(ContactDbRealmStruct.class)
                 .equalTo("id", getJustNumberOfPhone(contact_number));
@@ -64,11 +64,11 @@ public class RealmContactHelper {
 
         for (int i = 0; i < query.size(); i++) {
 
-            Log.e("Blacklisted:", query.get(i).getContactName() + " " + query.get(i).getContactNumber());
+            Log.e("Ignorelisted:", query.get(i).getContactName() + " " + query.get(i).getContactNumber());
         }
     }
 
-    public List<ContactStruct> getBlockList() {
+    public List<ContactStruct> getIgnoreList() {
 
         RealmResults<ContactDbRealmStruct> query = realm.where(ContactDbRealmStruct.class).findAll();
         List<ContactStruct> contactStructList = new ArrayList<>();
@@ -93,13 +93,13 @@ public class RealmContactHelper {
     }*/
 
 
-    public void deleteContactFromBlockList(String contact_number) {
+    public void deleteContactFromIgnoreList(String contact_number) {
 
-        RealmResults<ContactDbRealmStruct> contactToDeleteFromDbBlacklist = realm.where(ContactDbRealmStruct.class).equalTo("id", getJustNumberOfPhone(contact_number)).findAll();
+        RealmResults<ContactDbRealmStruct> contactToDeleteFromDbIgnorelist = realm.where(ContactDbRealmStruct.class).equalTo("id", getJustNumberOfPhone(contact_number)).findAll();
 
-        if (contactToDeleteFromDbBlacklist.size() > 0) {
+        if (contactToDeleteFromDbIgnorelist.size() > 0) {
             realm.beginTransaction();
-            contactToDeleteFromDbBlacklist.deleteFirstFromRealm();
+            contactToDeleteFromDbIgnorelist.deleteFirstFromRealm();
             realm.commitTransaction();
         }
 

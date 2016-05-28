@@ -14,15 +14,15 @@ import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ContactStruct} and makes a call to the
- * specified {@link BlackContactFragment.OnBlackListFragmentInteractionListener}.
+ * specified {@link FragmentIgnoreContact.OnIgnoreListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class BlackContactsRecyclerViewAdapter extends RecyclerView.Adapter<BlackContactsRecyclerViewAdapter.ViewHolder> {
+public class IgnoreContactsRecyclerViewAdapter extends RecyclerView.Adapter<IgnoreContactsRecyclerViewAdapter.ViewHolder> {
 
     private List<ContactStruct> mValues;
-    private final BlackContactFragment.OnBlackListFragmentInteractionListener mListener;
+    private final FragmentIgnoreContact.OnIgnoreListFragmentInteractionListener mListener;
 
-    public BlackContactsRecyclerViewAdapter(List<ContactStruct> items, BlackContactFragment.OnBlackListFragmentInteractionListener listener) {
+    public IgnoreContactsRecyclerViewAdapter(List<ContactStruct> items, FragmentIgnoreContact.OnIgnoreListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -30,7 +30,7 @@ public class BlackContactsRecyclerViewAdapter extends RecyclerView.Adapter<Black
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_contact_blacklist, parent, false);
+                .inflate(R.layout.fragment_contact_ignorelist, parent, false);
         return new ViewHolder(view);
     }
 
@@ -47,7 +47,7 @@ public class BlackContactsRecyclerViewAdapter extends RecyclerView.Adapter<Black
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onBlackListFragmentInteraction(holder.mItem);
+                    mListener.onIgnoreListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -78,9 +78,9 @@ public void noo(List<ContactStruct> contactStructs){
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id_block);
-            mContactName = (TextView) view.findViewById(R.id.contact_name_block);
-            mContactNumber = (TextView) view.findViewById(R.id.contact_number_block);
+            mIdView = (TextView) view.findViewById(R.id.id_ignore);
+            mContactName = (TextView) view.findViewById(R.id.contact_name_ignore);
+            mContactNumber = (TextView) view.findViewById(R.id.contact_number_ignore);
 
         }
         @Override

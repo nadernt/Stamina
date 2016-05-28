@@ -8,7 +8,7 @@ public class ContactStruct {
     private String id;
     private String contact_name;
     private String contact_number;
-    /*private boolean blackList ;*/
+    /*private boolean ignoreList ;*/
 
     public ContactStruct( String id, String contact_number, String contact_name) {
         this.contact_name = contact_name;
@@ -42,12 +42,12 @@ public class ContactStruct {
     }
 
 /*
-    public boolean isBlackList() {
-        return blackList;
+    public boolean isIgnoreList() {
+        return ignoreList;
     }
 
-    public void setBlackList(boolean blackList) {
-        this.blackList = blackList;
+    public void setIgnoreList(boolean ignoreList) {
+        this.ignoreList = ignoreList;
     }
 */
 

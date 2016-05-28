@@ -1,28 +1,37 @@
 package com.fleecast.stamina.notetaking;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.models.ContactStruct;
+import com.fleecast.stamina.models.RealmContactHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A fragment representing a list of Items.
@@ -30,7 +39,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnContactListFragmentInteractionListener}
  * interface.
  */
-public class ContactsListFragment extends Fragment implements SearchView.OnQueryTextListener{
+public class FragmentContactsList extends Fragment implements SearchView.OnQueryTextListener{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -40,17 +49,18 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
     private ContactsRecyclerViewAdapter contactsListAdapter;
     private List<ContactStruct> mContactStruct;
     private RecyclerView recyclerView;
+    public RealmContactHelper realmContactHelper;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ContactsListFragment() {
+    public FragmentContactsList() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ContactsListFragment newInstance(int columnCount) {
-        ContactsListFragment fragment = new ContactsListFragment();
+    public static FragmentContactsList newInstance(int columnCount) {
+        FragmentContactsList fragment = new FragmentContactsList();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -66,6 +76,8 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        realmContactHelper = new RealmContactHelper(getActivity());
+
     }
 
     @Override
@@ -108,7 +120,7 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
         if(recyclerView != null) {
 
             realmContactHelper = new RealmContactHelper(getActivity());
-            recyclerView.setAdapter(new BlackContactsRecyclerViewAdapter(realmContactHelper.getBlockList(), mListener));
+            recyclerView.setAdapter(new IgnoreContactsRecyclerViewAdapter(realmContactHelper.getIgnoreList(), mListener));
 
         }
 
@@ -150,7 +162,7 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
             mListener = (OnContactListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnBlackListFragmentInteractionListener");
+                    + " must implement OnIgnoreListFragmentInteractionListener");
         }
     }
 
@@ -162,12 +174,80 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_black_list_manager, menu);
+        inflater.inflate(R.menu.menu_ignore_list_manager, menu);
 
         final MenuItem item = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(this);
 
+
+        MenuItem menuAddNumber = menu.findItem(R.id.action_add_ignore_number);
+        menuAddNumber.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Context context = getContext();
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final EditText contactName = new EditText(getContext());
+                final EditText contactNumber = new EditText(getContext());
+
+                LinearLayout layout = new LinearLayout(context);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                contactName.setHint("Name of contact");
+                contactNumber.setHint("Number");
+
+                layout.addView(contactName);
+                layout.addView(contactNumber);
+
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        if(contactNumber.getText().toString().trim().length() > 0 && contactName.getText().toString().trim().length() > 0)
+                        {
+                            if(!realmContactHelper.checkIfExistsInIgnoreList( contactNumber.getText().toString().trim())) {
+                                realmContactHelper.addIgnoreList(
+                                        contactNumber.getText().toString().trim(),
+                                        contactName.getText().toString().trim().replaceAll("[^A-Za-z0-9 ]", "")
+                                );
+                                Toast.makeText(getContext(),"Contact added.",Toast.LENGTH_LONG).show();
+                                Log.e("FragmentContactLists",contactName.getText().toString().trim().replaceAll("[^A-Za-z0-9 ]", "") +
+                                        "<===>" + getJustNumberOfPhone(contactNumber.getText().toString().trim().replaceAll("[^A-Za-z0-9 ]", "")));
+                            }
+                            else {
+                                showMessage("Number already exists.", "Note");
+                            }
+
+                        }
+                        else{
+                            showMessage("You should fill all the fields.","Wrong input");
+                        }
+                        dialog.dismiss();
+
+                    }
+                });
+
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //TODO
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+
+                dialog.setTitle("Add Custom Ignore Number");
+                dialog.setView(layout);
+
+                dialog.show();
+
+                return false;
+
+            }
+        });
         MenuItemCompat.setOnActionExpandListener(item,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
@@ -224,4 +304,33 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
         // TODO: Update argument type and name
         void onContactsListFragmentInteraction(ContactStruct item);
     }
+
+    //Filter the number by regex then just a consequence of numbers will make as phone number.
+    private String getJustNumberOfPhone(String strNumber) {
+
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(strNumber);
+        String returnedNumber = "";
+        while (m.find()) {
+            returnedNumber += m.group();
+        }
+
+        return returnedNumber;
+
+    }
+
+    private void showMessage(String messageToUser,String titleOfDialog){
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(titleOfDialog)
+                .setMessage(messageToUser)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
+
 }

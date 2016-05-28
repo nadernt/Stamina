@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.models.RealmNoteHelper;
+import com.fleecast.stamina.settings.ActivitySettings;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.NotificationHelper;
@@ -70,7 +71,7 @@ public class AddActivity extends AppCompatActivity{
     private Point szWindow = new Point();
     private RelativeLayout recordButtonsView;
     private ImageView chatHead;
-    WindowManager.LayoutParams params;
+    private WindowManager.LayoutParams params;
     private ImageView btnNoStopRecord,btnTapRecord,btnStopRecord;
     private RelativeLayout recorderControlsLayout;
 
@@ -590,7 +591,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
             // First stop probable record.
             //recorder.recordMedia(false,-1);
 
-            Intent intent = new Intent(this,ActivityNoteTakingSettings.class);
+            Intent intent = new Intent(this,ActivitySettings.class);
 
             // We just pass this code and and run activity for result in order to have modal dialog!
 

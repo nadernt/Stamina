@@ -16,14 +16,14 @@
     android:background="#fdfcfc">
 
     <TextView
-        android:id="@+id/id_block"
+        android:id="@+id/id_ignore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/contact_name_block"
+        android:id="@+id/contact_name_ignore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
@@ -32,7 +32,7 @@
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
-        android:id="@+id/contact_number_block"
+        android:id="@+id/contact_number_ignore"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"

@@ -1,9 +1,11 @@
 package com.fleecast.stamina.notetaking;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.models.ContactStruct;
@@ -22,37 +26,40 @@ import com.fleecast.stamina.models.RealmContactHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnBlackListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnIgnoreListFragmentInteractionListener}
  * interface.
  */
-public class BlackContactFragment extends Fragment  implements SearchView.OnQueryTextListener {
+public class FragmentIgnoreContact extends Fragment  implements SearchView.OnQueryTextListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnBlackListFragmentInteractionListener mListener;
+    private OnIgnoreListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private RealmContactHelper realmContactHelper;
     private List<ContactStruct> mContactStruct;
-    private BlackContactsRecyclerViewAdapter blockListAdapter;
+    private IgnoreContactsRecyclerViewAdapter ignoreListAdapter;
     private View view;
-    static boolean bool = false;
+
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public BlackContactFragment() {
+    public FragmentIgnoreContact() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static BlackContactFragment newInstance(int columnCount) {
-        BlackContactFragment fragment = new BlackContactFragment();
+    public static FragmentIgnoreContact newInstance(int columnCount) {
+        FragmentIgnoreContact fragment = new FragmentIgnoreContact();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -74,9 +81,9 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        Log.e("DBg", "Block onCreate called!");
+        Log.e("DBg", "Ignore onCreate called!");
 
-         view = inflater.inflate(R.layout.list_black_contacts, container, false);
+         view = inflater.inflate(R.layout.list_ignore_contacts, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -89,6 +96,7 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
             }
             loadList();
         }
+
         return view;
     }
 
@@ -99,9 +107,9 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
             if(null != mContactStruct)
                 mContactStruct.clear();
 
-            mContactStruct = realmContactHelper.getBlockList();
-            blockListAdapter = new BlackContactsRecyclerViewAdapter(mContactStruct, mListener);
-            recyclerView.setAdapter(blockListAdapter);
+            mContactStruct = realmContactHelper.getIgnoreList();
+            ignoreListAdapter = new IgnoreContactsRecyclerViewAdapter(mContactStruct, mListener);
+            recyclerView.setAdapter(ignoreListAdapter);
 
         }
 
@@ -111,24 +119,24 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
 
         recyclerView.setAdapter(null);
         recyclerView.setLayoutManager(null);
-        recyclerView.setAdapter(blockListAdapter);
+        recyclerView.setAdapter(ignoreListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
        *//* if(null != mContactStruct)
             mContactStruct.clear();
         RealmContactHelper realmContactHelper1 = new RealmContactHelper(getActivity());
-        mContactStruct = new ArrayList<>(realmContactHelper1.getBlockList());*//*
+        mContactStruct = new ArrayList<>(realmContactHelper1.getIgnoreList());*//*
        // mContactStruct = mContactStruct1;
 *//*        RealmContactHelper realmContactHelper1 = new RealmContactHelper(getActivity());
-        mContactStruct = realmContactHelper1.getBlockList();*//*
-        *//*blockListAdapter = new BlackContactsRecyclerViewAdapter(mContactStruct, mListener);
-        blockListAdapter.notifyItemRemoved(0);
-        blockListAdapter.notifyDataSetChanged();*//*
-        //blockListAdapter = new BlackContactsRecyclerViewAdapter(mContactStruct, mListener);
-        //blockListAdapter.noo(mContactStruct);
+        mContactStruct = realmContactHelper1.getIgnoreList();*//*
+        *//*ignoreListAdapter = new IgnoreContactsRecyclerViewAdapter(mContactStruct, mListener);
+        ignoreListAdapter.notifyItemRemoved(0);
+        ignoreListAdapter.notifyDataSetChanged();*//*
+        //ignoreListAdapter = new IgnoreContactsRecyclerViewAdapter(mContactStruct, mListener);
+        //ignoreListAdapter.noo(mContactStruct);
        *//* recyclerView.setAdapter(null);
         recyclerView.setLayoutManager(null);
-        recyclerView.setAdapter(blockListAdapter);
+        recyclerView.setAdapter(ignoreListAdapter);
         recyclerView.setLayoutManager(myLayoutManager);
         myAdapter.notifyDataSetChanged();*//*
 
@@ -153,11 +161,11 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
                     public void run() {
                         Log.e("DDDDssss", "dfdfsdf");
 
-                        blockListAdapter = new BlackContactsRecyclerViewAdapter(realmContactHelper.getBlockList(), mListener);
-                        blockListAdapter.notifyDataSetChanged();
+                        ignoreListAdapter = new IgnoreContactsRecyclerViewAdapter(realmContactHelper.getIgnoreList(), mListener);
+                        ignoreListAdapter.notifyDataSetChanged();
 
                         //contactsListAdapter = new ContactsRecyclerViewAdapter(mContactStruct,mListener);
-                        recyclerView.setAdapter(blockListAdapter);
+                        recyclerView.setAdapter(ignoreListAdapter);
                     }
                 },
                 5000
@@ -185,12 +193,12 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnBlackListFragmentInteractionListener) {
+        if (context instanceof OnIgnoreListFragmentInteractionListener) {
 
-            mListener = (OnBlackListFragmentInteractionListener) context;
+            mListener = (OnIgnoreListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnBlackListFragmentInteractionListener");
+                    + " must implement OnIgnoreListFragmentInteractionListener");
         }
     }
 
@@ -205,18 +213,20 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
 
         setHasOptionsMenu(true);
 
-        inflater.inflate(R.menu.menu_black_list_manager, menu);
+        inflater.inflate(R.menu.menu_ignore_list_manager, menu);
 
         final MenuItem item = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(this);
+
+        menu.findItem(R.id.action_add_ignore_number).setVisible(false);
 
         MenuItemCompat.setOnActionExpandListener(item,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
                         // Do something when collapsed
-                        blockListAdapter.setFilter(mContactStruct);
+                        ignoreListAdapter.setFilter(mContactStruct);
                         return true; // Return true to collapse action view
                     }
 
@@ -231,7 +241,7 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
     @Override
     public boolean onQueryTextChange(String newText) {
         final List<ContactStruct> filteredModelList = filter(mContactStruct, newText);
-        blockListAdapter.setFilter(filteredModelList);
+        ignoreListAdapter.setFilter(filteredModelList);
         return true;
     }
 
@@ -271,8 +281,8 @@ public class BlackContactFragment extends Fragment  implements SearchView.OnQuer
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnBlackListFragmentInteractionListener {
+    public interface OnIgnoreListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onBlackListFragmentInteraction(ContactStruct item);
+        void onIgnoreListFragmentInteraction(ContactStruct item);
     }
 }

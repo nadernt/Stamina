@@ -1,11 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".notetaking.BlackListManagerActivity">
+    tools:context=".notetaking.ActivityIgnoreListManager">
     <item android:id="@+id/action_search"
         android:title="Search"
         android:icon="@drawable/ic_action_search"
         app:showAsAction="collapseActionView|always"
         app:actionViewClass="android.support.v7.widget.SearchView"
+        android:layout_width="wrap_content" />
+    <item android:id="@+id/action_add_ignore_number"
+        android:title="Add number"
+        android:icon="@drawable/ic_action_add"
+        app:showAsAction="collapseActionView|always"
         android:layout_width="wrap_content" />
 </menu>
