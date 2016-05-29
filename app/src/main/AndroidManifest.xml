@@ -98,8 +98,14 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".settings.ActivitySettings"
-            android:label="@string/title_activity_activity_settings"
-            android:theme="@style/AppTheme"></activity>
+            android:configChanges="orientation"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings.ActivityChooseDirectory"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

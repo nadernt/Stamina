@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +34,7 @@ import com.fleecast.stamina.notetaking.NoteTakingRecyclerViewActivity;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
 import com.fleecast.stamina.settings.ActivitySettings;
 import com.fleecast.stamina.utility.Constants;
+import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
 
 public class MainActivity extends AppCompatActivity
@@ -74,8 +76,8 @@ public class MainActivity extends AppCompatActivity
     private void firstRunAppInitials(){
 
 
-        //if(1<2){
-        if(!Prefs.getBoolean(Constants.Fist_Initial_Of_APP, false)) {
+        if(1<2){
+        //if(!Prefs.getBoolean(Constants.Fist_Initial_Of_APP, false)) {
 
             Prefs.putBoolean(Constants.Fist_Initial_Of_APP, true);
 
@@ -98,6 +100,12 @@ public class MainActivity extends AppCompatActivity
         //Mic
             Prefs.putInt(Constants.RECORDER_AUDIO_RECORDER_SOURCE_OPTION, MediaRecorder.AudioSource.MIC);
             Prefs.putInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION,Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM);
+
+            // Put to internal storage the location of working directory
+
+            Prefs.putString(Constants.WORKING_DIRECTORY_PATH, Environment.getExternalStorageDirectory().getPath());
+
+            ExternalStorageManager.prepareWorkingDirectory(this);
 
         }
 

@@ -50,6 +50,8 @@ public class FragmentContactsList extends Fragment implements SearchView.OnQuery
     private List<ContactStruct> mContactStruct;
     private RecyclerView recyclerView;
     public RealmContactHelper realmContactHelper;
+    private String strContactName, strContactNumber;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -198,41 +200,59 @@ public class FragmentContactsList extends Fragment implements SearchView.OnQuery
                 contactName.setHint("Name of contact");
                 contactNumber.setHint("Number");
 
+                // If user did mistake. again fill with old inputs.
+                if (strContactName!=null)
+                    contactName.setText(strContactName);
+
+                if (contactNumber!=null)
+                    contactNumber.setText(strContactNumber);
+
                 layout.addView(contactName);
                 layout.addView(contactNumber);
 
                 builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 
-
                     public void onClick(DialogInterface dialog, int id) {
 
-                        if(contactNumber.getText().toString().trim().length() > 0 && contactName.getText().toString().trim().length() > 0)
-                        {
-                            if(!realmContactHelper.checkIfExistsInIgnoreList( contactNumber.getText().toString().trim())) {
-                                realmContactHelper.addIgnoreList(
-                                        contactNumber.getText().toString().trim(),
-                                        contactName.getText().toString().trim().replaceAll("[^A-Za-z0-9 ]", "")
-                                );
-                                Toast.makeText(getContext(),"Contact added.",Toast.LENGTH_LONG).show();
-                                Log.e("FragmentContactLists",contactName.getText().toString().trim().replaceAll("[^A-Za-z0-9 ]", "") +
-                                        "<===>" + getJustNumberOfPhone(contactNumber.getText().toString().trim().replaceAll("[^A-Za-z0-9 ]", "")));
-                            }
-                            else {
-                                showMessage("Number already exists.", "Note");
+                        strContactName = contactName.getText().toString().trim();
+                        strContactNumber = getJustNumberOfPhone(contactNumber.getText().toString().trim());
+
+                        if (strContactName.matches("[a-zA-Z0-9]+")) {
+                            if (strContactNumber.length() > 0 && strContactName.length() > 0) {
+
+                                if (!realmContactHelper.checkIfExistsInIgnoreList(contactNumber.getText().toString().trim())) {
+                                    realmContactHelper.addIgnoreList(
+                                            strContactNumber,
+                                            strContactName);
+                                    strContactName="";
+                                    strContactNumber="";
+                                    Toast.makeText(getContext(), "Number added.", Toast.LENGTH_LONG).show();
+
+                                    Log.e("FragmentContactLists", strContactName +
+                                            "<===>" + getJustNumberOfPhone(strContactNumber));
+                                } else {
+                                    showMessage("Number already exists.", "Note");
+                                }
+
+                            } else {
+                                showMessage("You should fill all the fields.", "Note");
                             }
 
+
+                        } else {
+                            showMessage("You can use alphabet and number for name and just numbers for phone number!", "Note");
                         }
-                        else{
-                            showMessage("You should fill all the fields.","Wrong input");
-                        }
+
                         dialog.dismiss();
 
                     }
+
                 });
 
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //TODO
+                        strContactName="";
+                        strContactNumber="";
                         dialog.dismiss();
                     }
                 });

@@ -4,6 +4,11 @@ package com.fleecast.stamina.utility;
  * Created by nnt on 27/03/16.
  */
 public class Constants {
+    public static final int REQUEST_DIRECTORY = 123;
+    public static final String RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
+    public static final String WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
+    public static final String WORKING_DIRECTORY_NAME = "/stamina";
+
     public static String Fist_Initial_Of_APP = "FistInitialOfAPP";
     public static final int LIST_FOR_GRID = 0;
     public static final long PLAYER_PROGRESS_UPDATE_TIME = 100;
@@ -44,7 +49,7 @@ public class Constants {
     public static boolean ICONS_RENDER_QUALITY_NO_ALIAS = false;
 
     public static long MINIMUM_AVAILABLE_STORAGE_SPACE = 20;
-    public static final String WORKING_DIRECTORY = "/stamina";
+
 
     /**
      * Call constants.

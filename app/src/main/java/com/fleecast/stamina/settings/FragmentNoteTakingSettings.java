@@ -69,7 +69,7 @@ public class FragmentNoteTakingSettings extends Fragment {
         mRecorder = new MediaRecorder();
 
         RadioGroup radioGroupSources = (RadioGroup) fragmentView.findViewById(R.id.radioGroupSources);
-        RadioGroup radioGroupFormats = (RadioGroup) fragmentView.findViewById(R.id.radioGroupFormats);
+        //RadioGroup radioGroupFormats = (RadioGroup) fragmentView.findViewById(R.id.radioGroupFormats);
 
 
         for (int index = 0; index < ((RadioGroup) radioGroupSources).getChildCount(); ++index) {

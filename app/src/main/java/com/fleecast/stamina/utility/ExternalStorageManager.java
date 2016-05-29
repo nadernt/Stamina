@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.fleecast.stamina.R;
 
@@ -98,30 +99,17 @@ public class ExternalStorageManager {
 
         if(ExternalStorageManager.checkAvailable()) {
 
-            if (ExternalStorageManager.isThereEnoughSpaceOnStorage()) {
+               String pathToWorkingDirectory =  Prefs.getString(Constants.WORKING_DIRECTORY_PATH,"");
 
-                String pathToWorkingDirectory =  Prefs.getString("StoragePath", "");
-
-                // if user didn't choose any custom directory.
+                // if user didn't choose any custom directory or it is first time.
                 if(pathToWorkingDirectory.length()==0) {
-                    pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY;
+                    pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY_NAME;
                     File directory = new File(pathToWorkingDirectory);
                     directory.mkdirs();
-                 //   Log.e("DBG", "Sex ");
-
                 }
+
+            Log.e("DDD",pathToWorkingDirectory);
                 return pathToWorkingDirectory;
-               // Log.e("DBG", "External " + pathToWorkingDirectory);
-
-
-            } else {
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setTitle("Note:")
-                        .setIcon(R.drawable.ic_action_info)
-                        .setMessage("The storage enough space on device!\nYou can just take the note.").show();
-
-            }
         }
         else
         {
@@ -129,7 +117,7 @@ public class ExternalStorageManager {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
             alertDialogBuilder.setTitle("Note:")
                     .setIcon(R.drawable.ic_action_info)
-                    .setMessage("The storage device is not available now!\nYou can just take the note.").show();
+                    .setMessage("The storage device is not accessible now!").show();
 
 
         }

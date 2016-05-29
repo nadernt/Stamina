@@ -11,7 +11,7 @@
     <color name="dark">#000000</color>
     <color name="blue_A2E5F5">#A2E5F5</color>
     <!-- Colors arranged from A -Z -->
-    <color name="air_force_blue">#5D8AA8</color>
+    <color name="air_force_blue">#5d8aa8</color>
     <color name="algae_green">#64E986</color>
     <color name="alice_blue">#F0F8FF</color>
     <color name="alien_green">#6CC417</color>
@@ -38,7 +38,7 @@
     <color name="avocado_green">#B2C248</color>
     <color name="awesome">#FF2052</color>
     <color name="aztech_purple">#893BFF</color>
-    <color name="azure">#007FFF</color>
+    <color name="azure">#007fff</color>
     <color name="azure_mist_web">#F0FFFF</color>
 
     <color name="baby_blue">#89CFF0</color>
@@ -76,7 +76,7 @@
     <color name="blue_bell">#A2A2D0</color>
     <color name="blue_diamond">#4EE2EC</color>
     <color name="blue_dress">#157DEC</color>
-    <color name="blue_eyes">#1569C7</color>
+    <color name="blue_eyes">#1569c7</color>
     <color name="blue_gray">#98AFC7</color>
     <color name="blue_green">#0D98BA</color>
     <color name="blue_hosta">#77BFC7</color>

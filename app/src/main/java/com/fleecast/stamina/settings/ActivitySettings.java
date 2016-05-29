@@ -1,5 +1,6 @@
 package com.fleecast.stamina.settings;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.utility.Constants;
 
 public class ActivitySettings extends AppCompatActivity {
 
@@ -51,10 +53,15 @@ public class ActivitySettings extends AppCompatActivity {
  }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         Log.e(TAG, " onPause ActivitySettings!" );
-        finish();
+       // finish();
     }
 
     @Override
@@ -78,6 +85,10 @@ public class ActivitySettings extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position==0)
             {
+                return FragmentAppSettings.newInstance(position);
+            }
+            else if(position==1)
+            {
                 return FragmentNoteTakingSettings.newInstance(position);
             }
             else
@@ -92,15 +103,17 @@ public class ActivitySettings extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Notes";
+                    return "Application";
                 case 1:
+                    return "Notes";
+                case 2:
                     return "Phone Recorder";
             }
             return null;
