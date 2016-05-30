@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity
     private void firstRunAppInitials(){
 
 
-        if(1<2){
-        //if(!Prefs.getBoolean(Constants.Fist_Initial_Of_APP, false)) {
+        //if(1<2){
+        if(!Prefs.getBoolean(Constants.Fist_Initial_Of_APP, false)) {
 
             Prefs.putBoolean(Constants.Fist_Initial_Of_APP, true);
 
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-}
+    }
 
     private void myFuckUp(){
 

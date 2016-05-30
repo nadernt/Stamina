@@ -8,6 +8,10 @@ public class Constants {
     public static final String RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
     public static final String WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
     public static final String WORKING_DIRECTORY_NAME = "/stamina";
+    public static final String EXTRA_RECORD_FILENAME = "ExtraRecordFilename";
+    public static final String EXTRA_NEW_RECORD = "ExetraNewRecord";
+    public static final String EXTRA_RECORD_SOURCE = "ExtraRecordSource";
+    public static final String EXTRA_STOP_RECORD = "ExtraStopRecord";
 
     public static String Fist_Initial_Of_APP = "FistInitialOfAPP";
     public static final int LIST_FOR_GRID = 0;
@@ -94,4 +98,5 @@ public class Constants {
     public static String RECORDER_AUDIO_FORMAT_AAC = "aac";
     public static String RECORDER_AUDIO_FORMAT_AMR = "amr";
 
+    public static String CONST_SEPARATOR_OF_AUDIO_FILE = "_";
 }

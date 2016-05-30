@@ -236,7 +236,7 @@ public class ActivityChooseDirectory extends AppCompatActivity {
 
         File myDirectory = new File(path);
         prevDir = myDirectory.getParent();
-        File[] files1 = myDirectory.listFiles(new FileFilter() {
+        File[] fileTmp = myDirectory.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
                 return pathname.canRead();
@@ -244,7 +244,7 @@ public class ActivityChooseDirectory extends AppCompatActivity {
         });
 
         List <File> files = new ArrayList<>();
-        for (File inFile : files1) {
+        for (File inFile : fileTmp) {
             if (inFile.isDirectory()) {
                 files.add(inFile);// is directory
             }

@@ -1,58 +1,172 @@
 package com.fleecast.stamina.notetaking;
 
-import android.content.Context;
+import android.app.Service;
 import android.content.Intent;
 import android.media.MediaRecorder;
-import android.os.SystemClock;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.Chronometer;
 import android.widget.Toast;
 
 import com.fleecast.stamina.chathead.MyApplication;
-
-import java.io.File;
+import com.fleecast.stamina.utility.Constants;
+import com.fleecast.stamina.utility.ExternalStorageManager;
+import com.fleecast.stamina.utility.Prefs;
 
 /**
  * Created by nnt on 7/05/16.
  */
-public class Recorder {
+public class Recorder extends Service{
 
     private static final String LOG_TAG = "AudioRecordTest";
-    private final Context context;
-    private View viewTimer;
-    private int mediaRecorderSource;
-
-    private Chronometer mChronometer;
+    private int recorderSource;
     private MediaRecorder mRecorder = null;
-
     private MyApplication myApplication;
-
     private boolean recordStatus = false;
     private boolean playStatus = false;
-    private String mFileName="";
+    private String mFileDbUniqueToken ="";
+    private String currentRecordingDir;
+    private String recordFileName;
+    private LocalBroadcastManager broadcaster;
 
-    public Recorder(Context context, View viewTimer,String workingDirectory, String mFileName){
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        broadcaster = LocalBroadcastManager.getInstance(this);
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        myApplication =  (MyApplication) getApplicationContext();
+
+        if(intent!=null) {
+
+            if (intent.hasExtra(Constants.EXTRA_NEW_RECORD)) {
+
+                this.mFileDbUniqueToken = intent.getStringExtra(Constants.EXTRA_RECORD_FILENAME);
+
+                recorderSource = intent.getIntExtra(Constants.EXTRA_RECORD_SOURCE,MediaRecorder.AudioSource.MIC);
+
+                if(recordStatus)
+                    stopRecording();
+
+                try {
+                    startRecording();
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "prepare() failed");
+                    myApplication.setIsRecordIsUnderGoing(false);
+                    recordStatus = true;
+                    Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+                    stopService(new Intent(getApplicationContext(), Recorder.class));
+                }
+
+            }
+            else if(intent.hasExtra(Constants.EXTRA_STOP_RECORD)){
+
+                stopRecording();
+
+
+            }
+
+        }
+
+        return null;
+    }
+
+    private void startRecording() throws Exception {
+
+        mRecorder = new MediaRecorder();
+
+        mRecorder.setAudioSource(recorderSource);
+
+        int recordQuality = Prefs.getInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION,Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM);
+
+        // low quality record
+        if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_LOW)
+        {
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.setAudioEncoder(MediaRecorder.getAudioSourceMax());
+            mRecorder.setAudioEncodingBitRate(16);
+            mRecorder.setAudioSamplingRate(44100);
+        }// high quality recor
+        else if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_HIGH){
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.setAudioEncoder(MediaRecorder.getAudioSourceMax());
+            mRecorder.setAudioEncodingBitRate(16);
+            mRecorder.setAudioSamplingRate(44100);
+        }
+        else // default quality
+        {
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        }
+
+
+        if(ExternalStorageManager.checkWritable())
+        {
+           currentRecordingDir =  ExternalStorageManager.makeRecodingDirectory(mFileDbUniqueToken);
+
+            // Creating unique id for postfix
+            String filePostfixToken = String.valueOf ((int) (System.currentTimeMillis() / 1000));
+
+            recordFileName = filePostfixToken + Constants.CONST_SEPARATOR_OF_AUDIO_FILE + currentRecordingDir;
+
+            mRecorder.setOutputFile(recordFileName);
+            mRecorder.prepare();
+            myApplication.setIsRecordIsUnderGoing(true);
+            recordStatus = true;
+            mRecorder.start();
+        }
+        else {
+            stopService(new Intent(getApplicationContext(), Recorder.class));
+        }
+
+    }
+
+    private void stopRecording() {
+        myApplication.setIsRecordIsUnderGoing(false);
+        recordStatus = false;
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+    }
+    static final public String COPA_RESULT = "com.controlj.copame.backend.COPAService.REQUEST_PROCESSED";
+
+    static final public String COPA_MESSAGE = "com.controlj.copame.backend.COPAService.COPA_MSG";
+
+    public void sendResult(String message) {
+        Intent intent = new Intent(COPA_RESULT);
+        if(message != null)
+            intent.putExtra(COPA_MESSAGE, message);
+        broadcaster.sendBroadcast(intent);
+    }
+
+    /*public Recorder(Context context, View viewTimer,String workingDirectory, String mFileDbUniqueToken){
 
         this.viewTimer = viewTimer;
-        this.mFileName = workingDirectory + File.separator + mFileName;
-        mChronometer = (Chronometer)viewTimer;
+        this.mFileDbUniqueToken = workingDirectory + File.separator + mFileDbUniqueToken;
+        //mChronometer = (Chronometer)viewTimer;
         this.context = context;
 
         myApplication =  (MyApplication)context.getApplicationContext();
 
     }
+*/
 
-    public Recorder(Context context,String workingDirectory, String mFileName){
-        this.mFileName = workingDirectory + File.separator + mFileName;
+   /* public Recorder(Context context,String workingDirectory, String mFileDbUniqueToken){
+        this.mFileDbUniqueToken = workingDirectory + File.separator + mFileDbUniqueToken;
         this.context = context;
 
         myApplication =  (MyApplication)context.getApplicationContext();
 
-    }
+    }*/
 
     public void recordMedia(boolean start_stop,int mediaRecorderSource) {
-        this.mediaRecorderSource = mediaRecorderSource;
+        this.recorderSource = mediaRecorderSource;
         if (start_stop) {
 
           /*  if(mPlayer!=null)
@@ -60,7 +174,11 @@ public class Recorder {
 
             recordStatus = true;
 
-            startRecording();
+            try {
+                startRecording();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             recordStatus = false;
             stopRecording();
@@ -71,7 +189,7 @@ public class Recorder {
         if (start_stop) {
 
             if(mRecorder!=null)
-                recordMedia(false,mediaRecorderSource);
+                recordMedia(false, recorderSource);
 
             playStatus= true;
 
@@ -84,21 +202,9 @@ public class Recorder {
 
     private void startPlaying() {
 
-        Intent intent = new Intent(context,Player.class);
-        intent.putExtra("file_name", mFileName);
-        context.startActivity(intent);
-
-/*
-
-        mPlayer = new MediaPlayer();
-        try {
-            mPlayer.setDataSource(mFileName);
-            mPlayer.prepare();
-            mPlayer.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
-        }
-*/
+        Intent intent = new Intent(this,Player.class);
+        intent.putExtra("file_name", mFileDbUniqueToken);
+        startActivity(intent);
     }
 
 
@@ -108,10 +214,10 @@ public class Recorder {
 
     }
 
-    private void startRecording() {
+  /*  private void startRecording() {
 
         Log.e(LOG_TAG, "Rec Init");
-/*        recorder = new MediaRecorder();
+*//*        recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
@@ -120,11 +226,11 @@ public class Recorder {
         recorder.setAudioSamplingRate(44100);
         recorder.setOutputFile(path);
         recorder.prepare();
-        recorder.start();*/
+        recorder.start();*//*
         mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(mediaRecorderSource);
+        mRecorder.setAudioSource(recorderSource);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileName);
+        mRecorder.setOutputFile(mFileDbUniqueToken);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
@@ -134,21 +240,15 @@ public class Recorder {
         } catch (Exception e) {
             Log.e(LOG_TAG, "prepare() failed");
             myApplication.setIsRecordIsUnderGoing(false);
-            Toast.makeText(context,e.getMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
         }
 
 
-    }
-
-    private void stopRecording() {
-        myApplication.setIsRecordIsUnderGoing(false);
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
-    }
+    }*/
 
 
-    public void startTimer()
+
+   /* public void startTimer()
     {
         mChronometer.setVisibility(View.VISIBLE);
        mChronometer.start();
@@ -173,7 +273,7 @@ public class Recorder {
     {
         mChronometer.setFormat(null);
     }
-
+*/
 
     /****************************************
      ******** Getter Setters section ********
@@ -182,27 +282,4 @@ public class Recorder {
     public boolean isRecording() {
         return recordStatus;
     }
-
-    public void setRecordStatus(boolean recordStatus) {
-        this.recordStatus = recordStatus;
-    }
-
-    public boolean isPlaying() {
-        return playStatus;
-    }
-
-    public void setPlayStatus(boolean playStatus) {
-        this.playStatus = playStatus;
-    }
-
-  /*  public int getPlayerProgress(){
-
-        return mPlayer.getCurrentPosition();
-    }
-
-    public int getPlayFileDuration(){
-
-        return mPlayer.getDuration();
-    }*/
-
 }

@@ -105,7 +105,12 @@
             android:name=".settings.ActivityChooseDirectory"
             android:configChanges="orientation"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".notetaking.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

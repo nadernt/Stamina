@@ -99,14 +99,16 @@ public class ExternalStorageManager {
 
         if(ExternalStorageManager.checkAvailable()) {
 
-               String pathToWorkingDirectory =  Prefs.getString(Constants.WORKING_DIRECTORY_PATH,"");
+            String pathToWorkingDirectory = Prefs.getString(Constants.WORKING_DIRECTORY_PATH, "");
 
-                // if user didn't choose any custom directory or it is first time.
-                if(pathToWorkingDirectory.length()==0) {
-                    pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY_NAME;
-                    File directory = new File(pathToWorkingDirectory);
-                    directory.mkdirs();
-                }
+            // if user didn't choose any custom directory or it is first time.
+            if (pathToWorkingDirectory.length() == 0) {
+                pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY_NAME;
+                File directory = new File(pathToWorkingDirectory);
+                directory.mkdirs();
+            } else{
+                pathToWorkingDirectory = pathToWorkingDirectory + Constants.WORKING_DIRECTORY_NAME;
+        }
 
             Log.e("DDD",pathToWorkingDirectory);
                 return pathToWorkingDirectory;
@@ -122,5 +124,35 @@ public class ExternalStorageManager {
 
         }
         return "";
+    }
+
+    public static String getWorkingDirectory() {
+
+        String pathToWorkingDirectory = Prefs.getString(Constants.WORKING_DIRECTORY_PATH, "");
+
+        // if user didn't choose any custom directory or it is first time.
+        if (pathToWorkingDirectory.length() == 0) {
+            pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY_NAME;
+            File directory = new File(pathToWorkingDirectory);
+            directory.mkdirs();
+        } else{
+            pathToWorkingDirectory = pathToWorkingDirectory + Constants.WORKING_DIRECTORY_NAME;
+
+        }
+
+        Log.e("KKKKKKKKKKKK",pathToWorkingDirectory);
+        return pathToWorkingDirectory;
+
+    }
+
+    public static String makeRecodingDirectory(String mFileDbUniqueToken){
+
+        String pathToRecordingDirectory = getWorkingDirectory() + File.separator +  mFileDbUniqueToken;
+
+            File directory = new File(pathToRecordingDirectory);
+            directory.mkdirs();
+
+        return pathToRecordingDirectory;
+
     }
 }

@@ -1,15 +1,18 @@
 package com.fleecast.stamina.notetaking;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -74,6 +77,7 @@ public class AddActivity extends AppCompatActivity{
     private WindowManager.LayoutParams params;
     private ImageView btnNoStopRecord,btnTapRecord,btnStopRecord;
     private RelativeLayout recorderControlsLayout;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -91,6 +95,14 @@ public class AddActivity extends AppCompatActivity{
 
         setContentView(R.layout.note_add_activity);
 
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String s = intent.getStringExtra(Recorder.COPA_MESSAGE);
+                // do something here.
+            }
+        };
+
         // Creating unique id for db as primary key
         dbId = (int) (System.currentTimeMillis() / 1000);
 
@@ -105,7 +117,7 @@ public class AddActivity extends AppCompatActivity{
         setSupportActionBar(mToolbar);
 
 
-        pathToWorkingDirectory =  ExternalStorageManager.prepareWorkingDirectory(this);
+        pathToWorkingDirectory =  ExternalStorageManager.prepareWorkingDirectory(this) + Constants.WORKING_DIRECTORY_NAME;
 
         if(pathToWorkingDirectory.length()==0)
             storageAvail = false;
@@ -362,7 +374,7 @@ private void saveNote(){
 
         txtTimeLaps  = (Chronometer) textviewTimeLapse.findViewById(R.id.txtTimeLaps);
         txtTimeLaps.setVisibility(View.INVISIBLE);
-        recorder = new Recorder(this,txtTimeLaps,pathToWorkingDirectory,TEMP_FILE);
+        //recorder = new Recorder(this,txtTimeLaps,pathToWorkingDirectory,TEMP_FILE);
 
         Intent intent = getIntent();
 
@@ -466,8 +478,8 @@ private void saveNote(){
 private void animateTimeLaps(View view,boolean startStopAnimate){
 
     if(startStopAnimate) {
-        recorder.resetTimer();
-        recorder.startTimer();
+        //recorder.resetTimer();
+       // recorder.startTimer();
         final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
         animation.setDuration(500); // duration - half a second
         animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
@@ -476,7 +488,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
         view.startAnimation(animation);
     }
     else {
-        recorder.stopTimer();
+      //  recorder.stopTimer();
         view.clearAnimation();
     }
 }
@@ -643,6 +655,20 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
         }
 
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(Recorder.COPA_RESULT)
+        );
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 
    /* @Override
