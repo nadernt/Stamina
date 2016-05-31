@@ -91,14 +91,14 @@ public class ChatHeadRecordService extends Service {
 
 			ignoreIntentsWeHaveError=true;
 
-			shoErrorsToUser(inflater, "<h5>Not enough space:</h5>\n<p><font color=\"gray\">Not enough storage space for recording!" +
+			showErrorsToUser(inflater, "<h5>Not enough space:</h5>\n<p><font color=\"gray\">Not enough storage space for recording!" +
 					"Empty the storage and try again.</font></p>");
 
-		} else if (myApplication.isRecordIsUnderGoing()) {
+		} else if (myApplication.isRecordUnderGoing()) {
 
 			ignoreIntentsWeHaveError=true;
 
-			shoErrorsToUser(inflater, "<h5>Note:</h5>\n<p><font color=\"gray\">Another record is under progress by application." +
+			showErrorsToUser(inflater, "<h5>Note:</h5>\n<p><font color=\"gray\">Another record is under progress by application." +
 					"I can't record your call now.</font></p>");
 
 		} else {
@@ -390,23 +390,23 @@ public class ChatHeadRecordService extends Service {
 
 			if (!recorder.isRecording())
 			{
-				myApplication.setIsRecordIsUnderGoing(true);
+				myApplication.setIsRecordUnderGoing(true);
 				recorder.recordMedia(true, MediaRecorder.AudioSource.VOICE_CALL);
 			}
 			else{
-				shoErrorsToUser(inflater, "<h5>Note:</h5>\n<p><font color=\"gray\">Another record is under progress by application." +
+				showErrorsToUser(inflater, "<h5>Note:</h5>\n<p><font color=\"gray\">Another record is under progress by application." +
 						"I can't record your call now.</font></p>");
 			}
 
 		} else {
-			myApplication.setIsRecordIsUnderGoing(false);
+			myApplication.setIsRecordUnderGoing(false);
 			recorder.recordMedia(false, MediaRecorder.AudioSource.VOICE_CALL);
 		}
 
 
 	}
 
-	private void shoErrorsToUser(LayoutInflater parentInflater, String errorMessage)
+	private void showErrorsToUser(LayoutInflater parentInflater, String errorMessage)
 	{
 
 		WindowManager.LayoutParams paramsErrorShowWindow = new WindowManager.LayoutParams(

@@ -1,18 +1,16 @@
 package com.fleecast.stamina.notetaking;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -23,6 +21,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -56,7 +55,6 @@ public class AddActivity extends AppCompatActivity{
     private MenuItem mnuItemDeleteRecord, mnuItemDeleteNote,mnuItemSaveNote, mnuItemRecord,mnuItemPlayRecord,mnuItemRecordCall;
     private View textviewTimeLapse;
     private TextView txtTimeLaps;
-    private Recorder recorder;
     private String pathToWorkingDirectory;
     private boolean storageAvail = false;
     private boolean weHaveRecordedSomething= false, weTypedSomethingNew = false;
@@ -66,8 +64,6 @@ public class AddActivity extends AppCompatActivity{
     private int chosenSourceOfRecord = 0;
     private NotificationHelper nfh;
     private String fileExtension="";
-    //private CallReceiver callReceiver;
-    //private PhonecallReceiver mReceiver;
     private String TAG = "Add Activity";
 
     private WindowManager windowManager;
@@ -77,7 +73,7 @@ public class AddActivity extends AppCompatActivity{
     private WindowManager.LayoutParams params;
     private ImageView btnNoStopRecord,btnTapRecord,btnStopRecord;
     private RelativeLayout recorderControlsLayout;
-    private BroadcastReceiver receiver;
+    private boolean toggleNoStopRecord=false;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -90,18 +86,26 @@ public class AddActivity extends AppCompatActivity{
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this,Recorder.class));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.note_add_activity);
 
-        receiver = new BroadcastReceiver() {
+/*        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra(Recorder.COPA_MESSAGE);
-                // do something here.
+                Log.e(TAG, "Magic Fuck Ya!");
             }
-        };
+        };*/
+
+        startService(new Intent(this,Recorder.class));
 
         // Creating unique id for db as primary key
         dbId = (int) (System.currentTimeMillis() / 1000);
@@ -117,12 +121,12 @@ public class AddActivity extends AppCompatActivity{
         setSupportActionBar(mToolbar);
 
 
-        pathToWorkingDirectory =  ExternalStorageManager.prepareWorkingDirectory(this) + Constants.WORKING_DIRECTORY_NAME;
+       // pathToWorkingDirectory =  ExternalStorageManager.prepareWorkingDirectory(this) + Constants.CONST_WORKING_DIRECTORY_NAME;
 
-        if(pathToWorkingDirectory.length()==0)
+       /* if(pathToWorkingDirectory.length()==0)
             storageAvail = false;
         else
-            storageAvail=true;
+            storageAvail=true;*/
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayUseLogoEnabled(false);
@@ -166,39 +170,6 @@ public class AddActivity extends AppCompatActivity{
             }
         });
 
-//Log.e(TAG , getApplication().getPackageName());
-        /******************************************88
-         * *****************************************
-         ******************************************/
-
- /*   IntentFilter intentFilter = new IntentFilter();
-
-    intentFilter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-    //intentFilter.addAction("android.intent.action.PHONE_STATE");
-    intentFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-
-
-    mReceiver = new PhonecallReceiver(this);
-
-    registerReceiver(mReceiver, intentFilter);*/
-
-        /******************************************88
-         * *****************************************
-         ******************************************/
-       //mToolbar.getItem(R.id.action_save).setVisible(false);
-        /*save = (Button) findViewById(R.id.save);
-
-
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
-
-
-     //   startService(new Intent(this, ChatHeadRecordService.class));
-
         populateGUI();
 
     }
@@ -222,9 +193,44 @@ public class AddActivity extends AppCompatActivity{
 
     }
 */
+
+    private void setBackGroundOfView(View view,int drawableId,boolean addRemove){
+
+    if(addRemove)
+    view.setBackgroundResource(drawableId);
+        else
+    view.setBackgroundResource(0);
+
+    }
+
+/*
+private void setRecordControlsState(int stateOfRecord)
+{
+
+    if(stateOfRecord == Constants.RECORD_INFINIT_UP_STOP)
+    {
+        setBackGroundOfView(btnNoStopRecord,0,false);
+
+        setBackGroundOfView(btnNoStopRecord,R.drawable.buttons_recorder_bg,true);
+        setBackGroundOfView(btnTapRecord,R.drawable.buttons_recorder_bg,true);
+        setBackGroundOfView(btnNoStopRecord,R.drawable.buttons_recorder_bg,true);
+    }
+    else if(stateOfRecord == Constants.RECORD_STOP)
+    {
+
+    }
+    else if(stateOfRecord == Constants.RECORD_TAP_KEEP)
+    {
+
+    }
+
+
+}
+*/
     private void populateGUI(){
 
         windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             windowManager.getDefaultDisplay().getSize(szWindow);
         } else {
@@ -249,26 +255,76 @@ public class AddActivity extends AppCompatActivity{
                 Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
                 vib.vibrate(30);
+
+                setBackGroundOfView(btnTapRecord,0,false);
+
+                if(!toggleNoStopRecord)
+                {
+                    setBackGroundOfView(btnNoStopRecord,R.drawable.buttons_recorder_bg,true);
+                    startRecord();
+                }
+                else
+                {
+                    setBackGroundOfView(btnNoStopRecord,0,false);
+                }
+
+                toggleNoStopRecord = !toggleNoStopRecord;
             }
         });
 
-        btnTapRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        btnTapRecord.setOnTouchListener(new View.OnTouchListener() {
+                                            @Override
+                                            public boolean onTouch(View v, MotionEvent event) {
 
-                vib.vibrate(30);
-            }
+                                                switch (event.getAction()){
+
+                                                    case MotionEvent.ACTION_DOWN:
+                                                        setBackGroundOfView(btnNoStopRecord,0,false);
+                                                        setBackGroundOfView(btnTapRecord,R.drawable.buttons_recorder_bg,true);
+                                                        Log.e("GGGGGGg","DDDDDD");
+                                                        return true;
+                                                    case MotionEvent.ACTION_UP:
+                                                        setBackGroundOfView(btnTapRecord,0,false);
+                                                        return true;
+                                                }
+
+                                                return false;
+                                            }
         });
 
-        btnStopRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        /*        btnStopRecord.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-                vib.vibrate(30);
-            }
-        });
+                        vib.vibrate(30);
+                    }
+                });*/
+    }
+
+
+    private void startRecord() {
+
+        Intent intent = new Intent(this,Recorder.class);
+        //false is just fake we don't need value.
+        intent.putExtra(Constants.EXTRA_NEW_RECORD,false);
+        intent.putExtra(Constants.EXTRA_RECORD_FILENAME,String.valueOf(dbId));
+        startService(intent);
+
+    }
+
+    private void stopRecord() {
+        Intent intent = new Intent(this,Recorder.class);
+        //false is just fake we don't need value.
+        intent.putExtra(Constants.EXTRA_STOP_RECORD,false);
+        startService(intent);
+    }
+
+    private void killRecordService() {
+        Intent intent = new Intent(this,Recorder.class);
+        //false is just fake we don't need value.
+        intent.putExtra(Constants.EXTRA_STOP_SERVICE,false);
+        startService(intent);
     }
 
     private int calcPixelIndependent(int pixelToConvert) {
@@ -305,10 +361,10 @@ private void saveNote(){
     this.setVisible(false);
 
 
-    if (recorder.isRecording()) {
+   /* if (recorder.isRecording()) {
         recorder.recordMedia(false, chosenSourceOfRecord);
         weHaveRecordedSomething = true;
-    }
+    }*/
 
     String title = inputTitle.getText().toString().trim();
     String description = inputDescription.getText().toString().trim();
@@ -403,7 +459,7 @@ private void saveNote(){
         Log.e(TAG, "Phone call intent?" + intent.getBooleanExtra("phone_call", false));
 
 
-        if(intent.getBooleanExtra("audio",false) && !myApplication.isRecordIsUnderGoing()){
+        if(intent.getBooleanExtra("audio",false) && !myApplication.isRecordUnderGoing()){
 
 
             Log.e(TAG, "audio note");
@@ -411,7 +467,7 @@ private void saveNote(){
 
             chosenSourceOfRecord = Prefs.getInt("AudioRecorderSource",MediaRecorder.AudioSource.MIC);
 
-            recordAudio(chosenSourceOfRecord);
+//            recordAudio(chosenSourceOfRecord);
 
         }
         else if(intent.getBooleanExtra("phone_call",false)){
@@ -425,7 +481,7 @@ private void saveNote(){
 
 
 
-                if (myApplication.isRecordIsUnderGoing()){
+                if (myApplication.isRecordUnderGoing()){
 
 
                     Log.e(TAG, "We have one record under going so app rejects the phone record.So bye bye!");
@@ -445,11 +501,11 @@ private void saveNote(){
                     if (intent.getIntExtra("phone_state", -1) == Constants.PHONE_OUT_GOING_CALL_STARTED || (intent.getIntExtra("phone_state", -1) == Constants.PHONE_INCOMING_CALL_RECEIVED)) {
 
                         // This record check is for the time we are getting a new call while we are recording another one so we bypass the new one.
-                        if (!myApplication.isRecordIsUnderGoing()) {
+                        if (!myApplication.isRecordUnderGoing()) {
                             Log.e(TAG, "Record phone call started");
                             chosenSourceOfRecord = MediaRecorder.AudioSource.VOICE_CALL;
 
-                            recordAudio(chosenSourceOfRecord);
+                            //recordAudio(chosenSourceOfRecord);
                         }
 
                     } else if ((intent.getIntExtra("phone_state", -1) == Constants.PHONE_INCOMING_CALL_RECEIVED))
@@ -515,7 +571,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
             saveNote();
             return true;
         } else if (id == R.id.action_record) {
-            recordAudio(MediaRecorder.AudioSource.MIC);
+       //     recordAudio(MediaRecorder.AudioSource.MIC);
 
         } else if (id == R.id.action_delete_record) {
 
@@ -559,7 +615,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
 
         } else if (id == R.id.action_play_record) {
 
-            if (storageAvail && !recorder.isRecording()) {
+          /*  if (storageAvail && !recorder.isRecording()) {
 
                 File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
 
@@ -568,7 +624,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
                     return false;
                 }
                 recorder.playMedia(true);
-            }
+            }*/
             return true;
 
         } else if(id == R.id.action_listen_for_phone_call){
@@ -617,59 +673,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean recordAudio(int typeOfRecord) {
-        chosenSourceOfRecord = typeOfRecord;
-        if (storageAvail) {
 
-            if (!recorder.isRecording()) {
-                //nfh.removeNotification(Constants.AUDIO_RECORDING_NOTIFICATION_ID);
-                Intent intent = new Intent(this, AddActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                NotificationHelper nfh = new NotificationHelper(this);
-
-                nfh.showNotification(intent, "Record", "Click to go to record", "Recording!",
-                        R.drawable.ic_stat_mic,
-                        NotificationCompat.VISIBILITY_SECRET,
-                        Constants.AUDIO_RECORDING_NOTIFICATION_ID);
-
-                myApplication.setIsRecordIsUnderGoing(true);
-                mnuItemRecord.setIcon(R.drawable.ic_action_mic_stop);
-                mnuItemDeleteRecord.setVisible(false);
-                mnuItemPlayRecord.setVisible(false);
-                recorder.recordMedia(true,typeOfRecord);
-                animateTimeLaps(textviewTimeLapse, true);
-
-            } else {
-                myApplication.setIsRecordIsUnderGoing(false);
-                nfh.removeNotification(Constants.AUDIO_RECORDING_NOTIFICATION_ID);
-                weHaveRecordedSomething = true;
-                myApplication.setIsRecordIsUnderGoing(false);
-                mnuItemRecord.setIcon(R.drawable.ic_action_mic);
-                mnuItemDeleteRecord.setVisible(true);
-                mnuItemPlayRecord.setVisible(true);
-                recorder.recordMedia(false,typeOfRecord);
-                animateTimeLaps(textviewTimeLapse, false);
-
-            }
-
-        }
-
-        return true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
-                new IntentFilter(Recorder.COPA_RESULT)
-        );
-    }
-
-    @Override
-    protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
-        super.onStop();
-    }
 
    /* @Override
     public void onIncomingCallReceived(Context ctx, String number, Date start) {

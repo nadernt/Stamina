@@ -22,6 +22,7 @@ import com.fleecast.stamina.utility.Constants;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ActivityChooseDirectory extends AppCompatActivity {
@@ -138,7 +139,7 @@ public class ActivityChooseDirectory extends AppCompatActivity {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 try {
-                                    File directory = new File(currentSelectedPath + Constants.WORKING_DIRECTORY_NAME);
+                                    File directory = new File(currentSelectedPath + Constants.CONST_WORKING_DIRECTORY_NAME);
                                     if (!directory.exists()) {
                                         directory.mkdirs();
                                         if(!directory.exists()) {
@@ -151,8 +152,8 @@ public class ActivityChooseDirectory extends AppCompatActivity {
                                 }
 
                                 Intent returnIntent = new Intent();
-                returnIntent.putExtra(Constants.RESULT_SELECTED_DIR,currentSelectedPath);
-                setResult(Constants.REQUEST_DIRECTORY,returnIntent);
+                                returnIntent.putExtra(Constants.EXTRA_RESULT_SELECTED_DIR,currentSelectedPath);
+                                setResult(Constants.RESULT_CODE_REQUEST_DIRECTORY,returnIntent);
                                  finish();
                                 break;
 
@@ -239,9 +240,11 @@ public class ActivityChooseDirectory extends AppCompatActivity {
         File[] fileTmp = myDirectory.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.canRead();
+                // Kick off the hidden or system folders
+                return (!pathname.isHidden() && pathname.canRead() && pathname.canWrite());
             }
         });
+        Arrays.sort(fileTmp);
 
         List <File> files = new ArrayList<>();
         for (File inFile : fileTmp) {

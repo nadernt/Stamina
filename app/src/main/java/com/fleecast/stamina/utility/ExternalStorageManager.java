@@ -99,15 +99,15 @@ public class ExternalStorageManager {
 
         if(ExternalStorageManager.checkAvailable()) {
 
-            String pathToWorkingDirectory = Prefs.getString(Constants.WORKING_DIRECTORY_PATH, "");
+            String pathToWorkingDirectory = Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH, "");
 
             // if user didn't choose any custom directory or it is first time.
             if (pathToWorkingDirectory.length() == 0) {
-                pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY_NAME;
+                pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.CONST_WORKING_DIRECTORY_NAME;
                 File directory = new File(pathToWorkingDirectory);
                 directory.mkdirs();
             } else{
-                pathToWorkingDirectory = pathToWorkingDirectory + Constants.WORKING_DIRECTORY_NAME;
+                pathToWorkingDirectory = pathToWorkingDirectory + Constants.CONST_WORKING_DIRECTORY_NAME;
         }
 
             Log.e("DDD",pathToWorkingDirectory);
@@ -128,19 +128,20 @@ public class ExternalStorageManager {
 
     public static String getWorkingDirectory() {
 
-        String pathToWorkingDirectory = Prefs.getString(Constants.WORKING_DIRECTORY_PATH, "");
+        String pathToWorkingDirectory = Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH, "");
 
         // if user didn't choose any custom directory or it is first time.
         if (pathToWorkingDirectory.length() == 0) {
-            pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY_NAME;
+            pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.CONST_WORKING_DIRECTORY_NAME;
             File directory = new File(pathToWorkingDirectory);
             directory.mkdirs();
         } else{
-            pathToWorkingDirectory = pathToWorkingDirectory + Constants.WORKING_DIRECTORY_NAME;
+            pathToWorkingDirectory = pathToWorkingDirectory + Constants.CONST_WORKING_DIRECTORY_NAME;
 
         }
 
-        Log.e("KKKKKKKKKKKK",pathToWorkingDirectory);
+        //Log.e("KKKKKKKKKKKK",pathToWorkingDirectory);
+
         return pathToWorkingDirectory;
 
     }
@@ -150,7 +151,9 @@ public class ExternalStorageManager {
         String pathToRecordingDirectory = getWorkingDirectory() + File.separator +  mFileDbUniqueToken;
 
             File directory = new File(pathToRecordingDirectory);
-            directory.mkdirs();
+
+        if(!directory.exists())
+             directory.mkdirs();
 
         return pathToRecordingDirectory;
 

@@ -77,11 +77,13 @@ public class MainActivity extends AppCompatActivity
 
 
         //if(1<2){
-        if(!Prefs.getBoolean(Constants.Fist_Initial_Of_APP, false)) {
+        if(!Prefs.getBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, false)) {
 
-            Prefs.putBoolean(Constants.Fist_Initial_Of_APP, true);
+            Prefs.putBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, true);
 
             Prefs.putBoolean(Constants.RECORDER_PHONE_IS_RECORD, false);
+
+            Prefs.putBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, true);
 
             //Disable the phone recording service in manifest for the first initiation of app to the user. We don't want user records from first use of app!
             ComponentName component = new ComponentName(this, PhonecallReceiver.class);
@@ -103,11 +105,14 @@ public class MainActivity extends AppCompatActivity
 
             // Put to internal storage the location of working directory
 
-            Prefs.putString(Constants.WORKING_DIRECTORY_PATH, Environment.getExternalStorageDirectory().getPath());
+            Prefs.putString(Constants.PREF_WORKING_DIRECTORY_PATH, Environment.getExternalStorageDirectory().getPath());
 
             ExternalStorageManager.prepareWorkingDirectory(this);
 
         }
+
+
+
 
     }
 

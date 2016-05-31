@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/recorderControlsLayout">
         <ImageView
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:id="@+id/btnTapRecord"
             android:src="@drawable/ic_tap_record"
             android:layout_alignParentTop="true"
@@ -23,16 +23,17 @@
             android:layout_toEndOf="@+id/btnStopRecord"
             android:layout_margin="5dp" />
         <ImageView
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="5dp"
+            android:layout_height="48dp"
             android:id="@+id/btnStopRecord"
             android:src="@drawable/ic_stop_record"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_margin="5dp" />
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
         <ImageView
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:id="@+id/btnNoStopRecord"
             android:src="@drawable/ic_nostop_record"
             android:layout_alignParentTop="true"

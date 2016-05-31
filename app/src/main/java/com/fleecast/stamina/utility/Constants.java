@@ -4,33 +4,34 @@ package com.fleecast.stamina.utility;
  * Created by nnt on 27/03/16.
  */
 public class Constants {
-    public static final int REQUEST_DIRECTORY = 123;
-    public static final String RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
-    public static final String WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
-    public static final String WORKING_DIRECTORY_NAME = "/stamina";
+    public static final int RESULT_CODE_REQUEST_DIRECTORY = 123;
+    public static final String EXTRA_RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
+    public static final String PREF_WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
+    public static final String CONST_WORKING_DIRECTORY_NAME = "/stamina";
     public static final String EXTRA_RECORD_FILENAME = "ExtraRecordFilename";
     public static final String EXTRA_NEW_RECORD = "ExetraNewRecord";
     public static final String EXTRA_RECORD_SOURCE = "ExtraRecordSource";
     public static final String EXTRA_STOP_RECORD = "ExtraStopRecord";
+    public static final String EXTRA_STOP_SERVICE = "ExtraStopService";
 
-    public static String Fist_Initial_Of_APP = "FistInitialOfAPP";
+    public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
     public static final int LIST_FOR_GRID = 0;
     public static final long PLAYER_PROGRESS_UPDATE_TIME = 100;
     public static final int AUDIO_RECORDING_NOTIFICATION_ID = 0;
 
-    public static final String SORT_IS_ALPHABETIC_OR_DATE = "SortIsAlphabeticOrDate";
+    public static final String PREF_SORT_IS_ALPHABETIC_OR_DATE = "SortIsAlphabeticOrDate";
 
 
     public static int LIST_FOR_MOST_USE =1;
     public static int LIST_FOR_RECENT_USED =2;
 
     public static final int SIZE_OF_DRAWABLE_OF_EDITTEXT_FILTER = 32;
-    public static String IS_ADD_OR_EDIT = "ADD_EDIT_GROUP";
-    public static String ADD_GROUP_CODE_TO_EDIT = "ADD_GROUP_CODE_TO_EDIT";
-    public static String ICON_NAME_FROM_ASSETS = "ICON_NAME_FROM_ASSETS";
+    public static String IS_ADD_OR_EDIT = "AddEditGroup";
+    public static String ADD_GROUP_CODE_TO_EDIT = "AddGroupCodeToEdit";
+    public static String ICON_NAME_FROM_ASSETS = "IconNameFromAssets";
     public static int REQUEST_CODE_ICON_CHOOSE_ACTIVITY = 2;
     public static int REQUEST_ADD_EDIT_GROUP_ACTIVITY = 3;
-    public static String DEFAULT_APPS_ICON = "DEFAULT_ICON";
+    public static String DEFAULT_APPS_ICON = "DefaultIcon";
 
     public static int OPTION_MENU_SHOW_HIDE = 0;
     public static int OPTION_MENU_ENABLE_DISABLE = 1;
@@ -99,4 +100,7 @@ public class Constants {
     public static String RECORDER_AUDIO_FORMAT_AMR = "amr";
 
     public static String CONST_SEPARATOR_OF_AUDIO_FILE = "_";
+    public static int RECORD_INFINIT_UP_STOP = 1;
+    public static int RECORD_STOP = 2;
+    public static int RECORD_TAP_KEEP = 3;
 }

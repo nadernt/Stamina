@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,12 +13,14 @@ import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
 
+import java.io.File;
+
 /**
  * Created by nnt on 7/05/16.
  */
 public class Recorder extends Service{
 
-    private static final String LOG_TAG = "AudioRecordTest";
+    private static final String LOG_TAG = "AudioRecordService";
     private int recorderSource;
     private MediaRecorder mRecorder = null;
     private MyApplication myApplication;
@@ -28,26 +29,38 @@ public class Recorder extends Service{
     private String mFileDbUniqueToken ="";
     private String currentRecordingDir;
     private String recordFileName;
-    private LocalBroadcastManager broadcaster;
+    private int recordQuality;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        broadcaster = LocalBroadcastManager.getInstance(this);
+        myApplication =  (MyApplication) getApplicationContext();
+
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        myApplication =  (MyApplication) getApplicationContext();
+
+
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
         if(intent!=null) {
+            Log.e(LOG_TAG, "EXTRA_NEW_RECORD");
 
             if (intent.hasExtra(Constants.EXTRA_NEW_RECORD)) {
+                Log.e(LOG_TAG, "EXTRA_NEW_RECORD");
 
                 this.mFileDbUniqueToken = intent.getStringExtra(Constants.EXTRA_RECORD_FILENAME);
 
-                recorderSource = intent.getIntExtra(Constants.EXTRA_RECORD_SOURCE,MediaRecorder.AudioSource.MIC);
+                //recorderSource = intent.getIntExtra(Constants.EXTRA_RECORD_SOURCE,MediaRecorder.AudioSource.MIC);
+                recorderSource = Prefs.getInt(Constants.RECORDER_AUDIO_RECORDER_SOURCE_OPTION,MediaRecorder.AudioSource.MIC);
+
+                recordQuality = Prefs.getInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION,Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM);
 
                 if(recordStatus)
                     stopRecording();
@@ -56,7 +69,7 @@ public class Recorder extends Service{
                     startRecording();
                 } catch (Exception e) {
                     Log.e(LOG_TAG, "prepare() failed");
-                    myApplication.setIsRecordIsUnderGoing(false);
+                    myApplication.setIsRecordUnderGoing(false);
                     recordStatus = true;
                     Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
                     stopService(new Intent(getApplicationContext(), Recorder.class));
@@ -69,10 +82,17 @@ public class Recorder extends Service{
 
 
             }
+            else if(intent.hasExtra(Constants.EXTRA_STOP_SERVICE)){
+
+                stopService(new Intent(getApplicationContext(), Recorder.class));
+
+            }
 
         }
 
-        return null;
+
+        return super.onStartCommand(intent, flags, startId);
+
     }
 
     private void startRecording() throws Exception {
@@ -81,7 +101,7 @@ public class Recorder extends Service{
 
         mRecorder.setAudioSource(recorderSource);
 
-        int recordQuality = Prefs.getInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION,Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM);
+
 
         // low quality record
         if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_LOW)
@@ -110,14 +130,14 @@ public class Recorder extends Service{
         {
            currentRecordingDir =  ExternalStorageManager.makeRecodingDirectory(mFileDbUniqueToken);
 
-            // Creating unique id for postfix
+            // Creating unique id for postfix (it is unix timestamp so easy can be converted to time).
             String filePostfixToken = String.valueOf ((int) (System.currentTimeMillis() / 1000));
 
-            recordFileName = filePostfixToken + Constants.CONST_SEPARATOR_OF_AUDIO_FILE + currentRecordingDir;
+            recordFileName = currentRecordingDir + File.separator + mFileDbUniqueToken + Constants.CONST_SEPARATOR_OF_AUDIO_FILE + filePostfixToken ;
 
             mRecorder.setOutputFile(recordFileName);
             mRecorder.prepare();
-            myApplication.setIsRecordIsUnderGoing(true);
+            myApplication.setIsRecordUnderGoing(true);
             recordStatus = true;
             mRecorder.start();
         }
@@ -128,21 +148,11 @@ public class Recorder extends Service{
     }
 
     private void stopRecording() {
-        myApplication.setIsRecordIsUnderGoing(false);
+        myApplication.setIsRecordUnderGoing(false);
         recordStatus = false;
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
-    }
-    static final public String COPA_RESULT = "com.controlj.copame.backend.COPAService.REQUEST_PROCESSED";
-
-    static final public String COPA_MESSAGE = "com.controlj.copame.backend.COPAService.COPA_MSG";
-
-    public void sendResult(String message) {
-        Intent intent = new Intent(COPA_RESULT);
-        if(message != null)
-            intent.putExtra(COPA_MESSAGE, message);
-        broadcaster.sendBroadcast(intent);
     }
 
     /*public Recorder(Context context, View viewTimer,String workingDirectory, String mFileDbUniqueToken){
@@ -207,6 +217,15 @@ public class Recorder extends Service{
         startActivity(intent);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mRecorder!=null) {
+            mRecorder.release();
+            mRecorder = null;
+        }
+
+    }
 
     private void stopPlaying() {
        // mPlayer.release();
@@ -235,11 +254,11 @@ public class Recorder extends Service{
 
         try {
             mRecorder.prepare();
-            myApplication.setIsRecordIsUnderGoing(true);
+            myApplication.setIsRecordUnderGoing(true);
             mRecorder.start();
         } catch (Exception e) {
             Log.e(LOG_TAG, "prepare() failed");
-            myApplication.setIsRecordIsUnderGoing(false);
+            myApplication.setIsRecordUnderGoing(false);
             Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
         }
 

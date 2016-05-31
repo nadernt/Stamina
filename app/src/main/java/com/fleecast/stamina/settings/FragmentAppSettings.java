@@ -17,8 +17,6 @@ import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
 
-import java.io.File;
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -69,12 +67,12 @@ public class FragmentAppSettings extends Fragment {
         Button btnChangeDirectory = (Button) fragmentView.findViewById(R.id.btnChangeDirectory);
         txtWorkingPath = (TextView) fragmentView.findViewById(R.id.txtWorkingPath);
 
-        if(Prefs.getString(Constants.WORKING_DIRECTORY_PATH,"").length()>0) {
-            txtWorkingPath.setText(Prefs.getString(Constants.WORKING_DIRECTORY_PATH, ""));
+        if(Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH,"").length()>0) {
+            txtWorkingPath.setText(Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH, ""));
         }
         else
         {
-            txtWorkingPath.setText(Environment.getExternalStorageDirectory().getPath() + Constants.WORKING_DIRECTORY_NAME);
+            txtWorkingPath.setText(Environment.getExternalStorageDirectory().getPath() + Constants.CONST_WORKING_DIRECTORY_NAME);
 
         }
 
@@ -83,7 +81,7 @@ public class FragmentAppSettings extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(fragmentView.getContext(), ActivityChooseDirectory.class);
-                startActivityForResult(intent, Constants.REQUEST_DIRECTORY);
+                startActivityForResult(intent, Constants.RESULT_CODE_REQUEST_DIRECTORY);
                 //fragmentView.resu
             }
         });
@@ -95,13 +93,13 @@ public class FragmentAppSettings extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == Constants.REQUEST_DIRECTORY) {
+        if (requestCode == Constants.RESULT_CODE_REQUEST_DIRECTORY) {
 
             // check because when we press exit button in folder picker then we wont have any returned result from activity.
             if (data != null) {
-                if (data.getStringExtra(Constants.RESULT_SELECTED_DIR) != null) {
-                    Prefs.putString(Constants.WORKING_DIRECTORY_PATH, data.getStringExtra(Constants.RESULT_SELECTED_DIR));
-                    txtWorkingPath.setText(Prefs.getString(Constants.WORKING_DIRECTORY_PATH, ""));
+                if (data.getStringExtra(Constants.EXTRA_RESULT_SELECTED_DIR) != null) {
+                    Prefs.putString(Constants.PREF_WORKING_DIRECTORY_PATH, data.getStringExtra(Constants.EXTRA_RESULT_SELECTED_DIR));
+                    txtWorkingPath.setText(Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH, ""));
 
                 }
             }

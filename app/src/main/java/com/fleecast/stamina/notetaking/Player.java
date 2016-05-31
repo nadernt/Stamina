@@ -32,7 +32,7 @@ public class Player extends Activity {
     private TextView txtTotalTime;
     private boolean errorInStream =false;
     private WindowManager windowManager;
-    private Point szWindow = new Point();;
+    private Point szWindow = new Point();
     private boolean play_pause = false;
     private String mFileName;
 

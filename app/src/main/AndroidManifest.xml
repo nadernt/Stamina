@@ -69,6 +69,7 @@
 
         <service android:name=".chathead.ChatHeadService" />
         <service android:name=".notetaking.ChatHeadRecordService" />
+        <service android:name=".notetaking.Recorder" />
 
         <receiver
             android:name=".chathead.DeviceAdminSampleReceiver"
@@ -106,11 +107,6 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
-
-        <service
-            android:name=".notetaking.MyService"
-            android:enabled="true"
-            android:exported="true"></service>
     </application>
 
 </manifest>

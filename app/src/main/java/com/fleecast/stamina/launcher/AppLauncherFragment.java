@@ -114,7 +114,7 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
         myApplication = (MyApplication) getContext().getApplicationContext();
 
 
-    /*    if(Prefs.getBoolean(Constants.SORT_IS_ALPHABETIC_OR_DATE, true))
+    /*    if(Prefs.getBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, true))
             myApplication.setSortLauncherAppsByAlphabet(true);
         else
             myApplication.setSortLauncherAppsByAlphabet(false);*/
@@ -209,7 +209,7 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
             @Override
             public void onClick(View v) {
 
-                if (Prefs.getBoolean(Constants.SORT_IS_ALPHABETIC_OR_DATE, false))
+                if (Prefs.getBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, false))
                     sortOrder(false);
                 else
                     sortOrder(true);
@@ -671,7 +671,7 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
        // popupMenuOptions.getMenu().setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
         //}
 
-        if (Prefs.getBoolean(Constants.SORT_IS_ALPHABETIC_OR_DATE, true)) {
+        if (Prefs.getBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, true)) {
             menuItemText(popupMenuOptions, R.id.menu_sort_order, "Sort by: Time");
         } else {
             menuItemText(popupMenuOptions, R.id.menu_sort_order, "Sort by: A↓Z");
@@ -697,7 +697,7 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
                     case R.id.menu_sort_order:
                         if (!myApplication.getIsAppsListLoading()) {
 
-                            if (Prefs.getBoolean(Constants.SORT_IS_ALPHABETIC_OR_DATE, false))
+                            if (Prefs.getBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, false))
                                 sortOrder(false);
                             else
                                 sortOrder(true);
@@ -934,10 +934,10 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
            filterText.setText("");
 
             if (sortIsAlphabeticOrDate) {
-                Prefs.putBoolean(Constants.SORT_IS_ALPHABETIC_OR_DATE, true);
+                Prefs.putBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, true);
                 menuItemText(popupMenuOptions, R.id.menu_sort_order, "Sort by: Time");
             } else {
-                Prefs.putBoolean(Constants.SORT_IS_ALPHABETIC_OR_DATE, false);
+                Prefs.putBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, false);
                 menuItemText(popupMenuOptions, R.id.menu_sort_order, "Sort by: A↓Z");
             }
 

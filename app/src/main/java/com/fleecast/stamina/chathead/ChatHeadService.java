@@ -527,7 +527,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                                 Intent intent = new Intent(ChatHeadService.this, AddActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 // If we do not have any on going record.
-                                if (!myApplication.isRecordIsUnderGoing()){
+                                if (!myApplication.isRecordUnderGoing()){
 
                                     intent.putExtra("audio", true);
 

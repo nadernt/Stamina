@@ -131,11 +131,11 @@ public class MyApplication extends Application{
         return currentGroupFilter;
     }
 
-    public boolean isRecordIsUnderGoing() {
+    public boolean isRecordUnderGoing() {
         return aRecordIsUnderGoing;
     }
 
-    public void setIsRecordIsUnderGoing(boolean aRecordIsUnderGoing) {
+    public void setIsRecordUnderGoing(boolean aRecordIsUnderGoing) {
         this.aRecordIsUnderGoing = aRecordIsUnderGoing;
     }
 
