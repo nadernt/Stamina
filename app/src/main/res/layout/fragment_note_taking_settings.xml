@@ -125,7 +125,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Formats:"
+                android:text="Record Quality:"
                 android:id="@+id/textView3"
                 android:layout_below="@+id/radioGroupSources"
                 android:layout_alignParentLeft="true"
@@ -135,36 +135,31 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/radioGroupFormats"
+                android:id="@+id/radioGroupQuality"
                 android:layout_below="@+id/textView3"
                 android:layout_centerHorizontal="true">
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New RadioButton"
-                    android:id="@+id/radioButton15" />
+                    android:text="High (best and sensitive mic)"
+                    android:id="@+id/rdoBtnQcHigh"
+                    android:tag="2" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New RadioButton"
-                    android:id="@+id/radioButton14" />
+                    android:text="Medium"
+                    android:id="@+id/rdoBtnQcMid"
+                    android:tag="1" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New RadioButton"
-                    android:id="@+id/radioButton12" />
+                    android:text="Low (phone call quality)"
+                    android:id="@+id/rdoBtnQcLow"
+                    android:tag="0" />
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="New RadioButton"
-                    android:id="@+id/radioButton13"
-                    android:layout_below="@+id/radioGroupFormats"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
             </RadioGroup>
 
         </RelativeLayout>

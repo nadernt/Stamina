@@ -34,7 +34,10 @@ public class ExternalStorageManager {
      */
     public static boolean isThereEnoughSpaceOnStorage() {
 
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        String pathToWorkingDirectory = Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH, "");
+
+        // Check in the working directory is there enough empty space
+        StatFs stat = new StatFs(pathToWorkingDirectory);
 
         long bytesAvailable;
 

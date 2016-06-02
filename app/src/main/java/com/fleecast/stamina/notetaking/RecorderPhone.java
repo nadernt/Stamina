@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.fleecast.stamina.chathead.MyApplication;
+import com.fleecast.stamina.utility.Constants;
 
 import java.io.File;
 
@@ -66,7 +67,7 @@ public class RecorderPhone {
     private void startPlaying() {
 
         Intent intent = new Intent(context, Player.class);
-        intent.putExtra("file_name", mFileName);
+        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE, mFileName);
         context.startActivity(intent);
 
     }

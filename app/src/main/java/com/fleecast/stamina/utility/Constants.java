@@ -1,5 +1,7 @@
 package com.fleecast.stamina.utility;
 
+import android.content.IntentFilter;
+
 /**
  * Created by nnt on 27/03/16.
  */
@@ -13,6 +15,14 @@ public class Constants {
     public static final String EXTRA_RECORD_SOURCE = "ExtraRecordSource";
     public static final String EXTRA_STOP_RECORD = "ExtraStopRecord";
     public static final String EXTRA_STOP_SERVICE = "ExtraStopService";
+    public static final String INTENTFILTER_RECORD_SERVICE = "IntentfilterRecordService";
+    public static final String EXTRA_RECORD_SERVICE_MESSAGES = "ExtraRecordServiceError";
+    public static final int REPORT_RECORD_ERROR_TO_ACTIVITY = 0;
+    public static final int REPORT_RECORDED_FILE_TO_ACTIVITY = 1;
+    public static final String REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME = "ReportRecordedFileToActivityFilename";
+    public static final String EXTRA_PLAY_MEDIA_FILE = "ExtraPlayMediaFile";
+
+
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
     public static final int LIST_FOR_GRID = 0;

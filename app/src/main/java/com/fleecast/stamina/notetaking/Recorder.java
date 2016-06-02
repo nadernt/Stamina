@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,12 +31,13 @@ public class Recorder extends Service{
     private String currentRecordingDir;
     private String recordFileName;
     private int recordQuality;
+    private LocalBroadcastManager broadcaster;
 
     @Override
     public void onCreate() {
         super.onCreate();
         myApplication =  (MyApplication) getApplicationContext();
-
+        broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
     @Nullable
@@ -50,7 +52,6 @@ public class Recorder extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if(intent!=null) {
-            Log.e(LOG_TAG, "EXTRA_NEW_RECORD");
 
             if (intent.hasExtra(Constants.EXTRA_NEW_RECORD)) {
                 Log.e(LOG_TAG, "EXTRA_NEW_RECORD");
@@ -62,8 +63,9 @@ public class Recorder extends Service{
 
                 recordQuality = Prefs.getInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION,Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM);
 
-                if(recordStatus)
-                    stopRecording();
+                if(recordStatus) {
+                        stopRecording();
+                }
 
                 try {
                     startRecording();
@@ -77,10 +79,9 @@ public class Recorder extends Service{
 
             }
             else if(intent.hasExtra(Constants.EXTRA_STOP_RECORD)){
+                Log.e(LOG_TAG, "STOP RECORDING");
 
-                stopRecording();
-
-
+                    stopRecording();
             }
             else if(intent.hasExtra(Constants.EXTRA_STOP_SERVICE)){
 
@@ -106,25 +107,45 @@ public class Recorder extends Service{
         // low quality record
         if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_LOW)
         {
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setAudioEncoder(MediaRecorder.getAudioSourceMax());
-            mRecorder.setAudioEncodingBitRate(16);
-            mRecorder.setAudioSamplingRate(44100);
-        }// high quality recor
-        else if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_HIGH){
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setAudioEncoder(MediaRecorder.getAudioSourceMax());
-            mRecorder.setAudioEncodingBitRate(16);
-            mRecorder.setAudioSamplingRate(44100);
-        }
-        else // default quality
-        {
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         }
+        else if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM){ // default quality
+            mRecorder.setAudioSamplingRate(22050);
+            mRecorder.setAudioEncodingBitRate(12200);
+            //MediaRecorder.getAudioSourceMax();
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        }
+        else if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_HIGH) // high quality record
+        {
+           /* mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.setAudioEncoder(MediaRecorder.getAudioSourceMax());
+            //mRecorder.setAudioEncoder(MediaRecorder.getMaxAmplitude());
 
+            mRecorder.setAudioEncodingBitRate(16);
+            mRecorder.setAudioSamplingRate(44100);
+*/
+            //mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            /*mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.setAudioChannels(2);
+            mRecorder.setAudioEncodingBitRate(128);
+            mRecorder.setAudioSamplingRate(44100);*/
+            /*mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioEncodingBitRate(160 * 1024);
+            mRecorder.setAudioChannels(2);*/
+                mRecorder.setAudioSamplingRate(44100);
+                mRecorder.setAudioEncodingBitRate(96000);
+                MediaRecorder.getAudioSourceMax();
+                mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
+        }
 
         if(ExternalStorageManager.checkWritable())
         {
@@ -147,12 +168,18 @@ public class Recorder extends Service{
 
     }
 
-    private void stopRecording() {
-        myApplication.setIsRecordUnderGoing(false);
-        recordStatus = false;
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+    private void stopRecording()   {
+        try {
+            myApplication.setIsRecordUnderGoing(false);
+            recordStatus = false;
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+            sendBroadcast(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY);
+        }
+        catch (Exception e){
+            sendBroadcast(Constants.REPORT_RECORD_ERROR_TO_ACTIVITY);
+        }
     }
 
     /*public Recorder(Context context, View viewTimer,String workingDirectory, String mFileDbUniqueToken){
@@ -175,12 +202,12 @@ public class Recorder extends Service{
 
     }*/
 
-    public void recordMedia(boolean start_stop,int mediaRecorderSource) {
+   /* public void recordMedia(boolean start_stop,int mediaRecorderSource) {
         this.recorderSource = mediaRecorderSource;
         if (start_stop) {
 
-          /*  if(mPlayer!=null)
-                playMedia(false);*/
+          *//*  if(mPlayer!=null)
+                playMedia(false);*//*
 
             recordStatus = true;
 
@@ -191,10 +218,11 @@ public class Recorder extends Service{
             }
         } else {
             recordStatus = false;
-            stopRecording();
+               stopRecording();
         }
-    }
+    }*/
 
+/*
     public void playMedia(boolean start_stop) {
         if (start_stop) {
 
@@ -203,19 +231,19 @@ public class Recorder extends Service{
 
             playStatus= true;
 
-            startPlaying();
         } else {
             playStatus= false;
             //stopPlaying();
         }
     }
+*/
 
-    private void startPlaying() {
+  /*  private void startPlaying() {
 
         Intent intent = new Intent(this,Player.class);
         intent.putExtra("file_name", mFileDbUniqueToken);
         startActivity(intent);
-    }
+    }*/
 
     @Override
     public void onDestroy() {
@@ -300,5 +328,32 @@ public class Recorder extends Service{
 
     public boolean isRecording() {
         return recordStatus;
+    }
+
+    public void sendBroadcast(int messageToActivity) {
+
+        Intent intent = new Intent(Constants.INTENTFILTER_RECORD_SERVICE);
+
+        switch (messageToActivity){
+
+            case Constants.REPORT_RECORD_ERROR_TO_ACTIVITY:
+
+                File file = new File(recordFileName);
+
+                if (file.exists()) {
+                    file.delete();
+                }
+
+                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES, messageToActivity);
+
+                break;
+
+            case Constants.REPORT_RECORDED_FILE_TO_ACTIVITY:
+                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES, messageToActivity);
+                intent.putExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME, recordFileName);
+                break;
+        }
+
+        broadcaster.sendBroadcast(intent);
     }
 }

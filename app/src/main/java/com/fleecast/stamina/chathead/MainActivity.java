@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
     private void firstRunAppInitials(){
 
 
-        //if(1<2){
+//        if(1<2){
         if(!Prefs.getBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, false)) {
 
             Prefs.putBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, true);

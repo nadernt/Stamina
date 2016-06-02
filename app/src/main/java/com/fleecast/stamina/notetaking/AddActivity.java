@@ -1,19 +1,21 @@
 package com.fleecast.stamina.notetaking;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.os.Vibrator;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,7 +33,6 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
@@ -41,11 +42,12 @@ import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.NotificationHelper;
 import com.fleecast.stamina.utility.Prefs;
+import com.fleecast.stamina.utility.Utility;
 
 import java.io.File;
 
 
-public class AddActivity extends AppCompatActivity{
+public class AddActivity extends AppCompatActivity {
 
 
     private RealmNoteHelper realmNoteHelper;
@@ -54,7 +56,6 @@ public class AddActivity extends AppCompatActivity{
     private Toolbar mToolbar;                              // Declaring the Toolbar Object
     private MenuItem mnuItemDeleteRecord, mnuItemDeleteNote,mnuItemSaveNote, mnuItemRecord,mnuItemPlayRecord,mnuItemRecordCall;
     private View textviewTimeLapse;
-    private TextView txtTimeLaps;
     private String pathToWorkingDirectory;
     private boolean storageAvail = false;
     private boolean weHaveRecordedSomething= false, weTypedSomethingNew = false;
@@ -74,6 +75,8 @@ public class AddActivity extends AppCompatActivity{
     private ImageView btnNoStopRecord,btnTapRecord,btnStopRecord;
     private RelativeLayout recorderControlsLayout;
     private boolean toggleNoStopRecord=false;
+    private Chronometer txtTimeLaps;
+    private String latestRecordFileName;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -88,7 +91,9 @@ public class AddActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService(new Intent(this,Recorder.class));
+        Log.e(TAG, "onDestroy killRecordService");
+        killRecordService();
+        //stopService(new Intent(this,Recorder.class));
     }
 
     @Override
@@ -97,13 +102,7 @@ public class AddActivity extends AppCompatActivity{
 
         setContentView(R.layout.note_add_activity);
 
-/*        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String s = intent.getStringExtra(Recorder.COPA_MESSAGE);
-                Log.e(TAG, "Magic Fuck Ya!");
-            }
-        };*/
+
 
         startService(new Intent(this,Recorder.class));
 
@@ -242,7 +241,6 @@ private void setRecordControlsState(int stateOfRecord)
 
          myApplication = (MyApplication)getApplicationContext();
 
-
          recorderControlsLayout = (RelativeLayout) findViewById(R.id.recorderControlsLayout);
 
          btnNoStopRecord = (ImageView) findViewById(R.id.btnNoStopRecord);
@@ -252,6 +250,7 @@ private void setRecordControlsState(int stateOfRecord)
         btnNoStopRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
                 vib.vibrate(30);
@@ -261,11 +260,12 @@ private void setRecordControlsState(int stateOfRecord)
                 if(!toggleNoStopRecord)
                 {
                     setBackGroundOfView(btnNoStopRecord,R.drawable.buttons_recorder_bg,true);
-                    startRecord();
+                        startRecord();
                 }
                 else
                 {
                     setBackGroundOfView(btnNoStopRecord,0,false);
+                        stopRecord();
                 }
 
                 toggleNoStopRecord = !toggleNoStopRecord;
@@ -273,23 +273,29 @@ private void setRecordControlsState(int stateOfRecord)
         });
 
         btnTapRecord.setOnTouchListener(new View.OnTouchListener() {
-                                            @Override
-                                            public boolean onTouch(View v, MotionEvent event) {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+          //      Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                switch (event.getAction()) {
 
-                                                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
 
-                                                    case MotionEvent.ACTION_DOWN:
-                                                        setBackGroundOfView(btnNoStopRecord,0,false);
-                                                        setBackGroundOfView(btnTapRecord,R.drawable.buttons_recorder_bg,true);
-                                                        Log.e("GGGGGGg","DDDDDD");
-                                                        return true;
-                                                    case MotionEvent.ACTION_UP:
-                                                        setBackGroundOfView(btnTapRecord,0,false);
-                                                        return true;
-                                                }
 
-                                                return false;
-                                            }
+  //                      vib.vibrate(30);
+                        setBackGroundOfView(btnNoStopRecord, 0, false);
+                        setBackGroundOfView(btnTapRecord, R.drawable.buttons_recorder_bg, true);
+                        startRecord();
+
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        setBackGroundOfView(btnTapRecord, 0, false);
+                        stopRecord();
+//                        vib.vibrate(30);
+                        return true;
+                }
+
+                return false;
+            }
         });
 
         /*        btnStopRecord.setOnClickListener(new View.OnClickListener() {
@@ -305,19 +311,31 @@ private void setRecordControlsState(int stateOfRecord)
 
     private void startRecord() {
 
-        Intent intent = new Intent(this,Recorder.class);
-        //false is just fake we don't need value.
-        intent.putExtra(Constants.EXTRA_NEW_RECORD,false);
-        intent.putExtra(Constants.EXTRA_RECORD_FILENAME,String.valueOf(dbId));
-        startService(intent);
+        boolean hasEnoughSpace = ExternalStorageManager.isThereEnoughSpaceOnStorage();
+        if (hasEnoughSpace) {
+            Intent intent = new Intent(this, Recorder.class);
+            //false is just fake we don't need value.
+            intent.putExtra(Constants.EXTRA_NEW_RECORD, false);
+            intent.putExtra(Constants.EXTRA_RECORD_FILENAME, String.valueOf(dbId));
+            startService(intent);
+            resetTimer();
+            startTimer();
+        } else {
+            Utility.showMessage("You don't have enough empty space.", "No Empty Space", AddActivity.this);
+        }
 
     }
 
     private void stopRecord() {
-        Intent intent = new Intent(this,Recorder.class);
-        //false is just fake we don't need value.
-        intent.putExtra(Constants.EXTRA_STOP_RECORD,false);
-        startService(intent);
+        boolean hasEnoughSpace = ExternalStorageManager.isThereEnoughSpaceOnStorage();
+        if (hasEnoughSpace) {
+
+            Intent intent = new Intent(this, Recorder.class);
+            //false is just fake we don't need value.
+            intent.putExtra(Constants.EXTRA_STOP_RECORD, false);
+            startService(intent);
+            stopTimer();
+        }
     }
 
     private void killRecordService() {
@@ -429,7 +447,8 @@ private void saveNote(){
         }
 
         txtTimeLaps  = (Chronometer) textviewTimeLapse.findViewById(R.id.txtTimeLaps);
-        txtTimeLaps.setVisibility(View.INVISIBLE);
+       // txtTimeLaps.setVisibility(View.INVISIBLE);
+        txtTimeLaps.setText("HHHHHHH");
         //recorder = new Recorder(this,txtTimeLaps,pathToWorkingDirectory,TEMP_FILE);
 
         Intent intent = getIntent();
@@ -615,16 +634,17 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
 
         } else if (id == R.id.action_play_record) {
 
-          /*  if (storageAvail && !recorder.isRecording()) {
+            if (!myApplication.isRecordUnderGoing()) {
 
-                File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
+                File file = new File(latestRecordFileName);
 
                 if (!file.exists()) {
                     Log.e(TAG, "No record to play");
                     return false;
                 }
-                recorder.playMedia(true);
-            }*/
+                playLatestRecord();
+
+            }
             return true;
 
         } else if(id == R.id.action_listen_for_phone_call){
@@ -672,41 +692,71 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
 
         return super.onOptionsItemSelected(item);
     }
+    private void playLatestRecord() {
 
+        Intent intent = new Intent(this,Player.class);
+        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE, latestRecordFileName);
+        startActivity(intent);
+    }
 
+    public void startTimer()
+    {
+        txtTimeLaps.setVisibility(View.VISIBLE);
+       txtTimeLaps.start();
+    }
 
-   /* @Override
-    public void onIncomingCallReceived(Context ctx, String number, Date start) {
-        Log.e("Chatanuga", "onIncomingCallReceived " + number);
+    public void stopTimer()
+    {
+        txtTimeLaps.stop();
+    }
+
+    public void resetTimer()
+    {
+        txtTimeLaps.setBase(SystemClock.elapsedRealtime());
+    }
+
+    public void formatTimer()
+    {
+        txtTimeLaps.setFormat("Formatted time (%s)");
+    }
+
+    public void clearTimer()
+    {
+        txtTimeLaps.setFormat(null);
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(Constants.INTENTFILTER_RECORD_SERVICE)
+        );
     }
 
     @Override
-    public void onIncomingCallAnswered(Context ctx, String number, Date start) {
-        Log.e("Chatanuga", "onIncomingCallAnswered " + number);
-
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 
-    @Override
-    public void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
-        Log.e("Chatanuga", "onIncomingCallEnded " + number);
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.INTENTFILTER_RECORD_SERVICE)) {
+                if(intent.hasExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES))
+                {
+                    int msgRecordService =  intent.getIntExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES,-1);
+                    if(msgRecordService == Constants.REPORT_RECORD_ERROR_TO_ACTIVITY) {
+                        Utility.showMessage("Hey you are too much fast don't rush at least hold on one second! ", "Ohhh", AddActivity.this);
+                    }
+                    else if(msgRecordService == Constants.REPORT_RECORDED_FILE_TO_ACTIVITY){
+                        latestRecordFileName = intent.getStringExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME);
+                        mnuItemPlayRecord.setVisible(true);
 
-    }
+                    }
+                }
+            }
+        }
 
-    @Override
-    public void onOutgoingCallStarted(Context ctx, String number, Date start) {
-        Log.e("Chatanuga", "onOutgoingCallStarted " + number);
-
-    }
-
-    @Override
-    public void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
-        Log.e("Chatanuga", "onOutgoingCallEnded " + number);
-
-    }
-
-    @Override
-    public void onMissedCall(Context ctx, String number, Date start) {
-        Log.e("Chatanuga", "onMissedCall " + number);
-
-    }*/
+    };
 } 

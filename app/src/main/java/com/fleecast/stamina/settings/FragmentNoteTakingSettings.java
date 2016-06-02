@@ -1,9 +1,11 @@
 package com.fleecast.stamina.settings;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
@@ -30,6 +33,7 @@ public class FragmentNoteTakingSettings extends Fragment {
     private MediaRecorder mRecorder = null;
     private static final String TAG = "NoteTakingSettings";
     private LinearLayout linearLayAudioSources;
+    private MyApplication myApplication;
 
     private View fragmentView;
 
@@ -54,12 +58,13 @@ public class FragmentNoteTakingSettings extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_note_taking_settings, container, false);
 
@@ -69,9 +74,10 @@ public class FragmentNoteTakingSettings extends Fragment {
         mRecorder = new MediaRecorder();
 
         RadioGroup radioGroupSources = (RadioGroup) fragmentView.findViewById(R.id.radioGroupSources);
-        //RadioGroup radioGroupFormats = (RadioGroup) fragmentView.findViewById(R.id.radioGroupFormats);
+        RadioGroup radioGroupQuality = (RadioGroup) fragmentView.findViewById(R.id.radioGroupQuality);
 
 
+        // initial radio buttons
         for (int index = 0; index < ((RadioGroup) radioGroupSources).getChildCount(); ++index) {
             View nextChild = ((RadioGroup) radioGroupSources).getChildAt(index);
 
@@ -80,24 +86,33 @@ public class FragmentNoteTakingSettings extends Fragment {
 
                     // The default is microphone
                     if (nextChild.getTag().toString().equals(String.valueOf(Prefs.getInt(Constants.RECORDER_AUDIO_RECORDER_SOURCE_OPTION, MediaRecorder.AudioSource.MIC)))) {
-                        Log.e(TAG, "Fuck Ya! " + index);
                         ((RadioButton) nextChild).setChecked(true);
                     }
 
                     mRecorder.setAudioSource(Integer.valueOf(nextChild.getTag().toString()));
                     mRecorder.setOutputFile(ExternalStorageManager.prepareWorkingDirectory(getActivity()) + "/enumeration");
-
-                    Log.d(TAG, ((RadioButton) nextChild).getText().toString() + " Passed");
                 } catch (Exception e) {
                     nextChild.setEnabled(false);
                     ((RadioButton) nextChild).setText(((RadioButton) nextChild).getText().toString() + " not support by device!");
-                    Log.e(TAG, ((RadioButton) nextChild).getText().toString() + " No Passed " + e.getMessage());
                 }
             }
             mRecorder.reset();
 
         }
 
+
+        for (int index = 0; index < ((RadioGroup) radioGroupQuality).getChildCount(); ++index) {
+            View nextChild = ((RadioGroup) radioGroupQuality).getChildAt(index);
+
+            if (nextChild != null && nextChild instanceof RadioButton) {
+                    // The default is medium quality
+                    if (nextChild.getTag().toString().equals(String.valueOf(Prefs.getInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION, Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM)))) {
+                        ((RadioButton) nextChild).setChecked(true);
+                    }
+
+            }
+
+        }
 
         radioGroupSources.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -110,20 +125,22 @@ public class FragmentNoteTakingSettings extends Fragment {
             }
         });
 
-      /*  radioGroupFormats.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radioGroupQuality.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
                 RadioButton radioButton = (RadioButton) fragmentView.findViewById(checkedId);
-                Prefs.putInt(Constants.RECORDER_AUDIO_RECORDER_FORMAT_OPTION, Integer.valueOf(radioButton.getTag().toString()));
+                Prefs.putInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION, Integer.valueOf(radioButton.getTag().toString()));
 
                 Log.e(TAG, " " + radioButton.getTag().toString());
             }
-        });*/
+        });
+
 
 
         return fragmentView;
     }
+
 
     @Override
     public void onAttach(Context context) {

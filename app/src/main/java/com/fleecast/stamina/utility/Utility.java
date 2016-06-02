@@ -1,6 +1,7 @@
 package com.fleecast.stamina.utility;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 
 import java.util.regex.Matcher;
@@ -132,4 +134,18 @@ public class Utility {
 
         return now;
     }*/
+
+    public static void showMessage(String messageToUser, String titleOfDialog, Context context){
+
+        new AlertDialog.Builder(context)
+                .setTitle(titleOfDialog)
+                .setMessage(messageToUser)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
 }

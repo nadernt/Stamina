@@ -77,8 +77,8 @@ public class Player extends Activity {
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
 
         Intent intent = getIntent();
-        mFileName = intent.getStringExtra("file_name");
-        intent.putExtra("file_name", mFileName);
+        mFileName = intent.getStringExtra(Constants.EXTRA_PLAY_MEDIA_FILE);
+        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE, mFileName);
 
         mMediaplayer = new MediaPlayer();
 
