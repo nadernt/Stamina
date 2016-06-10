@@ -32,6 +32,7 @@ import com.fleecast.stamina.models.RealmAppHelper;
 import com.fleecast.stamina.models.RealmGroupsHelper;
 import com.fleecast.stamina.utility.ColoredSnackBar;
 import com.fleecast.stamina.utility.Constants;
+import com.fleecast.stamina.utility.Utility;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -291,7 +292,7 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
 
                             populateActivityContentsForEditName(Constants.INIT_EVERYTHING_FROM_SCRATCH);
                             populateActivityContentsForGroups();
-                            snackMaker("Group removed!", "Info", ContextCompat.getColor(AddEditGroupItem.this, R.color.yellow), Snackbar.LENGTH_SHORT);
+                            Utility.snackMaker(txtAddEditGroupTitle,"Group removed!", "Info", ContextCompat.getColor(AddEditGroupItem.this, R.color.yellow), Snackbar.LENGTH_SHORT);
 
                         }
                     });
@@ -326,7 +327,7 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
                     }
 
                 populateActivityContentsForGroups();
-                snackMaker("Order of groups saved.", "Info", ContextCompat.getColor(AddEditGroupItem.this, R.color.yellow), Snackbar.LENGTH_SHORT);
+                Utility.snackMaker(txtAddEditGroupTitle,"Order of groups saved.", "Info", ContextCompat.getColor(AddEditGroupItem.this, R.color.yellow), Snackbar.LENGTH_SHORT);
                 break;
             case R.id.btnCancelChangeGroup:
                 onBackPressed();
@@ -341,7 +342,7 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
 
                     populateActivityContentsForEditName(Constants.INIT_EVERYTHING_FROM_SCRATCH);
                     populateActivityContentsForGroups();
-                    snackMaker("Group renamed", "Info", ContextCompat.getColor(AddEditGroupItem.this, R.color.yellow), Snackbar.LENGTH_SHORT);
+                    Utility.snackMaker(txtAddEditGroupTitle,"Group renamed", "Info", ContextCompat.getColor(AddEditGroupItem.this, R.color.yellow), Snackbar.LENGTH_SHORT);
 
                 }
                 else
@@ -384,18 +385,4 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void snackMaker(String userMessage , String txtUserAction,int actionColor,int timeLast){
-
-            Snackbar snackbar = Snackbar.make(txtAddEditGroupTitle, userMessage, timeLast)
-                    .setAction(txtUserAction, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                }
-            });
-
-            ColoredSnackBar.info(snackbar);
-            snackbar.setActionTextColor(actionColor);
-            snackbar.show();
-        }
     }

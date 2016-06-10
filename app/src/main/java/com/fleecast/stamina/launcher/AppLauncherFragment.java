@@ -703,7 +703,7 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
                                 sortOrder(true);
                             popupMenuOptions.dismiss();
                         } else {
-                            snackMaker("Wait the load should finish!?", "Note", ContextCompat.getColor(getActivity(), R.color.yellow), Snackbar.LENGTH_LONG);
+                            Utility.snackMaker(gridView,"Wait the load should finish!?", "Note", ContextCompat.getColor(getActivity(), R.color.yellow), Snackbar.LENGTH_LONG);
                         }
 
 
@@ -1013,27 +1013,6 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
             }
         }
     }*/
-
-    private void snackMaker(String userMessage , String txtUserAction,int actionColor,int timeLast){
-
-        snackbar = Snackbar.make(gridView, userMessage, timeLast)
-                .setAction(txtUserAction, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-
-        ColoredSnackBar.info(snackbar);
-        snackbar.setActionTextColor(actionColor);
-
-       /* View vw = snackbar.getView();
-        vw.setLayoutParams(new ViewGroup.LayoutParams(WindowManager.LayoutParams.FILL_PARENT, vw.getHeight()));
-        */
-        snackbar.show();
-
-
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

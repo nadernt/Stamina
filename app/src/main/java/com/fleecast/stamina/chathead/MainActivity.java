@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.notetaking.ActivityIgnoreListManager;
+import com.fleecast.stamina.notetaking.ActivityRecordsPlayList;
 import com.fleecast.stamina.notetaking.NoteTakingRecyclerViewActivity;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
 import com.fleecast.stamina.settings.ActivitySettings;
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity
 
     private void myFuckUp(){
 
+        startActivity(new Intent(this,ActivityRecordsPlayList.class));
 
      //   startActivity(new Intent(this, AddActivity.class));
        /* Intent intent = new Intent(this, ActivitySettings.class);

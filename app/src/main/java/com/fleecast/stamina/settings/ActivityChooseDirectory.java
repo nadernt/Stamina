@@ -1,11 +1,15 @@
 package com.fleecast.stamina.settings;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -21,8 +25,11 @@ import com.fleecast.stamina.utility.Constants;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class ActivityChooseDirectory extends AppCompatActivity {
@@ -31,10 +38,13 @@ public class ActivityChooseDirectory extends AppCompatActivity {
     private String prevDir;
     private Button btnNewDirectory;
     private Button btnSelectDirectory;
+    private Button btnSdCard;
     private String currentSelectedPath;
     private String strCreateFolderName;
     private Button btnExit;
     private TextView txtCurrentPath;
+    private String primary_sd;
+    private String secondary_sd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +58,9 @@ public class ActivityChooseDirectory extends AppCompatActivity {
         btnExit = (Button) findViewById(R.id.btnExit);
         btnSelectDirectory = (Button) findViewById(R.id.btnSelectDirectory);
         txtCurrentPath = (TextView) findViewById(R.id.txtCurrentPath);
+        btnSdCard  = (Button) findViewById(R.id.btnSdCard);
 
+        ExtStorageSearch();
 
         btnNewDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +144,7 @@ public class ActivityChooseDirectory extends AppCompatActivity {
         btnSelectDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityChooseDirectory.this);
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
@@ -187,6 +200,14 @@ public class ActivityChooseDirectory extends AppCompatActivity {
                     loadPath(prevDir);
             }
         });
+        txtCurrentPath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (prevDir != null)
+                    loadPath(prevDir);
+            }
+        });
+
         lvExplorer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
@@ -205,9 +226,25 @@ public class ActivityChooseDirectory extends AppCompatActivity {
             }
         });
 
-        // Set the initial path
-        loadPath(Environment.getExternalStorageDirectory().getPath());
+        btnSdCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (prevDir != null)
+                    loadPath(primary_sd);
+            }
+        });
 
+        //Check if SD Card exists set the initial path or set to default path.
+
+        if(secondary_sd!= null) {
+            btnSdCard.setEnabled(true);
+            loadPath(secondary_sd);
+        }
+        else {
+            btnSdCard.setEnabled(false);
+            btnSdCard.setText("No\nSD Card");
+            loadPath(Environment.getExternalStorageDirectory().getPath());
+        }
     }
 
     @Override
@@ -242,18 +279,44 @@ public class ActivityChooseDirectory extends AppCompatActivity {
             public boolean accept(File pathname) {
                 // Kick off the hidden or system folders
                 return (!pathname.isHidden() && pathname.canRead() && pathname.canWrite());
+                //return pathname.canRead();
             }
         });
         Arrays.sort(fileTmp);
 
         List <File> files = new ArrayList<>();
-        for (File inFile : fileTmp) {
+    for (File inFile : fileTmp) {
             if (inFile.isDirectory()) {
                 files.add(inFile);// is directory
             }
         }
 
-        lvExplorer.setAdapter(new FolderChooseAdapter(this,files));
+        lvExplorer.setAdapter(new FolderChooseAdapter(this, files));
+    }
+
+    public void ExtStorageSearch(){
+        String[] extStorlocs = {"/storage/sdcard1","/storage/extsdcard","/storage/sdcard0/external_sdcard","/mnt/extsdcard",
+                "/mnt/sdcard/external_sd","/mnt/external_sd","/mnt/media_rw/sdcard1","/removable/microsd","/mnt/emmc",
+                "/storage/external_SD","/storage/ext_sd","/storage/removable/sdcard1","/data/sdext","/data/sdext2",
+                "/data/sdext3","/data/sdext4","/storage/sdcard0"};
+//Log.e("AAAAAAAAAAAA",System.getenv("EXTERNAL_STORAGE") + "\n" + System.getenv("SECONDARY_STORAGE") + "\n" + MediaStore.MediaColumns.DATA);
+       //First Attempt
+        primary_sd = System.getenv("EXTERNAL_STORAGE");
+        secondary_sd = System.getenv("SECONDARY_STORAGE");
+
+
+        if(primary_sd == null) {
+            primary_sd = Environment.getExternalStorageDirectory()+"";
+        }
+        if(secondary_sd == null) {//if fail, search among known list of extStorage Locations
+            for(String string: extStorlocs){
+                if((new File(string)).exists() && (new File(string)).isDirectory() ){
+                    secondary_sd = string;
+                    break;
+                }
+            }
+        }
+
     }
 
     private void showMessage(String messageToUser,String titleOfDialog){

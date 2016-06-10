@@ -1,14 +1,11 @@
 package com.fleecast.stamina.notetaking;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -37,7 +34,6 @@ import android.widget.RelativeLayout;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.models.RealmNoteHelper;
-import com.fleecast.stamina.settings.ActivitySettings;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.NotificationHelper;
@@ -54,15 +50,15 @@ public class AddActivity extends AppCompatActivity {
     private EditText inputDescription;
     private EditText inputTitle;
     private Toolbar mToolbar;                              // Declaring the Toolbar Object
-    private MenuItem mnuItemDeleteRecord, mnuItemDeleteNote,mnuItemSaveNote, mnuItemRecord,mnuItemPlayRecord,mnuItemRecordCall;
+    private ImageView btnDeleteRecord;
+    private MenuItem mnuItemDeleteNote;
+    private MenuItem mnuItemSaveNote;
+    private MenuItem mnuItemPlayRecord;
     private View textviewTimeLapse;
-    private String pathToWorkingDirectory;
-    private boolean storageAvail = false;
     private boolean weHaveRecordedSomething= false, weTypedSomethingNew = false;
     private int dbId;
     private MyApplication myApplication;
     private final static String TEMP_FILE = "temp";
-    private int chosenSourceOfRecord = 0;
     private NotificationHelper nfh;
     private String fileExtension="";
     private String TAG = "Add Activity";
@@ -77,6 +73,7 @@ public class AddActivity extends AppCompatActivity {
     private boolean toggleNoStopRecord=false;
     private Chronometer txtTimeLaps;
     private String latestRecordFileName;
+    private ImageView btnRecordsListPlayer;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -93,7 +90,7 @@ public class AddActivity extends AppCompatActivity {
         super.onDestroy();
         Log.e(TAG, "onDestroy killRecordService");
         killRecordService();
-        //stopService(new Intent(this,Recorder.class));
+        //stopService(new Intent(this,RecorderService.class));
     }
 
     @Override
@@ -104,7 +101,7 @@ public class AddActivity extends AppCompatActivity {
 
 
 
-        startService(new Intent(this,Recorder.class));
+        startService(new Intent(this,RecorderService.class));
 
         // Creating unique id for db as primary key
         dbId = (int) (System.currentTimeMillis() / 1000);
@@ -202,30 +199,6 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-/*
-private void setRecordControlsState(int stateOfRecord)
-{
-
-    if(stateOfRecord == Constants.RECORD_INFINIT_UP_STOP)
-    {
-        setBackGroundOfView(btnNoStopRecord,0,false);
-
-        setBackGroundOfView(btnNoStopRecord,R.drawable.buttons_recorder_bg,true);
-        setBackGroundOfView(btnTapRecord,R.drawable.buttons_recorder_bg,true);
-        setBackGroundOfView(btnNoStopRecord,R.drawable.buttons_recorder_bg,true);
-    }
-    else if(stateOfRecord == Constants.RECORD_STOP)
-    {
-
-    }
-    else if(stateOfRecord == Constants.RECORD_TAP_KEEP)
-    {
-
-    }
-
-
-}
-*/
     private void populateGUI(){
 
         windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
@@ -246,6 +219,9 @@ private void setRecordControlsState(int stateOfRecord)
          btnNoStopRecord = (ImageView) findViewById(R.id.btnNoStopRecord);
          btnTapRecord = (ImageView) findViewById(R.id.btnTapRecord);
          btnStopRecord = (ImageView) findViewById(R.id.btnStopRecord);
+        btnDeleteRecord = (ImageView) findViewById(R.id.btnDeleteRecord);
+
+        btnRecordsListPlayer= (ImageView) findViewById(R.id.btnRecordsListPlayer);
 
         btnNoStopRecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,6 +274,72 @@ private void setRecordControlsState(int stateOfRecord)
             }
         });
 
+        btnDeleteRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                        AlertDialog.Builder adb = new AlertDialog.Builder(AddActivity.this);
+
+
+                        adb.setMessage("Are you sure want to delete this record?");
+
+
+                        adb.setTitle("Note");
+
+
+                        adb.setIcon(android.R.drawable.ic_dialog_alert);
+
+
+                        adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                File file = new File(latestRecordFileName);
+
+                                if (file.exists()) {
+
+                                    file.delete();
+
+                                    mnuItemPlayRecord.setVisible(false);
+                                    btnDeleteRecord.setVisibility(View.INVISIBLE);
+
+                                    if(isThereAnyRecordInPath(latestRecordFileName))
+                                    {
+                                        weHaveRecordedSomething = true;
+                                        btnRecordsListPlayer.setVisibility(View.VISIBLE);
+                                    }else
+                                    {
+                                        btnRecordsListPlayer.setVisibility(View.INVISIBLE);
+                                        weHaveRecordedSomething = false;
+                                    }
+
+                                    latestRecordFileName="";
+
+                                    Log.e(TAG, "Record deleted!");
+                                }
+
+                            }
+                        });
+
+
+                        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                return;
+                            }
+                        });
+                        adb.show();
+
+
+                }
+        });
+
+        btnRecordsListPlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(AddActivity.this,ActivityRecordsPlayList.class));
+
+            }
+        });
         /*        btnStopRecord.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -308,12 +350,29 @@ private void setRecordControlsState(int stateOfRecord)
                 });*/
     }
 
+    private boolean isThereAnyRecordInPath(String recordedFilePath) {
+
+        File f = new File(recordedFilePath);
+
+        //f = new File(f.getAbsolutePath());
+
+        String dir = f.getParent();
+
+        File dirAsFile = f.getParentFile();
+
+        File[] listOfFiles = dirAsFile.listFiles();
+
+        if (listOfFiles.length > 1)
+            return true;
+        else
+            return false;
+    }
 
     private void startRecord() {
 
         boolean hasEnoughSpace = ExternalStorageManager.isThereEnoughSpaceOnStorage();
         if (hasEnoughSpace) {
-            Intent intent = new Intent(this, Recorder.class);
+            Intent intent = new Intent(this, RecorderService.class);
             //false is just fake we don't need value.
             intent.putExtra(Constants.EXTRA_NEW_RECORD, false);
             intent.putExtra(Constants.EXTRA_RECORD_FILENAME, String.valueOf(dbId));
@@ -327,19 +386,16 @@ private void setRecordControlsState(int stateOfRecord)
     }
 
     private void stopRecord() {
-        boolean hasEnoughSpace = ExternalStorageManager.isThereEnoughSpaceOnStorage();
-        if (hasEnoughSpace) {
 
-            Intent intent = new Intent(this, Recorder.class);
+            Intent intent = new Intent(this, RecorderService.class);
             //false is just fake we don't need value.
             intent.putExtra(Constants.EXTRA_STOP_RECORD, false);
             startService(intent);
             stopTimer();
-        }
     }
 
     private void killRecordService() {
-        Intent intent = new Intent(this,Recorder.class);
+        Intent intent = new Intent(this,RecorderService.class);
         //false is just fake we don't need value.
         intent.putExtra(Constants.EXTRA_STOP_SERVICE,false);
         startService(intent);
@@ -362,9 +418,9 @@ private void setRecordControlsState(int stateOfRecord)
         }
         else { // Cleanup the temporary file
 
-            File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
+            //File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
 
-            file.delete();
+            //file.delete();
         }
 
     }
@@ -394,9 +450,9 @@ private void saveNote(){
     // We have recorded something we rename it to real file name with ID stamp.
     if(weHaveRecordedSomething)
     {
-        File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
+    //    File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
 
-        file.renameTo(new File(pathToWorkingDirectory + File.separator + String.valueOf(dbId) + fileExtension));
+      //  file.renameTo(new File(pathToWorkingDirectory + File.separator + String.valueOf(dbId) + fileExtension));
     }
 
     realmNoteHelper.addNote(dbId, title, description, weHaveRecordedSomething,null,null,null,null,-1,null,0,0);
@@ -408,18 +464,9 @@ private void saveNote(){
 
     private void populateUserInterface(Menu menu, boolean populateForAddOrEdit){
 
-        mnuItemDeleteRecord = menu.findItem(R.id.action_delete_record);
         mnuItemDeleteNote = menu.findItem(R.id.action_delete);
         mnuItemSaveNote = menu.findItem(R.id.action_save);
-        mnuItemRecord = menu.findItem(R.id.action_record);
         mnuItemPlayRecord = menu.findItem(R.id.action_play_record);
-        mnuItemRecordCall = menu.findItem(R.id.action_listen_for_phone_call);
-
-
-        if(Prefs.getBoolean("IsRecordPhoneCall",false))
-            mnuItemRecordCall.setChecked(true);
-        else
-            mnuItemRecordCall.setChecked(false);
 
         textviewTimeLapse = getLayoutInflater().inflate(R.layout.time_laps, null);
         mToolbar.addView(textviewTimeLapse);
@@ -429,27 +476,25 @@ private void saveNote(){
 
          //   if(myApplication.isUserWantsRecordPhoneCalls())
 
-            mnuItemDeleteRecord.setVisible(false);
+            btnDeleteRecord.setVisibility(View.INVISIBLE);
+            btnRecordsListPlayer.setVisibility(View.INVISIBLE);
             mnuItemPlayRecord.setVisible(false);
             mnuItemDeleteNote.setVisible(false);
             mnuItemSaveNote.setVisible(true);
-            mnuItemRecord.setVisible(true);
 
         }
         else
         {
             mnuItemPlayRecord.setVisible(true);
-            mnuItemDeleteRecord.setVisible(true);
+            btnDeleteRecord.setVisibility(View.VISIBLE);
+            btnRecordsListPlayer.setVisibility(View.VISIBLE);
             mnuItemDeleteNote.setVisible(true);
             mnuItemSaveNote.setVisible(true);
-            mnuItemRecord.setVisible(true);
-
         }
 
         txtTimeLaps  = (Chronometer) textviewTimeLapse.findViewById(R.id.txtTimeLaps);
-       // txtTimeLaps.setVisibility(View.INVISIBLE);
-        txtTimeLaps.setText("HHHHHHH");
-        //recorder = new Recorder(this,txtTimeLaps,pathToWorkingDirectory,TEMP_FILE);
+        txtTimeLaps.setVisibility(View.INVISIBLE);
+        //recorder = new RecorderService(this,txtTimeLaps,pathToWorkingDirectory,TEMP_FILE);
 
         Intent intent = getIntent();
 
@@ -484,7 +529,7 @@ private void saveNote(){
             Log.e(TAG, "audio note");
 
 
-            chosenSourceOfRecord = Prefs.getInt("AudioRecorderSource",MediaRecorder.AudioSource.MIC);
+          //  chosenSourceOfRecord = Prefs.getInt("AudioRecorderSource",MediaRecorder.AudioSource.MIC);
 
 //            recordAudio(chosenSourceOfRecord);
 
@@ -522,7 +567,7 @@ private void saveNote(){
                         // This record check is for the time we are getting a new call while we are recording another one so we bypass the new one.
                         if (!myApplication.isRecordUnderGoing()) {
                             Log.e(TAG, "Record phone call started");
-                            chosenSourceOfRecord = MediaRecorder.AudioSource.VOICE_CALL;
+                         //   chosenSourceOfRecord = MediaRecorder.AudioSource.VOICE_CALL;
 
                             //recordAudio(chosenSourceOfRecord);
                         }
@@ -589,50 +634,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
         if (id == R.id.action_save) {
             saveNote();
             return true;
-        } else if (id == R.id.action_record) {
-       //     recordAudio(MediaRecorder.AudioSource.MIC);
-
-        } else if (id == R.id.action_delete_record) {
-
-            AlertDialog.Builder adb = new AlertDialog.Builder(this);
-
-
-            adb.setMessage("Are you sure want to delete this record?");
-
-
-            adb.setTitle("Note");
-
-
-            adb.setIcon(android.R.drawable.ic_dialog_alert);
-
-
-            adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
-
-                    if (file.exists()) {
-                        file.delete();
-                        mnuItemPlayRecord.setVisible(false);
-                        mnuItemDeleteRecord.setVisible(false);
-                        weHaveRecordedSomething = false;
-                        Log.e(TAG, "Record deleted!");
-                    }
-
-                }
-            });
-
-
-            adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    return;
-                }
-            });
-            adb.show();
-
-
-            return true;
-
-        } else if (id == R.id.action_play_record) {
+        }else if (id == R.id.action_play_record) {
 
             if (!myApplication.isRecordUnderGoing()) {
 
@@ -647,55 +649,13 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
             }
             return true;
 
-        } else if(id == R.id.action_listen_for_phone_call){
-
-            /*int status = this.getPackageManager().getComponentEnabledSetting(component);
-            if(status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-                Log.d("AAAAAAAAAAAAAAAAAAAAa", "receiver is enabled");
-            } else if(status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
-                Log.d("AAAAAAAAAAAAAAAAAAAAa", "receiver is disabled");
-            }*/
-
-            ComponentName component = new ComponentName(this, PhonecallReceiver.class);
-
-            //Disable call recording BroadcastReceiver (class PhonecallReceiver)
-            if(mnuItemRecordCall.isChecked()) {
-                //Disable
-                this.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED , PackageManager.DONT_KILL_APP);
-                Prefs.putBoolean("IsRecordPhoneCall", false);
-                mnuItemRecordCall.setChecked(false);
-            }
-            else { //Enable call recording BroadcastReceiver (class PhonecallReceiver)
-                //Enable
-                this.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED , PackageManager.DONT_KILL_APP);
-                Prefs.putBoolean("IsRecordPhoneCall", true);
-                mnuItemRecordCall.setChecked(true);
-            }
-
-
         }
-         else if (id == R.id.action_settings) {
-
-            // First stop probable record.
-            //recorder.recordMedia(false,-1);
-
-            Intent intent = new Intent(this,ActivitySettings.class);
-
-            // We just pass this code and and run activity for result in order to have modal dialog!
-
-            int fakeResultCode = 101;
-
-            startActivityForResult(intent,101);
-
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
     private void playLatestRecord() {
 
-        Intent intent = new Intent(this,Player.class);
-        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE, latestRecordFileName);
+        Intent intent = new Intent(this,ActivityPlayerPortrait.class);
+        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, latestRecordFileName);
         startActivity(intent);
     }
 
@@ -743,16 +703,24 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.INTENTFILTER_RECORD_SERVICE)) {
-                if(intent.hasExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES))
+                if(intent.hasExtra(Constants.EXTRA_RECORD_SERVICE_ERROR))
                 {
-                    int msgRecordService =  intent.getIntExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES,-1);
+                    int msgRecordService =  intent.getIntExtra(Constants.EXTRA_RECORD_SERVICE_ERROR,-1);
                     if(msgRecordService == Constants.REPORT_RECORD_ERROR_TO_ACTIVITY) {
                         Utility.showMessage("Hey you are too much fast don't rush at least hold on one second! ", "Ohhh", AddActivity.this);
                     }
                     else if(msgRecordService == Constants.REPORT_RECORDED_FILE_TO_ACTIVITY){
                         latestRecordFileName = intent.getStringExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME);
                         mnuItemPlayRecord.setVisible(true);
-
+                        btnDeleteRecord.setVisibility(View.VISIBLE);
+                        mnuItemDeleteNote.setVisible(true);
+                        if(isThereAnyRecordInPath(latestRecordFileName))
+                        {
+                            btnRecordsListPlayer.setVisibility(View.VISIBLE);
+                        }else
+                        {
+                            btnRecordsListPlayer.setVisibility(View.INVISIBLE);
+                        }
                     }
                 }
             }

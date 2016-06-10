@@ -3,6 +3,9 @@
     package="com.fleecast.stamina">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SECONDARY_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -63,14 +66,23 @@
             android:name=".notetaking.NoteTakingRecyclerViewActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".notetaking.Player"
+            android:name=".notetaking.ActivityPlayerPortrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.PopPlayer" />
 
         <service android:name=".chathead.ChatHeadService" />
         <service android:name=".notetaking.ChatHeadRecordService" />
-        <service android:name=".notetaking.Recorder" />
-
+        <service android:name=".notetaking.RecorderService" />
+        <service android:exported="false" android:name=".notetaking.PlayerService">
+            <intent-filter>
+                <action android:name="com.fleecast.stamina.action.TOGGLE_PLAYBACK" />
+                <action android:name="com.fleecast.stamina.action.PLAY" />
+                <action android:name="com.fleecast.stamina.action.PAUSE" />
+                <action android:name="com.fleecast.stamina.action.SKIP" />
+                <action android:name="com.fleecast.stamina.action.REWIND" />
+                <action android:name="com.fleecast.stamina.action.STOP" />
+            </intent-filter>
+        </service>
         <receiver
             android:name=".chathead.DeviceAdminSampleReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -107,6 +119,13 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
+        <activity android:name=".notetaking.ActivityRecordsPlayList" />
+        <activity android:name=".notetaking.ActivityRecordsPlayList$DetailsActivity" />
+
+<!--        <service
+            android:name=".notetaking.PlayerService"
+            android:enabled="false"
+            android:exported="true"></service>-->
     </application>
 
 </manifest>

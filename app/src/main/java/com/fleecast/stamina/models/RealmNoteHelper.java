@@ -80,7 +80,9 @@ public class RealmNoteHelper {
      */
     public boolean isNoteExist(int id) {
 
+/*
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
+*/
 
         RealmQuery<NoteInfoRealmStruct> query = realm.where(NoteInfoRealmStruct.class)
                 .equalTo("id", id);
@@ -138,17 +140,21 @@ public class RealmNoteHelper {
         realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
         realmResult.sort("id", Sort.DESCENDING);
         if (realmResult.size() > 0) {
-            showLog("Size : " + realmResult.size());
-
 
             for (int i = 0; i < realmResult.size(); i++) {
-                String title, description;
+
                 int id = realmResult.get(i).getId();
-                title = realmResult.get(i).getTitle();
-                description = realmResult.get(i).getDescription();
+
+                String title = realmResult.get(i).getTitle();
+
+                String description = realmResult.get(i).getDescription();
+
                 boolean has_audio = realmResult.get(i).getHasAudio();
+
                 Date create_time_stamp = realmResult.get(i).getCreateTimeStamp();
+
                 Date update_time = realmResult.get(i).getUpdateTime();
+
                 data.add(new NoteInfoStruct(id, title, description,has_audio,update_time,create_time_stamp,null,null,-1,null,0,0));
             }
 

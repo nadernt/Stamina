@@ -13,19 +13,37 @@
         android:layout_height="wrap_content"
         android:text="Add Note"
         android:id="@+id/btnPopAddNote"
-        android:textSize="12dp" />
+        android:textSize="12dp"
+        android:background="@color/blue_eyes"
+        android:textColor="@color/white"
+        android:padding="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:textStyle="bold" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Stop Record"
+        android:text="Stop\nRecord"
         android:id="@+id/btnPopStopRecord"
-        android:textSize="12dp" />
+        android:textSize="12dp"
+        android:background="@color/blue_eyes"
+        android:textColor="@color/white"
+        android:padding="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:textStyle="bold" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel Record"
+        android:text="Cancel\nRecord"
         android:id="@+id/btnCancelRecord"
-        android:textSize="12dp" />
+        android:textSize="12dp"
+        android:background="@color/blue_eyes"
+        android:textColor="@color/white"
+        android:padding="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:textStyle="bold" />
 
 </LinearLayout>

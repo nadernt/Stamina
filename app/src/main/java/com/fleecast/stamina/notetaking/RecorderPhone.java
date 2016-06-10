@@ -66,8 +66,8 @@ public class RecorderPhone {
 
     private void startPlaying() {
 
-        Intent intent = new Intent(context, Player.class);
-        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE, mFileName);
+        Intent intent = new Intent(context, ActivityPlayerPortrait.class);
+        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, mFileName);
         context.startActivity(intent);
 
     }

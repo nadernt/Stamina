@@ -12,9 +12,9 @@
     <color name="blue_A2E5F5">#A2E5F5</color>
     <!-- Colors arranged from A -Z -->
     <color name="air_force_blue">#5d8aa8</color>
-    <color name="algae_green">#64E986</color>
+    <color name="algae_green">#64e986</color>
     <color name="alice_blue">#F0F8FF</color>
-    <color name="alien_green">#6CC417</color>
+    <color name="alien_green">#6cc417</color>
     <color name="almond">#EFDECD</color>
     <color name="amber">#ffbf00</color>
     <color name="american_rose">#ff033e</color>
@@ -87,7 +87,7 @@
     <color name="blue_lotus">#6960EC</color>
     <color name="blue_orchid">#1F45FC</color>
     <color name="blue_purple">#8A2BE2</color>
-    <color name="blue_ribbon">#306EFF</color>
+    <color name="blue_ribbon">#306eff</color>
     <color name="blue_whale">#342D7E</color>
     <color name="blue_zircon">#57FEFF</color>
     <color name="blueberry_blue">#0041C2</color>
@@ -894,7 +894,7 @@
     <color name="viola_purple">#7E587E</color>
     <color name="violet">#8D38C9</color>
     <color name="violet_blue">#324AB2</color>
-    <color name="violet_red">#F6358A</color>
+    <color name="violet_red">#f6358a</color>
     <color name="viridian">#40826D</color>
     <color name="vivid_auburn">#922724</color>
     <color name="vivid_burgundy">#9F1D35</color>
@@ -907,7 +907,7 @@
     <color name="watermelon_pink">#FC6C85</color>
     <color name="wenge">#645452</color>
     <color name="wheat">#F5DEB3</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="white_smoke">#F5F5F5</color>
     <color name="wild_blue_yonder">#A2ADD0</color>
     <color name="wild_strawberry">#FF43A4</color>

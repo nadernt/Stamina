@@ -36,11 +36,4 @@
         android:orderInCategory="6"
         android:title="Play Record"
         app:showAsAction="always"></item>
-    <item
-        android:id="@+id/action_delete_record"
-        android:icon="@drawable/ic_action_micoff"
-        android:orderInCategory="7"
-        android:title="Delete Record"
-        app:showAsAction="always"></item>
-
 </menu>

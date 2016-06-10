@@ -40,6 +40,25 @@
             android:layout_toLeftOf="@+id/btnStopRecord"
             android:layout_toStartOf="@+id/btnStopRecord"
             android:layout_margin="5dp" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/btnDeleteRecord"
+            android:src="@drawable/ic_del_latest_record"
+            android:layout_alignTop="@+id/btnNoStopRecord"
+            android:layout_toLeftOf="@+id/btnNoStopRecord"
+            android:layout_toStartOf="@+id/btnNoStopRecord" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/btnRecordsListPlayer"
+            android:src="@drawable/ic_records_playlist"
+            android:layout_alignTop="@+id/btnTapRecord"
+            android:layout_toRightOf="@+id/btnTapRecord"
+            android:layout_toEndOf="@+id/btnTapRecord" />
+
     </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"

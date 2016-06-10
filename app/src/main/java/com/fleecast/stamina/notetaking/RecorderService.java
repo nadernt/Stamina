@@ -19,7 +19,7 @@ import java.io.File;
 /**
  * Created by nnt on 7/05/16.
  */
-public class Recorder extends Service{
+public class RecorderService extends Service{
 
     private static final String LOG_TAG = "AudioRecordService";
     private int recorderSource;
@@ -74,7 +74,7 @@ public class Recorder extends Service{
                     myApplication.setIsRecordUnderGoing(false);
                     recordStatus = true;
                     Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
-                    stopService(new Intent(getApplicationContext(), Recorder.class));
+                    stopService(new Intent(getApplicationContext(), RecorderService.class));
                 }
 
             }
@@ -85,7 +85,7 @@ public class Recorder extends Service{
             }
             else if(intent.hasExtra(Constants.EXTRA_STOP_SERVICE)){
 
-                stopService(new Intent(getApplicationContext(), Recorder.class));
+                stopService(new Intent(getApplicationContext(), RecorderService.class));
 
             }
 
@@ -111,9 +111,14 @@ public class Recorder extends Service{
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         }
         else if(recordQuality == Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM){ // default quality
-            mRecorder.setAudioSamplingRate(22050);
+          /*  mRecorder.setAudioSamplingRate(22050);
             mRecorder.setAudioEncodingBitRate(12200);
             //MediaRecorder.getAudioSourceMax();
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);*/
+
+            mRecorder.setAudioSamplingRate(22050);
+            mRecorder.setAudioEncodingBitRate(43000);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         }
@@ -163,7 +168,7 @@ public class Recorder extends Service{
             mRecorder.start();
         }
         else {
-            stopService(new Intent(getApplicationContext(), Recorder.class));
+            stopService(new Intent(getApplicationContext(), RecorderService.class));
         }
 
     }
@@ -175,14 +180,14 @@ public class Recorder extends Service{
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
-            sendBroadcast(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY);
+            sendBroadcastToActivity(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY);
         }
         catch (Exception e){
-            sendBroadcast(Constants.REPORT_RECORD_ERROR_TO_ACTIVITY);
+            sendBroadcastToActivity(Constants.REPORT_RECORD_ERROR_TO_ACTIVITY);
         }
     }
 
-    /*public Recorder(Context context, View viewTimer,String workingDirectory, String mFileDbUniqueToken){
+    /*public RecorderService(Context context, View viewTimer,String workingDirectory, String mFileDbUniqueToken){
 
         this.viewTimer = viewTimer;
         this.mFileDbUniqueToken = workingDirectory + File.separator + mFileDbUniqueToken;
@@ -194,7 +199,7 @@ public class Recorder extends Service{
     }
 */
 
-   /* public Recorder(Context context,String workingDirectory, String mFileDbUniqueToken){
+   /* public RecorderService(Context context,String workingDirectory, String mFileDbUniqueToken){
         this.mFileDbUniqueToken = workingDirectory + File.separator + mFileDbUniqueToken;
         this.context = context;
 
@@ -240,7 +245,7 @@ public class Recorder extends Service{
 
   /*  private void startPlaying() {
 
-        Intent intent = new Intent(this,Player.class);
+        Intent intent = new Intent(this,ActivityPlayerPortrait.class);
         intent.putExtra("file_name", mFileDbUniqueToken);
         startActivity(intent);
     }*/
@@ -330,7 +335,7 @@ public class Recorder extends Service{
         return recordStatus;
     }
 
-    public void sendBroadcast(int messageToActivity) {
+    public void sendBroadcastToActivity(int messageToActivity) {
 
         Intent intent = new Intent(Constants.INTENTFILTER_RECORD_SERVICE);
 
@@ -344,12 +349,12 @@ public class Recorder extends Service{
                     file.delete();
                 }
 
-                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES, messageToActivity);
+                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_ERROR, messageToActivity);
 
                 break;
 
             case Constants.REPORT_RECORDED_FILE_TO_ACTIVITY:
-                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_MESSAGES, messageToActivity);
+                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_ERROR, messageToActivity);
                 intent.putExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME, recordFileName);
                 break;
         }

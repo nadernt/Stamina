@@ -117,6 +117,7 @@ public class ChatHeadRecordService extends Service {
 
 			chatHeadRecord = new ImageView(this);
 			chatHeadRecord.setImageResource(R.drawable.phone);
+			chatHeadRecord.setBackgroundResource(R.drawable.launchpad_icons_bg);
 
 			params = new WindowManager.LayoutParams(
 					WindowManager.LayoutParams.WRAP_CONTENT,
@@ -293,8 +294,8 @@ public class ChatHeadRecordService extends Service {
 		if(!ignoreIntentsWeHaveError) {
 			intentHandler(intent);
 		}
-		return super.onStartCommand(intent, flags, startId);
-
+		return  START_NOT_STICKY; // Means we started the service, but don't want it to
+		// restart in case it's killed.
 	}
 
 

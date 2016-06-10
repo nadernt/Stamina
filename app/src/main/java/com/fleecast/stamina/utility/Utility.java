@@ -12,8 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
+import android.view.View;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -148,4 +150,20 @@ public class Utility {
                 .show();
 
     }
+
+    public static void snackMaker(View view,String userMessage , String txtUserAction,int actionColor,int timeLast){
+
+        Snackbar snackbar = Snackbar.make(view, userMessage, timeLast)
+                .setAction(txtUserAction, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+        ColoredSnackBar.info(snackbar);
+        snackbar.setActionTextColor(actionColor);
+        snackbar.show();
+    }
+
 }

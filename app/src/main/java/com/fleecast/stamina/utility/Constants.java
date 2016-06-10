@@ -16,17 +16,44 @@ public class Constants {
     public static final String EXTRA_STOP_RECORD = "ExtraStopRecord";
     public static final String EXTRA_STOP_SERVICE = "ExtraStopService";
     public static final String INTENTFILTER_RECORD_SERVICE = "IntentfilterRecordService";
-    public static final String EXTRA_RECORD_SERVICE_MESSAGES = "ExtraRecordServiceError";
+    public static final String EXTRA_RECORD_SERVICE_ERROR = "ExtraRecordServiceError";
     public static final int REPORT_RECORD_ERROR_TO_ACTIVITY = 0;
     public static final int REPORT_RECORDED_FILE_TO_ACTIVITY = 1;
     public static final String REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME = "ReportRecordedFileToActivityFilename";
-    public static final String EXTRA_PLAY_MEDIA_FILE = "ExtraPlayMediaFile";
+
+    public static final String INTENTFILTER_PLAYER_SERVICE = "IntentfilterPlayerService";
+    public static final String EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER = "ExtraPlayMediaFilePortrait";
+    public static final String EXTRA_PORTRAIT_PLAYER_DESCRIPTION = "ExtraPortraitPlayerDescription";
+    public static final String EXTRA_PORTRAIT_PLAYER_TITLE = "ExtraPortraitPlayerTitle";
+
+
+    public static final String ACTION_PLAYBACK = "com.fleecast.stamina.action.TOGGLE_PLAYBACK";
+    public static final String ACTION_PLAY = "com.fleecast.stamina.action.PLAY";
+    public static final String ACTION_PAUSE =  "com.fleecast.stamina.action.PAUSE";
+    public static final String ACTION_NEXT =  "com.fleecast.stamina.action.SKIP";
+    public static final String ACTION_STOP =  "com.fleecast.stamina.action.STOP";
+    public static final String ACTION_REWIND =  "com.fleecast.stamina.action.REWIND";
+    public static final String EXTRA_SEEK_TO = "ExtraSeekTo";
+    public static final String EXTRA_UPDATE_SEEKBAR = "ExtraUpdateSeekBar";
+
+    public static final String EXTRA_PLAY_NEW_SESSION =  "ExtraPlayNewSession";
+    public static final int ACTION_NULL =  -1;
+    public static final String EXTRA_PLAYER_SERVICE_PLAY_STATUS = "ExtraPlayerServicePlayStarted";
+    public static final int PLAYER_SERVICE_STATUS_ERROR = 0;
+    public static final int PLAYER_SERVICE_STATUS_PLAYING = 1;
+    public static final int PLAYER_SERVICE_STATUS_FINISHED = 2;
+    public static final int PLAYER_SERVICE_STATUS_PAUSE = 3;
+    public static final int PLAYER_SERVICE_STATUS_TACK_CHANGED = 4;
+
+    public static final int PLAYER_SERVICE_STATUS_SEEK_BAR_UPDATED = 5;
+    public static final String EXTRA_PLAYER_SERVICE_TRACK_NUMBER = "ExtraPlayerServiceTrackNumber";
+
 
 
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
     public static final int LIST_FOR_GRID = 0;
-    public static final long PLAYER_PROGRESS_UPDATE_TIME = 100;
+    public static final long CONST_PLAYER_PROGRESS_UPDATE_TIME = 100;
     public static final int AUDIO_RECORDING_NOTIFICATION_ID = 0;
 
     public static final String PREF_SORT_IS_ALPHABETIC_OR_DATE = "SortIsAlphabeticOrDate";
@@ -113,4 +140,5 @@ public class Constants {
     public static int RECORD_INFINIT_UP_STOP = 1;
     public static int RECORD_STOP = 2;
     public static int RECORD_TAP_KEEP = 3;
+
 }

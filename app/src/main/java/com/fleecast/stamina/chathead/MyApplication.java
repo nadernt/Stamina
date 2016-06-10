@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.util.Log;
 import com.fleecast.stamina.models.MostUsedAndRecentAppsStruct;
+import com.fleecast.stamina.notetaking.apis.AudioNoteInfoStruct;
 import com.fleecast.stamina.utility.Prefs;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +35,11 @@ public class MyApplication extends Application{
     public MyApplication getInstance(){
         return singleton;
     }
+    public List <AudioNoteInfoStruct> stackPlaylist = new ArrayList<>();
+    private int indexSomethingIsPlaying = -1;
+    private int currentMediaPosition;
+    private int mediaDuration;
+    private boolean isPlaying=false;
 
     @Override
     public void onCreate() {
@@ -151,7 +157,37 @@ public class MyApplication extends Application{
         this.userWantsRecordPhoneCalls = userWantsRecordPhoneCalls;
     }
 
+    public int getIndexSomethingIsPlaying() {
+        return indexSomethingIsPlaying;
+    }
 
+    public void setIndexSomethingIsPlaying(int indexSomethingIsPlaying) {
+        this.indexSomethingIsPlaying = indexSomethingIsPlaying;
+    }
+
+    public int getCurrentMediaPosition() {
+        return currentMediaPosition;
+    }
+
+    public void setCurrentMediaPosition(int mediaPosition) {
+        currentMediaPosition = mediaPosition;
+    }
+
+    public int getMediaDuration() {
+        return mediaDuration;
+    }
+
+    public void setMediaDuration(int mediaDuration) {
+        this.mediaDuration = mediaDuration;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setIsPlaying(boolean isPlaying) {
+        this.isPlaying = isPlaying;
+    }
 
     private class DataMigration implements RealmMigration {
         @Override

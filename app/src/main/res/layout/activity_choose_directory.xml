@@ -55,29 +55,44 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose Directory"
+            android:text="Choose\nDirectory"
             android:id="@+id/btnSelectDirectory"
             android:background="@color/baby_blue_eyes"
             android:padding="2dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
-            android:textSize="10dp" />
+            android:textSize="10dp"
+            android:layout_gravity="center_vertical" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Directory"
+            android:text="New\nDirectory"
             android:id="@+id/btnNewDirectory"
             android:background="@color/air_force_blue"
             android:layout_marginLeft="8dp"
             android:padding="2dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:textSize="10dp" />
+            android:textSize="10dp"
+            android:layout_gravity="center_vertical" />
 
         <Button
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SD\nCard"
+            android:id="@+id/btnSdCard"
+            android:background="@color/amber"
+            android:layout_marginLeft="8dp"
+            android:padding="2dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_vertical" />
+
+        <Button
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="Exit"
             android:id="@+id/btnExit"
@@ -86,7 +101,8 @@
             android:padding="2dp"
             android:layout_marginBottom="5dp"
             android:textSize="10dp"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_vertical" />
 
     </LinearLayout>
 

@@ -129,52 +129,53 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
 
     private void sendCommandsToService(int whatHappenedEvent, String number, Date start,Date end) {
+    if(number != null){
+            if (!realmContactHelper.checkIfExistsInIgnoreList(number)) {
+                Intent intentOfCall = new Intent(context, ChatHeadRecordService.class);
 
-       if(!realmContactHelper.checkIfExistsInIgnoreList(number)){
-            Intent intentOfCall = new Intent(context, ChatHeadRecordService.class);
+                if (whatHappenedEvent == Constants.PHONE_OUT_GOING_CALL_STARTED || whatHappenedEvent == Constants.PHONE_INCOMING_CALL_RECEIVED) {
 
-            if (whatHappenedEvent == Constants.PHONE_OUT_GOING_CALL_STARTED || whatHappenedEvent == Constants.PHONE_INCOMING_CALL_RECEIVED) {
+                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_NUMBER, number);
 
-                intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_NUMBER, number);
+                    if (whatHappenedEvent == Constants.PHONE_OUT_GOING_CALL_STARTED) {
+                        intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_OUTGOING);
+                    } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED) {
+                        intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_INCOMING);
+                    }
 
-                if (whatHappenedEvent == Constants.PHONE_OUT_GOING_CALL_STARTED) {
-                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_OUTGOING);
-                } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED) {
-                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_INCOMING);
+                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_RECORD, true);
+
+                    Log.e(TAG, "Start Record");
+
+                } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_OUTGOING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_MISSING_CALL) {
+                    intentOfCall = new Intent(context, ChatHeadRecordService.class);
+
+                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_STOP, true);
+
+                    if (whatHappenedEvent == Constants.PHONE_OUTGOING_CALL_ENDED) {
+                        intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_OUTGOING);
+                    } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_MISSING_CALL) {
+                        intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_INCOMING);
+                    }
+
+                    if (null != end)
+                        intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_END_TIME, end.getTime());
+                    else {
+                        // Misscall
+                        Date date = new Date();
+                        intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_END_TIME, date.getTime());
+                    }
+
+                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_START_TIME, start.getTime());
+
+                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_NUMBER, number);
+
+                    Log.e(TAG, "End Record");
+
                 }
 
-                intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_RECORD, true);
-
-                Log.e(TAG, "Start Record");
-
-            } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_OUTGOING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_MISSING_CALL) {
-                intentOfCall = new Intent(context, ChatHeadRecordService.class);
-
-                intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_STOP, true);
-
-                if (whatHappenedEvent == Constants.PHONE_OUTGOING_CALL_ENDED) {
-                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_OUTGOING);
-                } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_MISSING_CALL) {
-                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, Constants.RECORDS_IS_INCOMING);
-                }
-
-                if (null != end)
-                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_END_TIME, end.getTime());
-                else {
-                    // Misscall
-                    Date date = new Date();
-                    intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_END_TIME, date.getTime());
-                }
-
-                intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_START_TIME, start.getTime());
-
-                intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_NUMBER, number);
-
-                Log.e(TAG, "End Record");
-
+                context.startService(intentOfCall);
             }
-
-            context.startService(intentOfCall);
         }
     }
 

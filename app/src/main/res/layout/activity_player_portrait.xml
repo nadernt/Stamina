@@ -1,0 +1,116 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageButton
+        android:id="@+id/btnPlayPortrait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play"
+        android:src="@drawable/ic_action_playback_play"
+        android:background="@color/amber"
+        android:layout_toLeftOf="@+id/space2"
+        android:layout_toStartOf="@+id/space2"
+        android:layout_below="@+id/seekBar1"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <ImageButton
+        android:id="@+id/btnStopPortrait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:src="@drawable/ic_action_playback_stop"
+        android:background="@color/american_rose"
+        android:layout_below="@+id/seekBar1"
+        android:layout_toRightOf="@+id/space2"
+        android:layout_toEndOf="@+id/space2"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtTotalTime"
+        android:layout_alignRight="@+id/txtTotalTime"
+        android:layout_alignEnd="@+id/txtTotalTime" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Playing"
+        android:id="@+id/txtTotalTime"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/txtTitlePortraitPlayer"
+        android:layout_below="@+id/btnPlayPortrait"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/air_force_blue"
+        android:visibility="gone"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginBottom="14dp"
+        android:ellipsize="end"
+        android:maxLines="2" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/txtDescriptionPortraitPlayer"
+        android:layout_below="@+id/txtTitlePortraitPlayer"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:visibility="gone"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginBottom="14dp"
+        android:scrollbars="vertical" />
+
+    <ImageButton
+        android:id="@+id/btnRewindTrackPortrait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:src="@drawable/ic_action_playback_prev"
+        android:background="@color/alien_green"
+        android:layout_toLeftOf="@+id/btnPlayPortrait"
+        android:layout_toStartOf="@+id/btnPlayPortrait"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/seekBar1" />
+
+    <ImageButton
+        android:id="@+id/btnNextTrackPortrait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:src="@drawable/ic_action_playback_next"
+        android:background="@color/alien_green"
+        android:layout_below="@+id/seekBar1"
+        android:layout_toRightOf="@+id/btnStopPortrait"
+        android:layout_toEndOf="@+id/btnStopPortrait"
+        android:layout_margin="10dp" />
+
+    <Space
+        android:layout_width="10dp"
+        android:layout_height="30dp"
+        android:id="@+id/space2"
+        android:layout_below="@+id/seekBar1"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>
