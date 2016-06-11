@@ -27,7 +27,8 @@ public class Constants {
     public static final String EXTRA_PORTRAIT_PLAYER_TITLE = "ExtraPortraitPlayerTitle";
 
 
-    public static final String ACTION_PLAYBACK = "com.fleecast.stamina.action.TOGGLE_PLAYBACK";
+    public static final String ACTION_SHOW_PLAYER = "com.fleecast.stamina.action.SHOW_PLAYER";
+    public static final String ACTION_CLOSE = "com.fleecast.stamina.action.CLOSE";
     public static final String ACTION_PLAY = "com.fleecast.stamina.action.PLAY";
     public static final String ACTION_PAUSE =  "com.fleecast.stamina.action.PAUSE";
     public static final String ACTION_NEXT =  "com.fleecast.stamina.action.SKIP";

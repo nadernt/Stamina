@@ -344,9 +344,17 @@ public class ActivityPlayerPortrait extends Activity {
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_FINISHED:
                         Log.e("DBG", "Command Stop Recieved");
-
+                        /*myApplication.setIsPlaying(false);
+                        //play_pause= false;
+                        handler.removeCallbacksAndMessages(null);
+                        txtTotalTime.setText("Stop");
+                        seekBar.setProgress(0);
+                        btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
+                        btnPlayPortrait.setEnabled(true);
+                        btnStopPortrait.setEnabled(false);*/
                         //isPlaying=false;
                         stop();
+                        finish();
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_PAUSE:
                         pause();

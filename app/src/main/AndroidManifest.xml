@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 
     <application
         android:name=".chathead.MyApplication"
@@ -75,7 +76,8 @@
         <service android:name=".notetaking.RecorderService" />
         <service android:exported="false" android:name=".notetaking.PlayerService">
             <intent-filter>
-                <action android:name="com.fleecast.stamina.action.TOGGLE_PLAYBACK" />
+                <action android:name="com.fleecast.stamina.action.SHOW_PLAYER" />
+                <action android:name="com.fleecast.stamina.action.CLOSE" />
                 <action android:name="com.fleecast.stamina.action.PLAY" />
                 <action android:name="com.fleecast.stamina.action.PAUSE" />
                 <action android:name="com.fleecast.stamina.action.SKIP" />

@@ -99,8 +99,8 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                 .setContentIntent(intent)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .build();
-
     }
+
    /* private Notification createNotification(PendingIntent intent) {
         return new Notification.Builder(this)
                 .setContentTitle(getText(R.string.app_name))
