@@ -22,8 +22,6 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
-import com.fleecast.stamina.notetaking.apis.Shakespeare;
-import com.fleecast.stamina.utility.Constants;
 
 // Demonstration of using fragments to implement different activity layouts.
 // This sample provides a different layout (and activity flow) when run in
@@ -38,7 +36,7 @@ public class ActivityRecordsPlayList extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startService(new Intent(ActivityRecordsPlayList.this,PlayerService.class));
+//        startService(new Intent(ActivityRecordsPlayList.this,PlayerService.class));
 
         Toast.makeText(this, "FragmentLayout: OnCreate()", Toast.LENGTH_SHORT)
                 .show();
@@ -93,7 +91,7 @@ public class ActivityRecordsPlayList extends Activity {
     // ListActivity. It provides several methods for managing a list view, such
     // as the onListItemClick() callback to handle click events.
 
-    public static class TitlesFragment extends ListFragment{
+    public static class TitlesFragment extends ListFragment {
         boolean mDualPane;
         int mCurCheckPosition = 0;
         private MyApplication myApplication;
@@ -105,8 +103,9 @@ public class ActivityRecordsPlayList extends Activity {
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            myApplication = (MyApplication)getActivity().getApplication();
+            myApplication = (MyApplication) getActivity().getApplication();
 
+            Log.e("YYYYYYYYYYYYYYY", "KAKDILA");
             // You can use getActivity(), which returns the activity associated
             // with a fragment.
             // The activity is a context (since Activity extends Context) .
@@ -114,47 +113,48 @@ public class ActivityRecordsPlayList extends Activity {
             Toast.makeText(getActivity(), "TitlesFragment:onActivityCreated",
                     Toast.LENGTH_LONG).show();
 
-                loadPlayList("1465131201");
+            //if (!myApplication.isPlaying())
+            loadPlayListForListViw("1465131201");
 
-                // Check to see if we have a frame in which to embed the details
-                // fragment directly in the containing UI.
-                // R.id.details relates to the res/layout-land/fragment_layout.xml
-                // This is first created when the phone is switched to landscape
-                // mode
+            // Check to see if we have a frame in which to embed the details
+            // fragment directly in the containing UI.
+            // R.id.details relates to the res/layout-land/fragment_layout.xml
+            // This is first created when the phone is switched to landscape
+            // mode
 
-                View detailsFrame = getActivity().findViewById(R.id.details);
+            View detailsFrame = getActivity().findViewById(R.id.details);
 
-                Toast.makeText(getActivity(), "detailsFrame " + detailsFrame,
-                        Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "detailsFrame " + detailsFrame,
+                    Toast.LENGTH_LONG).show();
 
-                // Check that a view exists and is visible
-                // A view is visible (0) on the screen; the default value.
-                // It can also be invisible and hidden, as if the view had not been
-                // added.
-                //
-                mDualPane = detailsFrame != null
-                        && detailsFrame.getVisibility() == View.VISIBLE;
+            // Check that a view exists and is visible
+            // A view is visible (0) on the screen; the default value.
+            // It can also be invisible and hidden, as if the view had not been
+            // added.
+            //
+            mDualPane = detailsFrame != null
+                    && detailsFrame.getVisibility() == View.VISIBLE;
 
-                Toast.makeText(getActivity(), "mDualPane " + mDualPane,
-                        Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "mDualPane " + mDualPane,
+                    Toast.LENGTH_LONG).show();
 
-                if (savedInstanceState != null) {
-                    // Restore last state for checked position.
-                    mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
-                }
+            if (savedInstanceState != null) {
+                // Restore last state for checked position.
+                mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
+            }
 
 
-                if (mDualPane) {
-                    // In dual-pane mode, the list view highlights the selected
-                    // item.
-                    getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                    // Make sure our UI is in the correct state.
-                    showDetails(mCurCheckPosition);
-                } else {
-                    // We also highlight in uni-pane just for fun
-                    getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                    getListView().setItemChecked(mCurCheckPosition, true);
-                }
+            if (mDualPane) {
+                // In dual-pane mode, the list view highlights the selected
+                // item.
+                getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                // Make sure our UI is in the correct state.
+                showDetails(mCurCheckPosition);
+            } else {
+                // We also highlight in uni-pane just for fun
+                getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                getListView().setItemChecked(mCurCheckPosition, true);
+            }
 
             getListView().setLongClickable(true);
 
@@ -163,26 +163,28 @@ public class ActivityRecordsPlayList extends Activity {
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                                int pos, long id) {
                     // TODO Auto-generated method stub
-loadPlayList("1465064720");
-                    Log.e("long clicked","pos: " + pos);
+                    //loadPlayList("1465064720");
+                    Log.e("long clicked", "pos: " + pos);
 
                     return true;
                 }
             });
 
         }
-private void loadPlayList(String mFileDbUniqueId)
-{
-    // Populate list with our static array of titles in list in the
-    // Shakespeare class
-    //Shakespeare  sk = new Shakespeare(getActivity(),"1465065298""1465131201");
-     sk = new Shakespeare(getActivity(),mFileDbUniqueId);
 
-    setListAdapter(new ArrayAdapter<Spanned>(getActivity(),
-            android.R.layout.simple_list_item_activated_1,
-            sk.TITLES()));
+        private void loadPlayListForListViw(String mFileDbUniqueId) {
+            // Populate list with our static array of titles in list in the
+            // Shakespeare class
+            //Shakespeare  sk = new Shakespeare(getActivity(),"1465065298""1465131201");
+            sk = new Shakespeare(getActivity(), mFileDbUniqueId);
 
-}
+            setListAdapter(new ArrayAdapter<Spanned>(getActivity(),
+                    android.R.layout.simple_list_item_activated_1,
+                    sk.loadAudioListForListViewAdapter()));
+
+        }
+
+
         @Override
         public void onSaveInstanceState(Bundle outState) {
             super.onSaveInstanceState(outState);
@@ -254,6 +256,12 @@ private void loadPlayList(String mFileDbUniqueId)
 
             } else {
 
+
+
+
+
+                sk.loadAudioListForPlayerService();
+
                 myApplication.setIndexSomethingIsPlaying(index);
 
                 Intent intent = new Intent(getActivity(), ActivityPlayerPortrait.class);
@@ -263,7 +271,7 @@ private void loadPlayList(String mFileDbUniqueId)
 
     }
 
-    private void killTheActivity(){
+    private void killTheActivity() {
 
         finish();
     }

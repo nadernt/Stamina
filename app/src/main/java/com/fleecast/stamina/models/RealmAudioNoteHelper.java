@@ -4,9 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.fleecast.stamina.notetaking.apis.AudioNoteInfoStruct;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,7 +11,6 @@ import java.util.regex.Pattern;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 
 public class RealmAudioNoteHelper {

@@ -8,7 +8,7 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:paddingTop="8dp"
-    tools:context="com.fleecast.stamina.launcher.IconChooserActivity">
+    tools:mContext="com.fleecast.stamina.launcher.IconChooserActivity">
 
     <GridView
         android:id="@+id/icon_chooser_gridview"

@@ -35,14 +35,10 @@ public class ActivityPlayerPortrait extends Activity {
     private Handler handler = new Handler();
     private SeekBar seekBar;
     private TextView txtTotalTime;
-    private boolean errorInStream =false;
     private WindowManager windowManager;
     private Point szWindow = new Point();
-    private boolean play_pause = false;
-    private String mFileName;
     private ImageButton btnPlayPortrait, btnStopPortrait,btnRewindTrackPortrait,btnNextTrackPortrait;
     private TextView txtTitlePortraitPlayer,txtDescriptionPortraitPlayer;
-    //private boolean isPlaying;
     private int oldMediaSeekPosition = 0;
 
 
@@ -90,10 +86,42 @@ public class ActivityPlayerPortrait extends Activity {
 
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
 
-        Intent intent = new Intent(this, PlayerService.class);
-        //intent.setAction(Constants.ACTION_PLAY);
-        intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION,true);
-        startService(intent);
+
+
+        String action = getIntent().getAction();
+
+        if(action!=null){
+            Log.e("DBG", "MAM");
+
+            if(action.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)){
+                if(myApplication.isPlaying()) {
+                    btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
+                    myApplication.setIsPlaying(true);
+                }
+                else{
+                    btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
+                    myApplication.setIsPlaying(false);
+
+
+
+                }
+                //We set here to be sure there is not any mistake from any control before and thread start correctly.
+                oldMediaSeekPosition=0;
+                seekBar.setMax(myApplication.getMediaDuration());
+                startPlayProgressUpdater();
+            }
+
+
+        }else{
+
+            Log.e("DBG", "XXXX");
+
+            Intent intent = new Intent(this, PlayerService.class);
+            //myApplication.isPlaying()
+            intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
+            startService(intent);
+
+        }
 
         seekBar.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -110,7 +138,7 @@ public class ActivityPlayerPortrait extends Activity {
             btnPlayPortrait.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
-                  //  Log.e("DBG", "XXXX");
+
 
                     if(!myApplication.isPlaying()) {
                         sendCommandToPlayerService(Constants.ACTION_PLAY,Constants.ACTION_NULL);
@@ -150,6 +178,14 @@ public class ActivityPlayerPortrait extends Activity {
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if(intent.hasExtra(Constants.ACTION_SHOW_PLAYER_NO_NEW))
+        Log.e("GGGGGGGGGg","PPPPPPPPPPPP");
+        //else if (action.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)) showPlayerRequest();
+    }
+
     private void play()
     {
        // Log.e("DBG", "Play");
@@ -158,7 +194,7 @@ public class ActivityPlayerPortrait extends Activity {
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
         seekBar.setMax(myApplication.getMediaDuration());
         startPlayProgressUpdater();
-        btnStopPortrait.setEnabled(true);
+        //btnStopPortrait.setEnabled(true);
     }
 
     private void pause()
@@ -180,7 +216,7 @@ public class ActivityPlayerPortrait extends Activity {
         seekBar.setProgress(0);
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
         btnPlayPortrait.setEnabled(true);
-        btnStopPortrait.setEnabled(false);
+        //btnStopPortrait.setEnabled(false);
     }
 
     private void nextTrack()
@@ -246,7 +282,7 @@ public class ActivityPlayerPortrait extends Activity {
     }
 
     public void startPlayProgressUpdater() {
-        //Log.e("bbbbb", ""+ myApplication.getCurrentMediaPosition());
+      //  Log.e("bbbbb", ""+ myApplication.getCurrentMediaPosition());
 
         sendCommandToPlayerService(Constants.EXTRA_UPDATE_SEEKBAR,Constants.ACTION_NULL);
 
@@ -259,6 +295,8 @@ public class ActivityPlayerPortrait extends Activity {
         if (myApplication.isPlaying()) {
             Runnable notification = new Runnable() {
                 public void run() {
+                  //  Log.e("KKKKKKKK", ""+ myApplication.getCurrentMediaPosition());
+
                     startPlayProgressUpdater();
                 }
             };
@@ -314,6 +352,7 @@ public class ActivityPlayerPortrait extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+
         LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
                 new IntentFilter(Constants.INTENTFILTER_PLAYER_SERVICE)
         );
@@ -337,28 +376,19 @@ public class ActivityPlayerPortrait extends Activity {
                         Toast.makeText(ActivityPlayerPortrait.this, "Error playing the media file!", Toast.LENGTH_SHORT).show();
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_PLAYING:
-                      //  Log.e("DBG", "Command Play Recieved");
-                        //isPlaying=true;
                         play();
-                        //play_pause = !play_pause;
                         break;
-                    case Constants.PLAYER_SERVICE_STATUS_FINISHED:
-                        Log.e("DBG", "Command Stop Recieved");
-                        /*myApplication.setIsPlaying(false);
-                        //play_pause= false;
-                        handler.removeCallbacksAndMessages(null);
-                        txtTotalTime.setText("Stop");
-                        seekBar.setProgress(0);
-                        btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
-                        btnPlayPortrait.setEnabled(true);
-                        btnStopPortrait.setEnabled(false);*/
-                        //isPlaying=false;
+                    case Constants.PLAYER_SERVICE_STATUS_TRACK_FINISHED:
+                        Log.e("DBG", "Command TRACK Finished or Stop Recieved");
+                        stop();
+                        break;
+                    case Constants.PLAYER_SERVICE_STATUS_CLOSE_PLAYER:
+                        Log.e("DBG", "Command Close Player Recieved");
                         stop();
                         finish();
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_PAUSE:
                         pause();
-                        //play_pause = !play_pause;
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_SEEK_BAR_UPDATED:
                         break;

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fleecast.stamina.settings.FragmentNoteTakingSettings">
+    tools:mContext="com.fleecast.stamina.settings.FragmentNoteTakingSettings">
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/ScrollView10"
         android:layout_width="fill_parent"
@@ -15,34 +15,45 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Working path directory:"
-                android:id="@+id/textViewWPTitle"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:id="@+id/something">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Medium Text"
-                android:id="@+id/txtWorkingPath"
-                android:layout_below="@+id/textViewWPTitle"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Working path directory:"
+                    android:id="@+id/textViewWPTitle"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change"
-                android:id="@+id/btnChangeDirectory"
-                android:layout_below="@+id/txtWorkingPath"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change"
+                    android:id="@+id/btnChangeDirectory"
+                    android:layout_below="@+id/txtWorkingPath"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Medium Text"
+                    android:id="@+id/txtWorkingPath"
+                    android:layout_below="@+id/textViewWPTitle"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </RelativeLayout>
     </ScrollView>

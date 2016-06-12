@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#eeeeee"
     android:fitsSystemWindows="true"
-    tools:context=".activity.HomeActivity">
+    tools:mContext=".activity.HomeActivity">
     <include layout="@layout/content_home" />
 
     <android.support.design.widget.FloatingActionButton

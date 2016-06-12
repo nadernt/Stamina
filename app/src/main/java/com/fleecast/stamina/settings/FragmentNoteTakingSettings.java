@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -67,6 +68,8 @@ public class FragmentNoteTakingSettings extends Fragment {
 
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_note_taking_settings, container, false);
+
+        final CheckBox chkStopPlayerOnListFinish = (CheckBox) fragmentView.findViewById(R.id.chkStopPlayerOnListFinish);
 
         if (mRecorder != null)
             mRecorder = null;
@@ -136,6 +139,24 @@ public class FragmentNoteTakingSettings extends Fragment {
             }
         });
 
+        if(Prefs.getBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false))
+        {
+            chkStopPlayerOnListFinish.setChecked(true);
+
+        }
+        else
+        {
+            chkStopPlayerOnListFinish.setChecked(false);
+        }
+
+        chkStopPlayerOnListFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Prefs.putBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,chkStopPlayerOnListFinish.isChecked());
+
+            }
+        });
 
 
         return fragmentView;

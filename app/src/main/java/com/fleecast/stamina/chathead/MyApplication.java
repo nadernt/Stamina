@@ -5,7 +5,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.util.Log;
 import com.fleecast.stamina.models.MostUsedAndRecentAppsStruct;
-import com.fleecast.stamina.notetaking.apis.AudioNoteInfoStruct;
+import com.fleecast.stamina.models.AudioNoteInfoStruct;
+import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,22 +25,25 @@ public class MyApplication extends Application{
     private static MyApplication singleton;
     private static Context context;
     private boolean blLauncherDlgVisibility =false;
-    private int appJustLaunchedByUser = 0 ;
-    private int currentGroupFilter = -1;
+    private int appJustLaunchedByUser = Constants.CONST_NULL_ZERO ;
+    private int currentGroupFilter = Constants.CONST_NULL_MINUS;
     private List<MostUsedAndRecentAppsStruct> mostUsedAppsStruct = new ArrayList<>();
     private List<MostUsedAndRecentAppsStruct> mostRecentUsedAppsStruct = new ArrayList<>();
     private boolean isAppsListIsLoading = false;
     private boolean isUserTerminateApp =false;
     private boolean aRecordIsUnderGoing = false;
     private boolean userWantsRecordPhoneCalls = false;
-    public MyApplication getInstance(){
-        return singleton;
-    }
     public List <AudioNoteInfoStruct> stackPlaylist = new ArrayList<>();
-    private int indexSomethingIsPlaying = -1;
+    private int indexSomethingIsPlaying = Constants.CONST_NULL_MINUS;
     private int currentMediaPosition;
     private int mediaDuration;
     private boolean isPlaying=false;
+
+
+
+    public MyApplication getInstance(){
+        return singleton;
+    }
 
     @Override
     public void onCreate() {

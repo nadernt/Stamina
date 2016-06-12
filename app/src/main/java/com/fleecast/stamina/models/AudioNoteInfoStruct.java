@@ -1,4 +1,4 @@
-package com.fleecast.stamina.notetaking.apis;
+package com.fleecast.stamina.models;
 
 /**
  * Created by nnt on 5/06/16.

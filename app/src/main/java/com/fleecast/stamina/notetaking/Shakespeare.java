@@ -1,6 +1,7 @@
-package com.fleecast.stamina.notetaking.apis;
+package com.fleecast.stamina.notetaking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
@@ -9,7 +10,9 @@ import android.text.Spanned;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.models.AudioNoteInfoRealmStruct;
+import com.fleecast.stamina.models.AudioNoteInfoStruct;
 import com.fleecast.stamina.models.RealmAudioNoteHelper;
+import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 
 import java.io.File;
@@ -26,19 +29,19 @@ public final class Shakespeare{
     private final String folderToPlay;
     private final String mFileDbUniqueToken;
     private final  RealmAudioNoteHelper realmAudioNoteHelper;
-    private final Context context;
+    private final Context mContext;
     private MyApplication myApplication;
 
     //public List <AudioNoteInfoStruct> stackPlaylist = new ArrayList<>();
 
-    public Shakespeare(Context context, String mFileDbUniqueToken) {
+    public Shakespeare(Context mContext, String mFileDbUniqueToken) {
 
-        this.context = context;
+        this.mContext = mContext;
         this.mFileDbUniqueToken = mFileDbUniqueToken;
         this.folderToPlay = getPathToAudioFiles();
 
-        realmAudioNoteHelper = new RealmAudioNoteHelper(context);
-        myApplication = (MyApplication)context.getApplicationContext();
+        realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
+        myApplication = (MyApplication) mContext.getApplicationContext();
 
 
     }
@@ -47,7 +50,7 @@ public final class Shakespeare{
     /**
      * Our data, part 1.
      */
-    public Spanned[] TITLES () {
+    public Spanned[] loadAudioListForListViewAdapter() {
 
         File folder = new File(folderToPlay);
 
@@ -61,7 +64,7 @@ public final class Shakespeare{
         });
 
         if (listOfFiles == null)
-            return new Spanned[] {Html.fromHtml("No item")};
+            return new Spanned[] {Html.fromHtml(Constants.CONST_STRING_NO_DESCRIPTION)};
 
 
         Arrays.sort(listOfFiles, new Comparator() {
@@ -95,6 +98,72 @@ public final class Shakespeare{
                             "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>" + audioNoteInfoStruct.get(i).getTitle() + "</font><br><br>" +
                             "<font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + audioNoteInfoStruct.get(i).getDescription() + "</font>";
                     htmlArrayForList[i] = Html.fromHtml(htmlCompose);
+                    hasHitInDatabase = true;
+                }
+
+            }
+
+            if (!hasHitInDatabase) {
+                htmlCompose = "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>"+Constants.CONST_STRING_NO_NOTE+ "</font><br>"+
+                        "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + unixTimeToReadable((long) getFilePostFixId(listOfFiles[i].getName())) + "</font></small>" ;
+
+                htmlArrayForList[i] = Html.fromHtml(htmlCompose);
+            }
+
+
+        }
+
+        return htmlArrayForList;
+    }
+
+
+    public void loadAudioListForPlayerService() {
+
+        //First we try to kill the current working player service.
+        Intent intent = new Intent(mContext,PlayerService.class);
+        intent.setAction(Constants.ACTION_STOP);
+        mContext.startService(intent);
+
+        //Empty global playlist
+        myApplication.stackPlaylist.clear();
+        myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_MINUS);
+
+        File folder = new File(folderToPlay);
+
+        File[] listOfFiles = folder.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                //String name = pathname.getName().toLowerCase();
+                //return name.endsWith(".xml") && pathname.isFile();
+                return pathname.isFile() && !pathname.isHidden();
+            }
+        });
+
+
+        Arrays.sort(listOfFiles, new Comparator() {
+            public int compare(Object o1, Object o2) {
+
+                if (((File) o1).lastModified() < ((File) o2).lastModified()) {
+                    return -1;
+                } else if (((File) o1).lastModified() > ((File) o2).lastModified()) {
+                    return +1;
+                } else {
+                    return 0;
+                }
+            }
+
+
+        });
+
+
+        List<AudioNoteInfoRealmStruct> audioNoteInfoStruct = new ArrayList<>(realmAudioNoteHelper.findAllAudioNotesByParentId(Integer.valueOf(mFileDbUniqueToken)));
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+
+            boolean hasHitInDatabase = false;
+            if (audioNoteInfoStruct.size() > 0) {
+
+                if (lookInsideListForDbKey(audioNoteInfoStruct, getFilePostFixId(listOfFiles[i].getName()))) {
                     myApplication.stackPlaylist.add(i,new AudioNoteInfoStruct(folderToPlay +File.separator + listOfFiles[i].getName(),audioNoteInfoStruct.get(i).getTitle(),audioNoteInfoStruct.get(i).getDescription() ));
                     hasHitInDatabase = true;
                 }
@@ -102,27 +171,16 @@ public final class Shakespeare{
             }
 
             if (!hasHitInDatabase) {
-                htmlCompose = "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>No note</font><br>"+
-                        "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + unixTimeToReadable((long) getFilePostFixId(listOfFiles[i].getName())) + "</font></small>" ;
-
-                htmlArrayForList[i] = Html.fromHtml(htmlCompose);
                 myApplication.stackPlaylist.add(i,new AudioNoteInfoStruct(folderToPlay +File.separator + listOfFiles[i].getName(),null,null));
             }
 
 
         }
-
-/*
-        for (int i = 0; i < htmlArrayForList.length; i++)
-            Log.e("FFFFFFF", htmlArrayForList[i] + "");
-*/
-
-        return htmlArrayForList;
     }
 
     private String getHexStringFromInt(int resourceColorId){
-        //ContextCompat.getColor(context, R.color.color_name)
-        int intColor = ContextCompat.getColor(context, resourceColorId);
+        //ContextCompat.getColor(mContext, R.color.color_name)
+        int intColor = ContextCompat.getColor(mContext, resourceColorId);
         return "#" + String.valueOf(Integer.toHexString(intColor)).substring(2);
     }
 
@@ -175,7 +233,7 @@ private boolean lookInsideListForDbKey(List<AudioNoteInfoRealmStruct> adNFo, int
 
                 id = R.drawable.ic_action_armchair;
 
-            Drawable d = context.getResources().getDrawable(id);
+            Drawable d = mContext.getResources().getDrawable(id);
             d.setBounds(0,0,d.getIntrinsicWidth(),d.getIntrinsicHeight());
             return d;
         }

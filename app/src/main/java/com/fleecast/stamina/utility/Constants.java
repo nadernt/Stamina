@@ -6,6 +6,10 @@ import android.content.IntentFilter;
  * Created by nnt on 27/03/16.
  */
 public class Constants {
+    public static final int CONST_NULL_MINUS =  -1;
+    public static final int CONST_NULL_ZERO =  0;
+    public static final String CONST_STRING_NO_DESCRIPTION =  "No item";
+    public static final String CONST_STRING_NO_NOTE =  "no note";
     public static final int RESULT_CODE_REQUEST_DIRECTORY = 123;
     public static final String EXTRA_RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
     public static final String PREF_WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
@@ -26,8 +30,7 @@ public class Constants {
     public static final String EXTRA_PORTRAIT_PLAYER_DESCRIPTION = "ExtraPortraitPlayerDescription";
     public static final String EXTRA_PORTRAIT_PLAYER_TITLE = "ExtraPortraitPlayerTitle";
 
-
-    public static final String ACTION_SHOW_PLAYER = "com.fleecast.stamina.action.SHOW_PLAYER";
+    public static final String ACTION_SHOW_PLAYER_NO_NEW = "com.fleecast.stamina.action.SHOW_PLAYER_NO_NEW";
     public static final String ACTION_CLOSE = "com.fleecast.stamina.action.CLOSE";
     public static final String ACTION_PLAY = "com.fleecast.stamina.action.PLAY";
     public static final String ACTION_PAUSE =  "com.fleecast.stamina.action.PAUSE";
@@ -42,14 +45,13 @@ public class Constants {
     public static final String EXTRA_PLAYER_SERVICE_PLAY_STATUS = "ExtraPlayerServicePlayStarted";
     public static final int PLAYER_SERVICE_STATUS_ERROR = 0;
     public static final int PLAYER_SERVICE_STATUS_PLAYING = 1;
-    public static final int PLAYER_SERVICE_STATUS_FINISHED = 2;
+    public static final int PLAYER_SERVICE_STATUS_TRACK_FINISHED = 2;
     public static final int PLAYER_SERVICE_STATUS_PAUSE = 3;
     public static final int PLAYER_SERVICE_STATUS_TACK_CHANGED = 4;
-
     public static final int PLAYER_SERVICE_STATUS_SEEK_BAR_UPDATED = 5;
+    public static final int PLAYER_SERVICE_STATUS_CLOSE_PLAYER = 6;
     public static final String EXTRA_PLAYER_SERVICE_TRACK_NUMBER = "ExtraPlayerServiceTrackNumber";
-
-
+    public static final String PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE = "OnFinishListClosePlayerRemote";
 
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
