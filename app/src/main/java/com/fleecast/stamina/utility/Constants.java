@@ -9,7 +9,7 @@ public class Constants {
     public static final int CONST_NULL_MINUS =  -1;
     public static final int CONST_NULL_ZERO =  0;
     public static final String CONST_STRING_NO_DESCRIPTION =  "No item";
-    public static final String CONST_STRING_NO_NOTE =  "no note";
+    public static final String CONST_STRING_NO_NOTE =  "No note";
     public static final int RESULT_CODE_REQUEST_DIRECTORY = 123;
     public static final String EXTRA_RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
     public static final String PREF_WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
@@ -52,6 +52,17 @@ public class Constants {
     public static final int PLAYER_SERVICE_STATUS_CLOSE_PLAYER = 6;
     public static final String EXTRA_PLAYER_SERVICE_TRACK_NUMBER = "ExtraPlayerServiceTrackNumber";
     public static final String PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE = "OnFinishListClosePlayerRemote";
+    public static final String PREF_SHOW_PLAYER_FULL_NOTIFICATION = "ShowPlayerFullNnotification";
+    public static final int CONST_PLAY_SERVICE_STATE_NOT_ALIVE = -1;
+    public static final int CONST_PLAY_SERVICE_STATE_STOPPED = 0;
+    public static final int CONST_PLAY_SERVICE_STATE_PAUSED = 1;
+    public static final int CONST_PLAY_SERVICE_STATE_PLAYING = 2;
+    // The volume we set the media player to when we lose audio focus, but are allowed to reduce
+    // the volume instead of stopping playback.
+    public static final float DUCK_VOLUME = 0.1f;
+    public static final int RESULT_CODE_REQUEST_DIALOG = 123;
+    public static final String EXTRA_AUDIO_NOTE_PARENT_DB_ID = "ExtraAudioNoteParentDbId";
+    public static final String EXTRA_AUDIO_NOTE_FILE_DB_ID = "ExtraAudioNoteFileDbId";
 
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";

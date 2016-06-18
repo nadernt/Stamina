@@ -88,40 +88,9 @@ public class ActivityPlayerPortrait extends Activity {
 
 
 
-        String action = getIntent().getAction();
+        // Handle Intents & action
+        handleIntents(getIntent().getAction());
 
-        if(action!=null){
-            Log.e("DBG", "MAM");
-
-            if(action.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)){
-                if(myApplication.isPlaying()) {
-                    btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
-                    myApplication.setIsPlaying(true);
-                }
-                else{
-                    btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
-                    myApplication.setIsPlaying(false);
-
-
-
-                }
-                //We set here to be sure there is not any mistake from any control before and thread start correctly.
-                oldMediaSeekPosition=0;
-                seekBar.setMax(myApplication.getMediaDuration());
-                startPlayProgressUpdater();
-            }
-
-
-        }else{
-
-            Log.e("DBG", "XXXX");
-
-            Intent intent = new Intent(this, PlayerService.class);
-            //myApplication.isPlaying()
-            intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
-            startService(intent);
-
-        }
 
         seekBar.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -151,7 +120,6 @@ public class ActivityPlayerPortrait extends Activity {
                     }
 
                     myApplication.setIsPlaying(!myApplication.isPlaying());
-                    //play_pause = !play_pause;
 
                 }
             });
@@ -178,31 +146,52 @@ public class ActivityPlayerPortrait extends Activity {
 
     }
 
+private void handleIntents(String mAction){
+
+    if(mAction==null){
+
+        Intent intent = new Intent(this, PlayerService.class);
+        intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
+        startService(intent);
+
+    }else{
+
+        if(mAction.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)){
+            if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+                btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
+                myApplication.setIsPlaying(true);
+            }
+            else{
+                btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
+                myApplication.setIsPlaying(false);
+            }
+
+            //We set here to be sure there is not any mistake from any control before and thread start correctly.
+            oldMediaSeekPosition=0;
+            seekBar.setMax(myApplication.getMediaDuration());
+            startPlayProgressUpdater();
+        }
+
+
+    }
+
+}
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if(intent.hasExtra(Constants.ACTION_SHOW_PLAYER_NO_NEW))
-        Log.e("GGGGGGGGGg","PPPPPPPPPPPP");
-        //else if (action.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)) showPlayerRequest();
     }
 
     private void play()
     {
-       // Log.e("DBG", "Play");
         myApplication.setIsPlaying(true);
-       // play_pause =true;
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
         seekBar.setMax(myApplication.getMediaDuration());
         startPlayProgressUpdater();
-        //btnStopPortrait.setEnabled(true);
     }
 
     private void pause()
     {
-        //Log.e("DBG", "Pause");
         myApplication.setIsPlaying(false);
-        //play_pause =false;
-
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
         txtTotalTime.setText("Pause");
     }
@@ -210,13 +199,11 @@ public class ActivityPlayerPortrait extends Activity {
     private void stop()
     {
         myApplication.setIsPlaying(false);
-        //play_pause= false;
         handler.removeCallbacksAndMessages(null);
         txtTotalTime.setText("Stop");
         seekBar.setProgress(0);
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
         btnPlayPortrait.setEnabled(true);
-        //btnStopPortrait.setEnabled(false);
     }
 
     private void nextTrack()
@@ -282,21 +269,17 @@ public class ActivityPlayerPortrait extends Activity {
     }
 
     public void startPlayProgressUpdater() {
-      //  Log.e("bbbbb", ""+ myApplication.getCurrentMediaPosition());
 
         sendCommandToPlayerService(Constants.EXTRA_UPDATE_SEEKBAR,Constants.ACTION_NULL);
 
         if(oldMediaSeekPosition != myApplication.getCurrentMediaPosition()) {
-            //Log.e("KKKKKKKK", ""+ myApplication.getCurrentMediaPosition());
             seekBar.setProgress(myApplication.getCurrentMediaPosition());
             setProgressText();
             oldMediaSeekPosition = myApplication.getCurrentMediaPosition();
         }
-        if (myApplication.isPlaying()) {
+        if (myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
             Runnable notification = new Runnable() {
                 public void run() {
-                  //  Log.e("KKKKKKKK", ""+ myApplication.getCurrentMediaPosition());
-
                     startPlayProgressUpdater();
                 }
             };
@@ -314,10 +297,7 @@ public class ActivityPlayerPortrait extends Activity {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        Log.e("DBG", "ActivityPlayerPortrait Destroyed.");
-       /* if (mMediaplayer != null) {
-            mMediaplayer.release();
-        }*/
+
         if(handler  != null) {
             handler.removeCallbacksAndMessages(null);
         }
@@ -356,7 +336,23 @@ public class ActivityPlayerPortrait extends Activity {
         LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
                 new IntentFilter(Constants.INTENTFILTER_PLAYER_SERVICE)
         );
+
+        if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+            btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
+            myApplication.setIsPlaying(true);
+        }
+        else{
+            btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
+            myApplication.setIsPlaying(false);
+        }
+
+        //We set here to be sure there is not any mistake from any control before and thread start correctly.
+        oldMediaSeekPosition=0;
+        seekBar.setMax(myApplication.getMediaDuration());
+        startPlayProgressUpdater();
+
     }
+
 
     @Override
     protected void onStop() {
@@ -379,11 +375,11 @@ public class ActivityPlayerPortrait extends Activity {
                         play();
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_TRACK_FINISHED:
-                        Log.e("DBG", "Command TRACK Finished or Stop Recieved");
+                        //Log.e("DBG", "Command TRACK Finished or Stop Recieved");
                         stop();
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_CLOSE_PLAYER:
-                        Log.e("DBG", "Command Close Player Recieved");
+                        //Log.e("DBG", "Command Close Player Recieved");
                         stop();
                         finish();
                         break;

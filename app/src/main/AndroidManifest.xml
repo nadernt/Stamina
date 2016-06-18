@@ -21,6 +21,10 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+
     <application
         android:name=".chathead.MyApplication"
         android:allowBackup="true"
@@ -75,7 +79,9 @@
         <service android:name=".chathead.ChatHeadService" />
         <service android:name=".notetaking.ChatHeadRecordService" />
         <service android:name=".notetaking.RecorderService" />
-        <service android:exported="false" android:name=".notetaking.PlayerService">
+        <service
+            android:name=".notetaking.PlayerService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.fleecast.stamina.action.SHOW_PLAYER" />
                 <action android:name="com.fleecast.stamina.action.CLOSE" />
@@ -86,6 +92,7 @@
                 <action android:name="com.fleecast.stamina.action.STOP" />
             </intent-filter>
         </service>
+
         <receiver
             android:name=".chathead.DeviceAdminSampleReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -123,12 +130,17 @@
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
         <activity android:name=".notetaking.ActivityRecordsPlayList" />
-        <activity android:name=".notetaking.ActivityRecordsPlayList$DetailsActivity" />
 
-<!--        <service
+        <!--
+            <service
             android:name=".notetaking.PlayerService"
             android:enabled="false"
-            android:exported="true"></service>-->
+            android:exported="true"></service>
+        -->
+        <activity
+            android:name=".notetaking.AddNoteToAudio"
+            android:label="@string/title_activity_add_note_to_audio"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

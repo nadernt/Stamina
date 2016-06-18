@@ -44,9 +44,10 @@ public class RealmAudioNoteHelper {
      * @param title
      * @param description
      */
-    public void addNote(int id, String title, String description, int tag) {
+    public void addAudioNote(int id,int parent_db_id, String title, String description, int tag) {
         AudioNoteInfoRealmStruct audioNoteInfoRealmStruct = new AudioNoteInfoRealmStruct();
         audioNoteInfoRealmStruct.setId(id);
+        audioNoteInfoRealmStruct.setParentDbId(parent_db_id);
         audioNoteInfoRealmStruct.setTitle(title);
         audioNoteInfoRealmStruct.setDescription(description);
         audioNoteInfoRealmStruct.setTag(0);
@@ -56,6 +57,22 @@ public class RealmAudioNoteHelper {
         showLog("Added ; " + title);
     }
 
+    /**
+     *
+     * @param id
+     * @param title
+     * @param description
+     * @return
+     */
+    public void updateAudioNote(int id, String title, String description) {
+
+        realm.beginTransaction();
+        AudioNoteInfoRealmStruct audioNoteInfoRealmStruct = realm.where(AudioNoteInfoRealmStruct.class).equalTo("id", id).findFirst();
+        audioNoteInfoRealmStruct.setId(id);
+        audioNoteInfoRealmStruct.setTitle(title);
+        audioNoteInfoRealmStruct.setDescription(description);
+        realm.commitTransaction();
+    }
 
     /**
      * Check if audio note by id exists.
@@ -84,34 +101,6 @@ public class RealmAudioNoteHelper {
 
         return audioNoteInfoRealmStruct;
     }
-
-/*
-    public boolean update(int id, String title, String iconFilePath, int app_group_code, int app_group_code_order) {
-
-        realm.beginTransaction();
-        GroupsDbRealmStruct groupsDbRealmStruct = realm.where(GroupsDbRealmStruct.class).equalTo("id", id).findFirst();
-        groupsDbRealmStruct.setAppGroupOrder(app_group_code_order);
-        realm.commitTransaction();
-        return false;
-
-    }
-*/
-
-   /* public void updateNotePhoneCallInfo(int id, Date start_time,
-                      Date end_time, int call_type, String phone_number) {
-        realm.beginTransaction();
-
-        AudioNoteInfoRealmStruct audioNoteInfoRealmStruct = realm.where(AudioNoteInfoRealmStruct.class).equalTo("id", id).findFirst();
-        audioNoteInfoRealmStruct.setId(id);
-        audioNoteInfoRealmStruct.setStartTime(start_time);
-        audioNoteInfoRealmStruct.setEndTime(end_time);
-        audioNoteInfoRealmStruct.setCallType(call_type);
-        audioNoteInfoRealmStruct.setPhoneNumber(phone_number);
-        realm.commitTransaction();
-
-    }
-
-    */
 
      /**
      * method search all audio note by parent_db_id
@@ -161,7 +150,7 @@ public class RealmAudioNoteHelper {
      * @param id
      * @param title
      * @param description
-     */
+     *//*
     public void updateNote(int id, String title, String description, boolean has_audio)  {
         Date now = new Date();
 
@@ -175,14 +164,14 @@ public class RealmAudioNoteHelper {
         realm.commitTransaction();
         showLog("Updated : " + title);
     }
-
+*/
 
     /**
      * method delete articles by id
      *
      * @param id
      */
-    public void deleteSingleNote(int id) {
+    public void deleteSingleAudioNote(int id) {
         RealmResults<AudioNoteInfoRealmStruct> audioNotesToDelete = realm.where(AudioNoteInfoRealmStruct.class).equalTo("id", id).findAll();
         realm.beginTransaction();
         audioNotesToDelete.deleteFirstFromRealm();

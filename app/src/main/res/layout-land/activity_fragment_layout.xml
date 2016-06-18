@@ -1,125 +1,187 @@
-<!--
- Top-level content view for the layout fragment sample.  This version is
-     for display when in landscape: we can fit both titles and dialog.
--->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:orientation="horizontal" >
+    android:layout_height="match_parent">
 
     <fragment
         android:id="@+id/titles"
-        android:layout_width="0px"
+        android:layout_width="200dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        class="com.fleecast.stamina.notetaking.ActivityRecordsPlayList$TitlesFragment" />
+        class="com.fleecast.stamina.notetaking.ActivityRecordsPlayList$TitlesFragment"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/details"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?android:attr/detailsElementBackground" >
-
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom">
-
-            <ImageButton
-                android:id="@+id/btnPlayTrack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Play"
-                android:src="@drawable/ic_action_playback_play"
-                android:background="@color/amber"
-                android:layout_below="@+id/seekBar"
-                android:layout_toLeftOf="@+id/space"
-                android:layout_toStartOf="@+id/space"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <ImageButton
-                android:id="@+id/btnPrevTrack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stop"
-                android:src="@drawable/ic_action_playback_prev"
-                android:background="@color/alien_green"
-                android:layout_below="@+id/seekBar"
-                android:layout_toLeftOf="@+id/btnPlayTrack"
-                android:layout_toStartOf="@+id/btnPlayTrack"
-                android:layout_margin="10dp" />
-
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textView4"
-                android:layout_alignRight="@+id/textView4"
-                android:layout_alignEnd="@+id/textView4" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Playing"
-                android:id="@+id/textView4"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="14dp"
-                android:layout_marginTop="8dp" />
-
-            <ImageButton
-                android:id="@+id/btnNextTrack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stop"
-                android:src="@drawable/ic_action_playback_next"
-                android:background="@color/alien_green"
-                android:layout_below="@+id/seekBar"
-                android:layout_toRightOf="@+id/btnStopTrack"
-                android:layout_toEndOf="@+id/btnStopTrack"
-                android:layout_margin="10dp" />
-
-            <ImageButton
-                android:id="@+id/btnStopTrack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stop"
-                android:src="@drawable/ic_action_playback_stop"
-                android:background="@color/american_rose"
-                android:layout_below="@+id/seekBar"
-                android:layout_toRightOf="@+id/space"
-                android:layout_toEndOf="@+id/space"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-
-            <Space
-                android:layout_width="10dp"
-                android:layout_height="30dp"
-                android:id="@+id/space"
-                android:layout_below="@+id/seekBar"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp" />
-        </RelativeLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/detailsElementBackground"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_toRightOf="@+id/titles"
+        android:layout_toEndOf="@+id/titles">
 
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:id="@+id/imageView2"
+            android:id="@+id/imgNoNotePlaceHolder"
             android:layout_gravity="center"
             android:scaleType="fitStart"
             android:background="@drawable/launchpad_icons_bg"
-            android:src="@drawable/ic_action_mic" />
+            android:src="@drawable/ic_action_mic"
+            android:visibility="visible"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
-    </FrameLayout>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/txtTitlePlayer"
+            android:layout_gravity="center_horizontal|top"
+            android:textColor="#000000"
+            android:textSize="12dp"
+            android:text="sdfs"
+            android:scrollbars="vertical"
+            android:padding="5dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="239dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/txtDetailsPlayer"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textColor="#000000"
+            android:textSize="12dp"
+            android:text="sdfs"
+            android:scrollbars = "vertical"
+            android:padding="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/txtTitlePlayer"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/relativeLayout"
+        android:layout_toRightOf="@+id/titles"
+        android:layout_toEndOf="@+id/titles">
+
+        <ImageButton
+            android:id="@+id/btnPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            android:src="@drawable/ic_action_playback_play"
+            android:background="@color/amber"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toLeftOf="@+id/space"
+            android:layout_toStartOf="@+id/space"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:contentDescription="" />
+
+        <ImageButton
+            android:id="@+id/btnRewindTrack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:src="@drawable/ic_action_playback_prev"
+            android:background="@color/alien_green"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toLeftOf="@+id/btnPlay"
+            android:layout_toStartOf="@+id/btnPlay"
+            android:layout_margin="10dp" />
+
+        <SeekBar
+            android:id="@+id/seekBar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtTotalTime1"
+            android:layout_alignRight="@+id/txtTotalTime1"
+            android:layout_alignEnd="@+id/txtTotalTime1" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Playing"
+            android:id="@+id/txtTotalTime1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="8dp" />
+
+        <ImageButton
+            android:id="@+id/btnNextTrack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:src="@drawable/ic_action_playback_next"
+            android:background="@color/alien_green"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toRightOf="@+id/btnStop"
+            android:layout_toEndOf="@+id/btnStop"
+            android:layout_margin="10dp" />
+
+        <ImageButton
+            android:id="@+id/btnStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:src="@drawable/ic_action_playback_stop"
+            android:background="@color/american_rose"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toRightOf="@+id/space"
+            android:layout_toEndOf="@+id/space"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="30dp"
+            android:id="@+id/space"
+            android:layout_below="@+id/seekBar2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <ImageButton
+            android:id="@+id/btnNextNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:src="@drawable/ic_action_arrow_bottom"
+            android:background="@color/accent_material_light"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toRightOf="@+id/btnNextTrack"
+            android:layout_toEndOf="@+id/btnNextTrack"
+            android:layout_marginTop="10dp" />
+
+        <ImageButton
+            android:id="@+id/btnRewindNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop"
+            android:src="@drawable/ic_action_arrow_top"
+            android:background="@color/accent_material_light"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toLeftOf="@+id/btnRewindTrack"
+            android:layout_toStartOf="@+id/btnRewindTrack"
+            android:layout_marginTop="10dp" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -91,12 +91,15 @@ public final class Shakespeare{
         for (int i = 0; i < listOfFiles.length; i++) {
 
             boolean hasHitInDatabase = false;
+            int dbId = getDbIdFromFileName(listOfFiles[i].getName());
+
             if (audioNoteInfoStruct.size() > 0) {
 
-                if (lookInsideListForDbKey(audioNoteInfoStruct, getFilePostFixId(listOfFiles[i].getName()))) {
-                    htmlCompose = "<font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + unixTimeToReadable((long) getFilePostFixId(listOfFiles[i].getName())) + "</font><br>" +
-                            "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>" + audioNoteInfoStruct.get(i).getTitle() + "</font><br><br>" +
-                            "<font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + audioNoteInfoStruct.get(i).getDescription() + "</font>";
+            int indexInDbStruct = lookInsideListForDbKey(audioNoteInfoStruct, dbId);
+            if (indexInDbStruct>Constants.CONST_NULL_MINUS) {
+                    htmlCompose = "<font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + unixTimeToReadable((long) dbId) + "</font><br>" +
+                            "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>" + audioNoteInfoStruct.get(indexInDbStruct).getTitle() + "</font><br><br>" +
+                            "<font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + audioNoteInfoStruct.get(indexInDbStruct).getDescription() + "</font>";
                     htmlArrayForList[i] = Html.fromHtml(htmlCompose);
                     hasHitInDatabase = true;
                 }
@@ -105,7 +108,7 @@ public final class Shakespeare{
 
             if (!hasHitInDatabase) {
                 htmlCompose = "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>"+Constants.CONST_STRING_NO_NOTE+ "</font><br>"+
-                        "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + unixTimeToReadable((long) getFilePostFixId(listOfFiles[i].getName())) + "</font></small>" ;
+                        "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + unixTimeToReadable((long) dbId) + "</font></small>" ;
 
                 htmlArrayForList[i] = Html.fromHtml(htmlCompose);
             }
@@ -120,10 +123,10 @@ public final class Shakespeare{
     public void loadAudioListForPlayerService() {
 
         //First we try to kill the current working player service.
-        Intent intent = new Intent(mContext,PlayerService.class);
+      /*  Intent intent = new Intent(mContext,PlayerService.class);
         intent.setAction(Constants.ACTION_STOP);
         mContext.startService(intent);
-
+*/
         //Empty global playlist
         myApplication.stackPlaylist.clear();
         myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_MINUS);
@@ -161,22 +164,27 @@ public final class Shakespeare{
         for (int i = 0; i < listOfFiles.length; i++) {
 
             boolean hasHitInDatabase = false;
+            int dbId = getDbIdFromFileName(listOfFiles[i].getName());
+
             if (audioNoteInfoStruct.size() > 0) {
 
-                if (lookInsideListForDbKey(audioNoteInfoStruct, getFilePostFixId(listOfFiles[i].getName()))) {
-                    myApplication.stackPlaylist.add(i,new AudioNoteInfoStruct(folderToPlay +File.separator + listOfFiles[i].getName(),audioNoteInfoStruct.get(i).getTitle(),audioNoteInfoStruct.get(i).getDescription() ));
+                int indexInDbStruct = lookInsideListForDbKey(audioNoteInfoStruct, dbId);
+                if (indexInDbStruct>Constants.CONST_NULL_MINUS) {
+                    myApplication.stackPlaylist.add(i,new AudioNoteInfoStruct(dbId, audioNoteInfoStruct.get(indexInDbStruct).getParentDbId(),folderToPlay +File.separator + listOfFiles[i].getName(),audioNoteInfoStruct.get(indexInDbStruct).getTitle(),audioNoteInfoStruct.get(indexInDbStruct).getDescription(),audioNoteInfoStruct.get(indexInDbStruct).getTag() ));
                     hasHitInDatabase = true;
                 }
 
             }
 
             if (!hasHitInDatabase) {
-                myApplication.stackPlaylist.add(i,new AudioNoteInfoStruct(folderToPlay +File.separator + listOfFiles[i].getName(),null,null));
+                myApplication.stackPlaylist.add(i,new AudioNoteInfoStruct(dbId,Integer.valueOf(mFileDbUniqueToken),folderToPlay +File.separator + listOfFiles[i].getName(),null,null,Constants.CONST_NULL_ZERO));
             }
 
 
         }
     }
+
+
 
     private String getHexStringFromInt(int resourceColorId){
         //ContextCompat.getColor(mContext, R.color.color_name)
@@ -195,19 +203,24 @@ private String unixTimeToReadable(long unixSeconds){
     return formattedDate;
 
 }
-private boolean lookInsideListForDbKey(List<AudioNoteInfoRealmStruct> adNFo, int filePostFixId){
+private int lookInsideListForDbKey(List<AudioNoteInfoRealmStruct> adNFo, int filePostFixId){
 
+    int foundedDbIdKeyIndex=Constants.CONST_NULL_MINUS;
     for(int i=0 ; i < adNFo.size() ; i++){
 
-        if(adNFo.get(i).getId()==filePostFixId)
-            return true;
+        if(adNFo.get(i).getId()==filePostFixId){
+            foundedDbIdKeyIndex=i;
+            break;
+        }
+
 
     }
-     return false;
+    return foundedDbIdKeyIndex ;
+
 }
 
 
-    private int getFilePostFixId(String file_name)
+    private int getDbIdFromFileName(String file_name)
     {
 
         if(file_name==null || file_name.length()==0)

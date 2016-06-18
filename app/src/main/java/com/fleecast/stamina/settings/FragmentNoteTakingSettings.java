@@ -70,6 +70,8 @@ public class FragmentNoteTakingSettings extends Fragment {
         fragmentView = inflater.inflate(R.layout.fragment_note_taking_settings, container, false);
 
         final CheckBox chkStopPlayerOnListFinish = (CheckBox) fragmentView.findViewById(R.id.chkStopPlayerOnListFinish);
+        final CheckBox chkShowFullPlayerNotification = (CheckBox) fragmentView.findViewById(R.id.chkShowFullPlayerNotification);
+
 
         if (mRecorder != null)
             mRecorder = null;
@@ -140,21 +142,26 @@ public class FragmentNoteTakingSettings extends Fragment {
         });
 
         if(Prefs.getBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false))
-        {
             chkStopPlayerOnListFinish.setChecked(true);
-
-        }
         else
-        {
             chkStopPlayerOnListFinish.setChecked(false);
-        }
+
+        if(Prefs.getBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION,false))
+            chkShowFullPlayerNotification.setChecked(true);
+        else
+            chkShowFullPlayerNotification.setChecked(false);
 
         chkStopPlayerOnListFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Prefs.putBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,chkStopPlayerOnListFinish.isChecked());
+            }
+        });
 
+        chkShowFullPlayerNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Prefs.putBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION,chkShowFullPlayerNotification.isChecked());
             }
         });
 

@@ -1,27 +1,53 @@
 package com.fleecast.stamina.notetaking;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spanned;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ScrollView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
+import com.fleecast.stamina.models.RealmAudioNoteHelper;
+import com.fleecast.stamina.utility.Constants;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 // Demonstration of using fragments to implement different activity layouts.
 // This sample provides a different layout (and activity flow) when run in
@@ -31,33 +57,510 @@ public class ActivityRecordsPlayList extends Activity {
 
     private static Activity anInstance;
     private static Shakespeare sk;
+    private Handler handler = new Handler();
+    private SeekBar seekBar;
+    private TextView txtTotalTime;
+    private WindowManager windowManager;
+    private Point szWindow = new Point();
+    private ImageButton btnPlay, btnStop,btnRewindTrack,btnNextTrack;
+    private TextView txtTitlePlayer;
+    private static TextView txtDetailsPlayer;
+    private int oldMediaSeekPosition = 0;
+    private MyApplication myApplication;
+    private static boolean playlistHasLoaded =false;
+    private static ImageButton btnRewindNote;
+    private ImageButton btnNextNote;
+    private static int notePointer =0;
+    private ImageView imgNoNotePlaceHolder;
+    private static RelativeLayout details;
+    private static int parentDbId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        startService(new Intent(ActivityRecordsPlayList.this,PlayerService.class));
-
-        Toast.makeText(this, "FragmentLayout: OnCreate()", Toast.LENGTH_SHORT)
-                .show();
-        //anInstance = ActivityRecordsPlayList.this;
-        // Sets the view. Depending on orientation it will select either
-        // res/layout/fragment_layout.xml (portrait mode) or
-        // res/layout-land/fragment_layout.xml (landscape mode). This is done
-        // automatically by the system.
         setContentView(R.layout.activity_fragment_layout);
+        myApplication =  (MyApplication)getApplicationContext();
+
+
+        txtTotalTime = (TextView) findViewById(R.id.txtTotalTime1);
+        txtDetailsPlayer = (TextView) findViewById(R.id.txtDetailsPlayer);
+
+        btnPlay = (ImageButton) findViewById(R.id.btnPlay); // Start
+        btnStop = (ImageButton) findViewById(R.id.btnStop); // Stop
+        btnNextTrack = (ImageButton) findViewById(R.id.btnNextTrack); // Next
+        btnRewindTrack = (ImageButton) findViewById(R.id.btnRewindTrack); // Rewind
+        btnRewindNote = (ImageButton) findViewById(R.id.btnRewindNote); // Rewind
+        btnNextNote = (ImageButton) findViewById(R.id.btnNextNote); // Rewind
+        imgNoNotePlaceHolder = (ImageView) findViewById(R.id.imgNoNotePlaceHolder);
+        txtTitlePlayer = (TextView) findViewById(R.id.txtTitlePlayer);
+        txtDetailsPlayer = (TextView) findViewById(R.id.txtDetailsPlayer);
+
+        details = (RelativeLayout) findViewById(R.id.details);
+        btnPlay.setImageResource(R.drawable.ic_action_playback_play);
+
+        seekBar = (SeekBar) findViewById(R.id.seekBar2);
+
+        if(!playlistHasLoaded) {
+            loadPlayListForListViw("1465131201", false);
+            parentDbId = Integer.valueOf("1465131201");
+        }else {
+            TitlesFragment.highlightSelectedNoteItem(notePointer);
+        }
+
+        fillTextNotesForUser();
+
+        // Handle Intents & action
+      //  handleIntents(getIntent().getAction());
+
+
+        seekBar.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(myApplication.isPlaying())
+                    updateSeekChange();
+                else
+                    return true;
+                return false;
+            }
+        });
+
+        // Start
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+
+                if(!myApplication.isPlaying()) {
+                    sendCommandToPlayerService(Constants.ACTION_PLAY,Constants.ACTION_NULL);
+                    play();
+                }
+                else
+                {
+                    sendCommandToPlayerService(Constants.ACTION_PAUSE,Constants.ACTION_NULL);
+                    pause();
+                }
+
+                myApplication.setIsPlaying(!myApplication.isPlaying());
+
+            }
+        });
+
+        // Stop
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendCommandToPlayerService(Constants.ACTION_STOP,Constants.ACTION_NULL);
+                stop();
+            }
+        });
+
+        btnNextTrack.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                nextTrack();
+            }
+        });
+
+        btnRewindTrack.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                rewindTrack();
+            }
+        });
+
+        btnRewindNote.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+                if(notePointer > 0){
+                    notePointer--;
+                    TitlesFragment.highlightSelectedNoteItem(notePointer);
+                    fadeWidgets();
+
+                }
+                else {
+                    notePointer=0;
+                    TitlesFragment.highlightSelectedNoteItem(0);
+                }
+                fillTextNotesForUser();
+            }
+        });
+
+        btnNextNote.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+                if(notePointer <  myApplication.stackPlaylist.size()-1){
+                    notePointer++;
+                    TitlesFragment.highlightSelectedNoteItem(notePointer);
+                    fadeWidgets();
+
+                }
+                else
+                {
+                    notePointer=myApplication.stackPlaylist.size()-1;
+                    TitlesFragment.highlightSelectedNoteItem(myApplication.stackPlaylist.size()-1);
+                }
+                fillTextNotesForUser();
+            }
+        });
+
+        txtDetailsPlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                details.setVisibility(View.GONE);
+            }
+        });
+
     }
 
+    private void fillTextNotesForUser(){
+
+        String txtTitl  = myApplication.stackPlaylist.get(notePointer).getTitle();
+
+        if(txtTitl==null)
+            txtTitlePlayer.setText(Constants.CONST_STRING_NO_NOTE);
+
+        String txtDescr  = myApplication.stackPlaylist.get(notePointer).getDescription();
+        if(txtDescr==null) {
+            imgNoNotePlaceHolder.setVisibility(View.VISIBLE);
+            txtDescr = unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(notePointer).getFileName()));
+        }
+        txtDetailsPlayer.setText(txtDescr);
+
+    }
+
+    private void fadeWidgets(){
+
+        details.setVisibility(View.VISIBLE);
+        AlphaAnimation animation1 = new AlphaAnimation(0.0f, 1.0f);
+        animation1.setDuration(500);
+        txtDetailsPlayer.startAnimation(animation1);
+        txtTitlePlayer.startAnimation(animation1);
+    }
+    final Timer timer = new Timer();
+
+    public void textEffect(){
+        txtTitlePlayer.setTypeface(null, Typeface.BOLD);
+        txtDetailsPlayer.setTypeface(null, Typeface.BOLD);
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            txtTitlePlayer.setTypeface(null, Typeface.NORMAL);
+                            txtDetailsPlayer.setTypeface(null, Typeface.NORMAL);
+                        }
+                    });
+                }
+            };
+            timer.schedule(task,  500);
+    }
+
+    private String unixTimeToReadable(long unixSeconds){
+
+        Date date = new Date(unixSeconds*1000L); // *1000 is to convert seconds to milliseconds
+        // E, dd MMM yyyy HH:mm:ss z
+        SimpleDateFormat sdf = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss a"); // the format of your date
+        //sdf.setTimeZone(TimeZone.getTimeZone("GMT-4")); // give a timezone reference for formating (see comment at the bottom
+        String formattedDate = sdf.format(date);
+        //System.out.println(formattedDate);
+        return formattedDate;
+
+    }
+
+    private int getFilePostFixId(String file_name)
+    {
+
+        if(file_name==null || file_name.length()==0)
+            return -1;
+        else
+            return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
+    }
+
+    private void loadPlayListForListViw(String mFileDbUniqueId,boolean startAutoPlayeOnStart) {
+        // Populate list with our static array of titles in list in the
+        // Shakespeare class
+        //Shakespeare  sk = new Shakespeare(getActivity(),"1465065298""1465131201");
+        sk = new Shakespeare(this, mFileDbUniqueId);
+
+        sk.loadAudioListForPlayerService();
+
+        myApplication.setIndexSomethingIsPlaying(0);
+
+        playlistHasLoaded =true;
+
+        if(startAutoPlayeOnStart) {
+            handleIntents(null);
+//            btnPlay.performClick();
+        }
+
+    }
+
+    private void handleIntents(String mAction){
+
+        if(mAction==null){
+
+            Intent intent = new Intent(this, PlayerService.class);
+            intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
+            startService(intent);
+
+        }else{
+
+            if(mAction.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)){
+                if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+                    btnPlay.setImageResource(R.drawable.ic_action_playback_pause);
+                    myApplication.setIsPlaying(true);
+                }
+                else{
+                    btnPlay.setImageResource(R.drawable.ic_action_playback_play);
+                    myApplication.setIsPlaying(false);
+                }
+
+                //We set here to be sure there is not any mistake from any control before and thread start correctly.
+                oldMediaSeekPosition=0;
+                seekBar.setMax(myApplication.getMediaDuration());
+                startPlayProgressUpdater();
+            }
+
+
+        }
+
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
+
+    private void play()
+    {
+        myApplication.setIsPlaying(true);
+        btnPlay.setImageResource(R.drawable.ic_action_playback_pause);
+        seekBar.setMax(myApplication.getMediaDuration());
+        startPlayProgressUpdater();
+    }
+
+    private void pause()
+    {
+        myApplication.setIsPlaying(false);
+        btnPlay.setImageResource(R.drawable.ic_action_playback_play);
+        txtTotalTime.setText("Pause");
+    }
+
+    private void stop()
+    {
+        myApplication.setIsPlaying(false);
+        handler.removeCallbacksAndMessages(null);
+        txtTotalTime.setText("Stop");
+        seekBar.setProgress(0);
+        btnPlay.setImageResource(R.drawable.ic_action_playback_play);
+        btnPlay.setEnabled(true);
+    }
+
+    private void nextTrack()
+    {
+        // stop();
+        sendCommandToPlayerService(Constants.ACTION_NEXT,Constants.ACTION_NULL);
+
+    }
+
+    private void rewindTrack()
+    {
+        sendCommandToPlayerService(Constants.ACTION_REWIND,Constants.ACTION_NULL);
+
+    }
+
+    private void sendCommandToPlayerService(String actionCommand, int seekTo) {
+
+        Intent intent = new Intent(this,PlayerService.class);
+
+        if(!actionCommand.equals(Constants.EXTRA_SEEK_TO) && !actionCommand.equals(Constants.EXTRA_UPDATE_SEEKBAR)) {
+            intent.setAction(actionCommand);
+        }else
+        {
+            if(actionCommand == Constants.EXTRA_SEEK_TO )
+                intent.putExtra(Constants.EXTRA_SEEK_TO,seekTo);
+
+            if(actionCommand == Constants.EXTRA_UPDATE_SEEKBAR)
+                intent.putExtra(Constants.EXTRA_UPDATE_SEEKBAR,true);
+
+        }
+        startService(intent);
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            windowManager.getDefaultDisplay().getSize(szWindow);
+        } else {
+            int w = windowManager.getDefaultDisplay().getWidth();
+            int h = windowManager.getDefaultDisplay().getHeight();
+            szWindow.set(w, h);
+        }
+
+        int width = 0;
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            width = (szWindow.x / 3) * 2;
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            width = szWindow.x;
+        }
+
+        this.getWindow().setLayout(width,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);*/
+
+
+    }
+
+    private void updateSeekChange() {
+        sendCommandToPlayerService(Constants.EXTRA_SEEK_TO,seekBar.getProgress());
+        setProgressText();
+    }
+
+    public void startPlayProgressUpdater() {
+
+        sendCommandToPlayerService(Constants.EXTRA_UPDATE_SEEKBAR,Constants.ACTION_NULL);
+
+        if(oldMediaSeekPosition != myApplication.getCurrentMediaPosition()) {
+            seekBar.setProgress(myApplication.getCurrentMediaPosition());
+            setProgressText();
+            oldMediaSeekPosition = myApplication.getCurrentMediaPosition();
+        }
+        if (myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+            Runnable notification = new Runnable() {
+                public void run() {
+                    startPlayProgressUpdater();
+                }
+            };
+            handler.postDelayed(notification, Constants.CONST_PLAYER_PROGRESS_UPDATE_TIME);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+
+        if(handler  != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
+
+    protected void setProgressText() {
+
+        final int HOUR = 60 * 60 * 1000;
+        final int MINUTE = 60 * 1000;
+        final int SECOND = 1000;
+
+        int durationInMillis = myApplication.getMediaDuration();
+        int curVolume = myApplication.getCurrentMediaPosition();
+
+        int durationHour = durationInMillis / HOUR;
+        int durationMint = (durationInMillis % HOUR) / MINUTE;
+        int durationSec = (durationInMillis % MINUTE) / SECOND;
+
+        int currentHour = curVolume / HOUR;
+        int currentMint = (curVolume % HOUR) / MINUTE;
+        int currentSec = (curVolume % MINUTE) / SECOND;
+
+        if (durationHour > 0) {
+            txtTotalTime.setText(String.format("%02d:%02d:%02d/%02d:%02d:%02d",
+                    currentHour, currentMint, currentSec, durationHour, durationMint, durationSec));
+        } else {
+            txtTotalTime.setText(String.format("%02d:%02d/%02d:%02d",
+                    currentMint, currentSec, durationMint, durationSec));
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(Constants.INTENTFILTER_PLAYER_SERVICE)
+        );
+
+        if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+            btnPlay.setImageResource(R.drawable.ic_action_playback_pause);
+            myApplication.setIsPlaying(true);
+        }
+        else{
+            btnPlay.setImageResource(R.drawable.ic_action_playback_play);
+            myApplication.setIsPlaying(false);
+        }
+
+        //We set here to be sure there is not any mistake from any control before and thread start correctly.
+        oldMediaSeekPosition=0;
+        seekBar.setMax(myApplication.getMediaDuration());
+        startPlayProgressUpdater();
+
+    }
+
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
+    }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(Constants.INTENTFILTER_PLAYER_SERVICE)) {
+                int statusCode = intent.getIntExtra(Constants.EXTRA_PLAYER_SERVICE_PLAY_STATUS, -1);
+                switch (statusCode) {
+
+                    case Constants.PLAYER_SERVICE_STATUS_ERROR:
+                        Toast.makeText(ActivityRecordsPlayList.this, "Error playing the media file!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Constants.PLAYER_SERVICE_STATUS_PLAYING:
+                        TitlesFragment.highlightSelectedPlayItem(myApplication.getIndexSomethingIsPlaying());
+                        play();
+                        break;
+                    case Constants.PLAYER_SERVICE_STATUS_TRACK_FINISHED:
+                        //Log.e("DBG", "Command TRACK Finished or Stop Recieved");
+                        stop();
+                        break;
+                    case Constants.PLAYER_SERVICE_STATUS_CLOSE_PLAYER:
+                        //Log.e("DBG", "Command Close Player Recieved");
+                        stop();
+                        finish();
+                        break;
+                    case Constants.PLAYER_SERVICE_STATUS_PAUSE:
+                        pause();
+                        break;
+                    case Constants.PLAYER_SERVICE_STATUS_SEEK_BAR_UPDATED:
+                        break;
+                    case Constants.PLAYER_SERVICE_STATUS_TACK_CHANGED:
+
+                        break;
+
+                }
+
+            }
+        }
+
+    };
     // This is a secondary activity, to show what the user has selected when the
     // screen is not large enough to show it all in one activity.
 
-    public static class DetailsActivity extends Activity {
+ /*   public static class DetailsActivity extends Activity {
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            Toast.makeText(this, "DetailsActivity", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "DetailsActivity", Toast.LENGTH_SHORT).show();
 
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 // If the screen is now in landscape mode, we can show the
@@ -82,7 +585,7 @@ public class ActivityRecordsPlayList extends Activity {
             }
         }
     }
-
+*/
     // This is the "top-level" fragment, showing a list of items that the user
     // can pick. Upon picking an item, it takes care of displaying the data to
     // the user as appropriate based on the current UI layout.
@@ -95,10 +598,32 @@ public class ActivityRecordsPlayList extends Activity {
         boolean mDualPane;
         int mCurCheckPosition = 0;
         private MyApplication myApplication;
-
-
+        private static ListView playlistListviewInstance;
+        private static Context mContextTitlesFragment;
+        private ArrayAdapter<Spanned> la;
+        private AlertDialog myDialog;
         // onActivityCreated() is called when the activity's onCreate() method
         // has returned.
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+        }
+
+       /* @Override
+        public void setListShown(boolean shown) {
+            super.setListShown(shown);
+            Log.e("DBG","Honglar");
+            highlightSelectedNoteItem(notePointer);
+
+            highlightSelectedPlayItem(mCurCheckPosition);
+            //for (int i = 0; i < playlistListviewInstance.getChildCount(); i++) {
+            //  if (playlistListviewInstance.getCheckedItemPosition() == i)
+            //    getListView().getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.radical_red));
+            //else if (indexNoteItemToHighlight == i) {
+            getListView().getChildAt(0).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.deep_sky_blue));
+            la.notifyDataSetChanged();
+        }*/
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -110,51 +635,114 @@ public class ActivityRecordsPlayList extends Activity {
             // with a fragment.
             // The activity is a context (since Activity extends Context) .
 
-            Toast.makeText(getActivity(), "TitlesFragment:onActivityCreated",
-                    Toast.LENGTH_LONG).show();
+
+
+            la = new ArrayAdapter<Spanned>(getActivity(),
+                    android.R.layout.simple_list_item_activated_1,
+                    sk.loadAudioListForListViewAdapter());
+
+           // setListAdapter(la);
 
             //if (!myApplication.isPlaying())
-            loadPlayListForListViw("1465131201");
-
+            setListAdapter(la);
             // Check to see if we have a frame in which to embed the details
             // fragment directly in the containing UI.
             // R.id.details relates to the res/layout-land/fragment_layout.xml
             // This is first created when the phone is switched to landscape
             // mode
 
-            View detailsFrame = getActivity().findViewById(R.id.details);
+            mContextTitlesFragment = getActivity();
+           // View detailsFrame = getActivity().findViewById(R.id.details);
 
-            Toast.makeText(getActivity(), "detailsFrame " + detailsFrame,
+         /*   Toast.makeText(getActivity(), "detailsFrame " + detailsFrame,
                     Toast.LENGTH_LONG).show();
-
+*/
             // Check that a view exists and is visible
             // A view is visible (0) on the screen; the default value.
             // It can also be invisible and hidden, as if the view had not been
             // added.
             //
+/*
             mDualPane = detailsFrame != null
                     && detailsFrame.getVisibility() == View.VISIBLE;
+*/
 
-            Toast.makeText(getActivity(), "mDualPane " + mDualPane,
-                    Toast.LENGTH_LONG).show();
+        /*    Toast.makeText(getActivity(), "mDualPane " + mDualPane,
+                    Toast.LENGTH_LONG).show();*/
 
             if (savedInstanceState != null) {
                 // Restore last state for checked position.
                 mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
             }
 
-
-            if (mDualPane) {
+            playlistListviewInstance =getListView();
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                // If the screen is now in landscape mode, we can show the
+                // dialog in-line with the list so we don't need this activity.
+                mDualPane=true;
                 // In dual-pane mode, the list view highlights the selected
                 // item.
                 getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 // Make sure our UI is in the correct state.
-                showDetails(mCurCheckPosition);
-            } else {
+                //showDetails(mCurCheckPosition);
+                details.setVisibility(View.VISIBLE);
+            }
+            else{
+
                 // We also highlight in uni-pane just for fun
                 getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 getListView().setItemChecked(mCurCheckPosition, true);
+                details.setVisibility(View.GONE);
+                //Log.e("FDDDDDDDDDDd", "FFFFFAAAAAAAAA");
+                mDualPane=false;
+
             }
+
+            // String txtTitl  = myApplication.stackPlaylist.get(notePointer).getTitle();
+
+            /*final ListView lv = getListView();
+            final ListViewSwipeDetector swipeDetector = new ListViewSwipeDetector();
+
+            lv.setOnTouchListener(swipeDetector);
+
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (swipeDetector.swipeDetected()){
+                        if(swipeDetector.getAction()==ListViewSwipeDetector.Action.LR)
+                        {
+                            if(mDualPane) {
+                                //Log.e("FDDDDDDDDDDd", "FFFFFAAAAAAAAA");
+                                // BuildMyString.com generated code. Please enjoy your string responsibly.
+
+                                String sb = " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent luctus justo ut posuere rhoncus. Aliquam sed fringilla dui. Nunc quis molestie urna. Morbi in orci vitae dolor hendrerit venenatis commodo at sem. Nunc ut imperdiet orci, at dictum est. Vestibulum vitae massa risus. Curabitur laoreet odio quis metus venenatis, non condimentum orci euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Integer placerat neque libero, ut sollicitudin justo dapibus nec. Aenean in pharetra orci. Sed sagittis, lectus ultrices euismod maximus, ante lectus aliquet elit, egestas porttitor nulla nulla pretium turpis. Integer id pharetra velit, non condimentum neque." +
+                                        "Donec id augue luctus, mattis tellus et, semper libero. Praesent faucibus ligula a risus condimentum maximus. Nunc accumsan varius ex quis luctus. Fusce efficitur eleifend commodo. Sed mattis tortor ut tellus suscipit vehicula. Praesent id odio vitae ligula porta tincidunt at id enim. Morbi vitae dictum orci. Proin interdum sed metus eu vulputate. Suspendisse tincidunt turpis a dignissim dignissim." +
+                                        "Sed nec sapien semper, accumsan tellus at, faucibus elit. Ut non erat at tellus sodales mattis. Proin non varius tortor, vel mollis risus. Morbi eleifend enim nunc, sit amet malesuada nisl tincidunt nec. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque mattis neque interdum aliquam pharetra. Pellentesque eget consequat justo, sit amet consequat tellus. Nullam faucibus semper ligula, eu pulvinar orci rutrum vitae. Donec malesuada convallis lorem. ";
+
+
+                                txtDetailsPlayer.setText(Math.random() + sb);
+                                txtDetailsPlayer.setMovementMethod(new ScrollingMovementMethod());
+
+                            }
+                        }
+
+                        // do the onSwipe action
+                    } else {
+                        showDetails(position);
+                    }
+                }
+            });
+
+            lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view,int position, long id) {
+                    if (swipeDetector.swipeDetected()){
+                        // do the onSwipe action
+                    } else {
+
+                    }
+                    return false;
+                }
+            });*/
 
             getListView().setLongClickable(true);
 
@@ -162,36 +750,42 @@ public class ActivityRecordsPlayList extends Activity {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                                int pos, long id) {
-                    // TODO Auto-generated method stub
-                    //loadPlayList("1465064720");
-                    Log.e("long clicked", "pos: " + pos);
+                    final int chosenItemIndex = pos;
+                    String[] items = {"Add/Edit note","Delete note","Delete note and audio"};
 
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Options");
+                    builder.setIcon(R.drawable.audio_wave);
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which==0){
+                                Intent intent = new Intent(getActivity(),AddNoteToAudio.class);
+                                //myApplication.stackPlaylist.get(chosenItemIndex).
+                                //Log.e("DBG",)
+                                runAddAudioNoteActivity(parentDbId,myApplication.stackPlaylist.get(chosenItemIndex).getId());
+                            }
+                            else if(which==1){
+
+                                RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(getActivity());
+
+                                realmAudioNoteHelper.deleteSingleAudioNote(myApplication.stackPlaylist.get(chosenItemIndex).getId());
+                            }
+                            else if (which==2){
+
+                            }
+                        }
+                    });
+
+
+                    builder.setCancelable(true);
+                    myDialog = builder.create();
+                    myDialog.show();
                     return true;
                 }
             });
 
-        }
-
-        private void loadPlayListForListViw(String mFileDbUniqueId) {
-            // Populate list with our static array of titles in list in the
-            // Shakespeare class
-            //Shakespeare  sk = new Shakespeare(getActivity(),"1465065298""1465131201");
-            sk = new Shakespeare(getActivity(), mFileDbUniqueId);
-
-            setListAdapter(new ArrayAdapter<Spanned>(getActivity(),
-                    android.R.layout.simple_list_item_activated_1,
-                    sk.loadAudioListForListViewAdapter()));
-
-        }
-
-
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-            Toast.makeText(getActivity(), "onSaveInstanceState",
-                    Toast.LENGTH_LONG).show();
-
-            outState.putInt("curChoice", mCurCheckPosition);
         }
 
         // If the user clicks on an item in the list (e.g., Henry V then the
@@ -208,13 +802,121 @@ public class ActivityRecordsPlayList extends Activity {
             showDetails(position);
         }
 
+
+        // Method to handle the Click Event on GetMessage Button
+        public void runAddAudioNoteActivity(int idParentDb,int dbIdFile)
+        {
+            // Create The  Intent and Start The Activity to get The message
+            Intent intent=new Intent(getActivity(),AddNoteToAudio.class);
+
+            intent.putExtra(Constants.EXTRA_AUDIO_NOTE_PARENT_DB_ID,idParentDb);
+
+            intent.putExtra(Constants.EXTRA_AUDIO_NOTE_FILE_DB_ID, dbIdFile);
+
+            startActivityForResult(intent, Constants.RESULT_CODE_REQUEST_DIALOG);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if(requestCode==Constants.RESULT_CODE_REQUEST_DIALOG)
+            {
+                if(null!=data)
+                {
+                    // fetch the message String
+                    String message=data.getStringExtra("MESSAGE");
+
+                    Log.e("Chatanuga","Oh lala");
+                    // Set the message string in textView
+                    //textViewMessage.setText("Message from second Activity: " + message);
+                }
+            }
+
+        }
+
+        /*
+        // Call Back method  to get the Message form other Activity
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, Intent data)
+        {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            // check if the request code is same as what is passed  here it is 2
+            if(requestCode==2)
+            {
+                if(null!=data)
+                {
+                    // fetch the message String
+                    String message=data.getStringExtra("MESSAGE");
+                    // Set the message string in textView
+                    textViewMessage.setText("Message from second Activity: " + message);
+                }
+            }
+        }*/
+
+        private static void highlightSelectedPlayItem(int indexAudioItemToHighlight){
+
+            playlistListviewInstance.setItemChecked(indexAudioItemToHighlight, true);
+
+            for(int i=0 ; i< playlistListviewInstance.getChildCount();i++) {
+                if (playlistListviewInstance.getCheckedItemPosition()== i) {
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.radical_red));
+                }
+                else if (notePointer == i)
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.deep_sky_blue));
+                else
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(playlistListviewInstance.getSolidColor());
+
+            }
+        }
+
+        private static void highlightSelectedNoteItem(int indexNoteItemToHighlight) {
+
+            for (int i = 0; i < playlistListviewInstance.getChildCount(); i++) {
+                if (playlistListviewInstance.getCheckedItemPosition() == i)
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.radical_red));
+                 else if (indexNoteItemToHighlight == i) {
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.deep_sky_blue));
+                    Log.e("SSSSSSSSs","GGGGGGGGGG");
+                }
+                else
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(playlistListviewInstance.getSolidColor());
+
+            }
+        }
+
+       /* private void fadeWidgets(){
+
+            details.setVisibility(View.VISIBLE);
+            AlphaAnimation animation1 = new AlphaAnimation(0.0f, 1.0f);
+            animation1.setDuration(500);
+            txtDetailsPlayer.startAnimation(animation1);
+            txtTitlePlayer.startAnimation(animation1);
+        }
+        fadeWidgets();
+
+
+        fillTextNotesForUser();
+        }*/
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+          /*  Toast.makeText(getActivity(), "onSaveInstanceState",
+                    Toast.LENGTH_LONG).show();
+*/
+            outState.putInt("curChoice", mCurCheckPosition);
+        }
+
+
         // Helper function to show the details of a selected item, either by
         // displaying a fragment in-place in the current UI, or starting a whole
         // new activity in which it is displayed.
 
         void showDetails(int index) {
 
-            myApplication.setCurrentMediaPosition(10);
+            //myApplication.setCurrentMediaPosition(10);
 
 
             mCurCheckPosition = index;
@@ -227,11 +929,17 @@ public class ActivityRecordsPlayList extends Activity {
             // another activity to render the details fragment - two activities
             // each with its own fragment .
             //
+
+            // We can display everything in-place with fragments, so update
+            // the list to highlight the selected item and show the data.
+            // We keep highlighted the current selection
+
+            getListView().setItemChecked(index, true);
+
             if (mDualPane) {
-                // We can display everything in-place with fragments, so update
-                // the list to highlight the selected item and show the data.
-                // We keep highlighted the current selection
-                getListView().setItemChecked(index, true);
+
+
+               /* //myApplication.setIndexSomethingIsPlaying(index);
 
                 // Check what fragment is currently shown, replace if needed.
                 DetailsFragment details = (DetailsFragment) getFragmentManager()
@@ -252,7 +960,7 @@ public class ActivityRecordsPlayList extends Activity {
                     ft.replace(R.id.details, details);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     ft.commit();
-                }
+                }*/
 
             } else {
 
@@ -260,13 +968,20 @@ public class ActivityRecordsPlayList extends Activity {
 
 
 
-                sk.loadAudioListForPlayerService();
+               // sk.loadAudioListForPlayerService();
 
-                myApplication.setIndexSomethingIsPlaying(index);
+              /*  myApplication.setIndexSomethingIsPlaying(index);
+                Intent intent = new Intent(getActivity(), PlayerService.class);
+                intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
+                getActivity().startService(intent);*/
 
-                Intent intent = new Intent(getActivity(), ActivityPlayerPortrait.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(getActivity(), ActivityPlayerPortrait.class);
+                startActivity(intent);*/
             }
+            myApplication.setIndexSomethingIsPlaying(index);
+            Intent intent = new Intent(getActivity(), PlayerService.class);
+            intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
+            getActivity().startService(intent);
         }
 
     }
@@ -311,8 +1026,8 @@ public class ActivityRecordsPlayList extends Activity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            Toast.makeText(getActivity(), "DetailsFragment:onCreateView",
-                    Toast.LENGTH_LONG).show();
+           /* Toast.makeText(getActivity(), "DetailsFragment:onCreateView",
+                    Toast.LENGTH_LONG).show();*/
             //
             // if (container == null) {
             // // We have different layouts, and in one of them this
@@ -335,15 +1050,18 @@ public class ActivityRecordsPlayList extends Activity {
             // the container/fragment layout. Set up the properties and add the
             // view.
 
-            ScrollView scroller = new ScrollView(getActivity());
+            /*ScrollView scroller = new ScrollView(getActivity());
             TextView text = new TextView(getActivity());
-            int padding = (int) TypedValue.applyDimension(
+            *//*int padding = (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, 4, getActivity()
                             .getResources().getDisplayMetrics());
-            text.setPadding(padding, padding, padding, padding);
+            text.setPadding(padding, padding, padding, padding);*//*
+
             scroller.addView(text);
             text.setText(Shakespeare.DIALOGUE[getShownIndex()]);
-            return scroller;
+            return scroller;*/
+            return null;
+
         }
     }
 

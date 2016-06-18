@@ -9,21 +9,21 @@ public class AudioNoteInfoStruct {
     private String file_name;
     private String description;
     private int parent_db_id;
+    private int id;
     private int tag;
 
     //public AudioNoteInfoStruct(int id,int parentDbId,String file_name, String title, String description,int tag) {
-    public AudioNoteInfoStruct(String file_name, String title, String description) {
-/*
+    public AudioNoteInfoStruct(int id, int parent_db_id, String file_name, String title, String description,int tag) {
+
         this.id = id;
-        this. parent_db_id = parentDbId;
-*/
+        this. parent_db_id = parent_db_id;
+
         this.title = title;
         this.description = description;
         this.file_name = file_name;
-        /*this.tag = tag;*/
+        this.tag = tag;
     }
 
-/*
     public int getId() {
         return id;
     }
@@ -31,7 +31,6 @@ public class AudioNoteInfoStruct {
     public void setId(int id) {
         this.id = id;
     }
-*/
 
     public String getTitle() {
         return title;
@@ -49,13 +48,13 @@ public class AudioNoteInfoStruct {
         this.description = description;
     }
 
-   /* public int getTag() {
+    public int getTag() {
         return tag;
     }
 
     public void setTag(int tag) {
         this.tag = tag;
-    }*/
+    }
 
     public int getParentDbId() {
         return parent_db_id;

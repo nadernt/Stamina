@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity
             Prefs.putBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, true);
 
             Prefs.putBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false);
+            Prefs.putBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION,false);
+
 
             //Disable the phone recording service in manifest for the first initiation of app to the user. We don't want user records from first use of app!
             ComponentName component = new ComponentName(this, PhonecallReceiver.class);

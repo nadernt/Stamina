@@ -38,6 +38,7 @@ public class MyApplication extends Application{
     private int currentMediaPosition;
     private int mediaDuration;
     private boolean isPlaying=false;
+    private int playerServiceCurrentState = -1;
 
 
 
@@ -48,8 +49,6 @@ public class MyApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-
-        Log.e("Chatanuga", "Progress");
 
         singleton = this;
 
@@ -192,6 +191,21 @@ public class MyApplication extends Application{
     public void setIsPlaying(boolean isPlaying) {
         this.isPlaying = isPlaying;
     }
+
+    public int getPlayerServiceCurrentState() {
+        return playerServiceCurrentState;
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        Log.e("DBG" , "Application Class Destroyed." );
+    }
+
+    public void setPlayerServiceCurrentState(int playerServiceCurrentState) {
+        this.playerServiceCurrentState = playerServiceCurrentState;
+    }
+
 
     private class DataMigration implements RealmMigration {
         @Override
