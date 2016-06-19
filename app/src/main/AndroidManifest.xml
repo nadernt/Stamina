@@ -129,7 +129,11 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
-        <activity android:name=".notetaking.ActivityRecordsPlayList" />
+        <activity android:name=".notetaking.ActivityRecordsPlayList">
+            <!--android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask">-->
+
+        </activity>
 
         <!--
             <service

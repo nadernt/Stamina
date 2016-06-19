@@ -149,7 +149,7 @@ public class AddNoteToAudio extends AppCompatActivity{
             if(saveNote())
             {
                 Intent intentMessage=new Intent();
-
+                intentMessage.putExtra(Constants.EXTRA_AUDIO_NOTE_FILE_DB_ID,dbIdFile);
                 setResult(Constants.RESULT_CODE_REQUEST_DIALOG,intentMessage);
                 // finish The activity
                 finish();

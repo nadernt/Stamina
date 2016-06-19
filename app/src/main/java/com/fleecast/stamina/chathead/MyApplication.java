@@ -50,6 +50,8 @@ public class MyApplication extends Application{
     public void onCreate() {
         super.onCreate();
 
+        Log.e("DBG" ,"MyApplication");
+
         singleton = this;
 
         this.context = getApplicationContext();

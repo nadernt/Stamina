@@ -153,7 +153,7 @@ private void populateUI(){
 
     setContentView(R.layout.activity_main);
 
-    myFuckUp();
+    //myFuckUp();
 
     myApplication =  (MyApplication)getApplicationContext();
 
@@ -169,7 +169,7 @@ private void populateUI(){
     fab.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            myFuckUp();
+            //myFuckUp();
             //myApplication.reInitEverything();
             startTheChatHead();
         }

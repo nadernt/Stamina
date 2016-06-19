@@ -4,7 +4,7 @@
     android:layout_height="match_parent" >
 
     <fragment
-        android:id="@+id/titles"
+        android:id="@+id/titlesFragmentListViwe"
         android:layout_width="match_parent"
         android:layout_height="465dp"
         class="com.fleecast.stamina.notetaking.ActivityRecordsPlayList$TitlesFragment"
@@ -129,7 +129,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/details"
+        android:id="@+id/detailsOfAudioNote"
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:background="?android:attr/detailsElementBackground"
@@ -144,40 +144,59 @@
             android:id="@+id/imgNoNotePlaceHolder"
             android:layout_gravity="center"
             android:scaleType="fitStart"
-            android:background="@drawable/launchpad_icons_bg"
+            android:background="@color/bleu_de_france"
             android:src="@drawable/ic_action_mic"
             android:visibility="visible"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/txtTitlePlayer"
             android:layout_gravity="center_horizontal|top"
             android:textColor="#000000"
-            android:textSize="12dp"
-            android:text="sdfs"
+            android:textSize="16dp"
+            android:text="TITLE"
             android:scrollbars="vertical"
             android:padding="5dp"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/txtDetailsPlayer"
-            android:layout_gravity="center_horizontal|bottom"
-            android:textColor="#000000"
-            android:textSize="12dp"
-            android:text="sdfs"
-            android:scrollbars = "vertical"
-            android:padding="5dp"
-            android:layout_below="@+id/txtTitlePlayer"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/imgHideDetails"
+            android:layout_toLeftOf="@+id/imgHideDetails" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollViewAddAudioNoteText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/txtTitlePlayer">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/txtDetailsPlayer"
+                android:textColor="#000000"
+                android:textSize="14dp"
+                android:text="TITLE"
+                android:padding="5dp"/>
+        </ScrollView>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgHideDetails"
+            android:src="@drawable/ic_action_undo"
+            android:background="@color/accent_material_light"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
     </RelativeLayout>
 
 

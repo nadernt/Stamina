@@ -23,8 +23,8 @@
     <color name="anti_flash_white">#F2F3F4</color>
     <color name="antique_brass">#CD9575</color>
     <color name="antique_fuchsia">#915C83</color>
-    <color name="antique_white">#FAEBD7</color>
-    <color name="apple_green">#8DB600</color>
+    <color name="antique_white">#faebd7</color>
+    <color name="apple_green">#8db600</color>
     <color name="apricot">#FBCEB1</color>
     <color name="aqua">#00FFFF</color>
     <color name="aqua_marine">#7FFFD4</color>
@@ -39,7 +39,7 @@
     <color name="awesome">#FF2052</color>
     <color name="aztech_purple">#893BFF</color>
     <color name="azure">#007fff</color>
-    <color name="azure_mist_web">#F0FFFF</color>
+    <color name="azure_mist_web">#f0ffff</color>
 
     <color name="baby_blue">#89CFF0</color>
     <color name="baby_blue_eyes">#a1caf1</color>
@@ -66,7 +66,7 @@
     <color name="black_eel">#463E3F</color>
     <color name="blanched_almond">#FFEBCD</color>
     <color name="blanchedalmond">#FFEBCD</color>
-    <color name="bleu_de_france">#318CE7</color>
+    <color name="bleu_de_france">#318ce7</color>
     <color name="blizzard_blue">#ACE5EE</color>
     <color name="blond">#FAF0BE</color>
     <color name="blood_red">#7E3517</color>

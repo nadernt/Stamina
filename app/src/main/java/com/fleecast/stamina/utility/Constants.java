@@ -8,12 +8,14 @@ import android.content.IntentFilter;
 public class Constants {
     public static final int CONST_NULL_MINUS =  -1;
     public static final int CONST_NULL_ZERO =  0;
-    public static final String CONST_STRING_NO_DESCRIPTION =  "No item";
-    public static final String CONST_STRING_NO_NOTE =  "No note";
+    public static final String CONST_STRING_NO_DESCRIPTION =  "No description";
+    public static final String CONST_STRING_NO_TITLE =  "No title";
     public static final int RESULT_CODE_REQUEST_DIRECTORY = 123;
     public static final String EXTRA_RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
     public static final String PREF_WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
     public static final String CONST_WORKING_DIRECTORY_NAME = "/stamina";
+    public static final String CONST_RECYCLEBIN_DIRECTORY_NAME = "/trash";
+
     public static final String EXTRA_RECORD_FILENAME = "ExtraRecordFilename";
     public static final String EXTRA_NEW_RECORD = "ExetraNewRecord";
     public static final String EXTRA_RECORD_SOURCE = "ExtraRecordSource";
@@ -63,6 +65,8 @@ public class Constants {
     public static final int RESULT_CODE_REQUEST_DIALOG = 123;
     public static final String EXTRA_AUDIO_NOTE_PARENT_DB_ID = "ExtraAudioNoteParentDbId";
     public static final String EXTRA_AUDIO_NOTE_FILE_DB_ID = "ExtraAudioNoteFileDbId";
+    public static final int CONST_PLAYER_LIST_TEXT_ELLLIPSIZE = 30;
+    public static final String EXTRA_FOLDER_TO_PLAY_ID = "ExtraFolderToPlayId";
 
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";

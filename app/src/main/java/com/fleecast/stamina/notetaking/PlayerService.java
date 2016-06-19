@@ -21,12 +21,14 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
+import com.fleecast.stamina.utility.Utility;
 
 import java.io.IOException;
 
@@ -273,7 +275,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         giveUpAudioFocus();
-
+        Toast.makeText(this,"Error in media format!",Toast.LENGTH_LONG).show();
+        stopRequest(true);
         return false;
     }
 
@@ -302,36 +305,39 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             initMediaSessions();
         }
 
-        if (mPlayer == null || !areEventsInitiated) {
-            if(mPlayer == null)
-                mPlayer = new MediaPlayer();
-            mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-            mPlayer.setOnPreparedListener(this);
-            mPlayer.setOnCompletionListener(this);
-            mPlayer.setOnErrorListener(this);
-            areEventsInitiated=true;
-        }
-
-        if(reinitForNewItemOrResume) {
-
         try {
-                mPlayer.reset();
-
-                mPlayer.setDataSource(myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getFileName());
-                mPlayer.prepareAsync();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (mPlayer == null || !areEventsInitiated) {
+                if (mPlayer == null)
+                    mPlayer = new MediaPlayer();
+                mPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+                mPlayer.setOnPreparedListener(this);
+                mPlayer.setOnCompletionListener(this);
+                mPlayer.setOnErrorListener(this);
+                areEventsInitiated = true;
             }
-        }else
-        {
-            mPlayer.start();
-            sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_PLAYING);
-            myApplication.setIsPlaying(true);
-            myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_PLAYING);
-        }
-        mController.getTransportControls().play();
 
-        tryToGetAudioFocus();
+            if (reinitForNewItemOrResume) {
+
+                    mPlayer.reset();
+/*
+                    Log.e("HHHHHHHHHHHHH", "" + myApplication.getIndexSomethingIsPlaying());
+*/
+                    mPlayer.setDataSource(myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getFileName());
+                    mPlayer.prepareAsync();
+            } else {
+                mPlayer.start();
+                sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_PLAYING);
+                myApplication.setIsPlaying(true);
+                myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_PLAYING);
+            }
+            mController.getTransportControls().play();
+
+            tryToGetAudioFocus();
+        }
+        catch(Exception e){
+            Toast.makeText(this,"Error in media format!\n" + e.getMessage(),Toast.LENGTH_LONG).show();
+            stopRequest(true);
+        }
 
     }
 

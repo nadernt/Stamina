@@ -336,7 +336,13 @@ public class AddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(AddActivity.this,ActivityRecordsPlayList.class));
+                Log.e("DBGGGGGGG",dbId + "");
+
+                //startActivity(new Intent(AddActivity.this,ActivityRecordsPlayList.class));
+                Intent intent = new Intent(AddActivity.this,ActivityRecordsPlayList.class);
+                intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID,String.valueOf(dbId));
+                startActivity(intent);
+
 
             }
         });
