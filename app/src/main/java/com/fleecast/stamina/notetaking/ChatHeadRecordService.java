@@ -94,7 +94,7 @@ public class ChatHeadRecordService extends Service {
 			showErrorsToUser(inflater, "<h5>Not enough space:</h5>\n<p><font color=\"gray\">Not enough storage space for recording!" +
 					"Empty the storage and try again.</font></p>");
 
-		} else if (myApplication.isRecordUnderGoing()) {
+		} else if (myApplication.isRecordUnderGoing()>Constants.CONST_RECORDER_SERVICE_IS_FREE) {
 
 			ignoreIntentsWeHaveError=true;
 
@@ -391,7 +391,7 @@ public class ChatHeadRecordService extends Service {
 
 			if (!recorder.isRecording())
 			{
-				myApplication.setIsRecordUnderGoing(true);
+				myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
 				recorder.recordMedia(true, MediaRecorder.AudioSource.VOICE_CALL);
 			}
 			else{
@@ -400,7 +400,7 @@ public class ChatHeadRecordService extends Service {
 			}
 
 		} else {
-			myApplication.setIsRecordUnderGoing(false);
+			myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
 			recorder.recordMedia(false, MediaRecorder.AudioSource.VOICE_CALL);
 		}
 

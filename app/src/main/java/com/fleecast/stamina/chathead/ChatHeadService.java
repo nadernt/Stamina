@@ -33,6 +33,7 @@ import com.fleecast.stamina.launcher.IconChooserActivity;
 import com.fleecast.stamina.launcher.LauncherDialogActivity;
 import com.fleecast.stamina.notetaking.AddActivity;
 import com.fleecast.stamina.notetaking.NoteTakingRecyclerViewActivity;
+import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
 import java.text.DecimalFormatSymbols;
@@ -527,9 +528,9 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                                 Intent intent = new Intent(ChatHeadService.this, AddActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 // If we do not have any on going record.
-                                if (!myApplication.isRecordUnderGoing()){
+                                if (myApplication.isRecordUnderGoing()==Constants.CONST_RECORDER_SERVICE_IS_FREE){
 
-                                    intent.putExtra("audio", true);
+                                    intent.putExtra(Constants.EXTRA_TAKE_NOTE_AND_START_RECORD, true);
 
                                 }
                                     updateChatHeadSize(1);
@@ -539,9 +540,10 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                             else if (isViewOverlapping(note_take_text_img, chatheadImg)) {
 
                                 Intent intent = new Intent(ChatHeadService.this, AddActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtra("text",true);
+                                intent.putExtra(Constants.EXTRA_TAKE_NOTE_AND_NO_RECORD,true);
                                 updateChatHeadSize(1);
                                 myApplication.getAppContext().startActivity(intent);
+
                             }
                             else if (isViewOverlapping(notelist_img, chatheadImg)) {
 
@@ -594,7 +596,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         txtView = (LinearLayout)inflater.inflate(R.layout.time_laps, null);
         txtTimeLapse = (TextView) txtView.findViewById(R.id.txtTimeLaps);
         txt_linearlayout = (LinearLayout)txtView.findViewById(R.id.txt_linearlayout);
-
 
         WindowManager.LayoutParams paramsTxt = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,

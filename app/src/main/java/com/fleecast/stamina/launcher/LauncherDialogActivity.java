@@ -59,7 +59,7 @@ public class LauncherDialogActivity extends AppCompatActivity {
 		setContentView(R.layout.dialog);
 
 
-		myApplication = (MyApplication) getApplicationContext();
+		myApplication = (MyApplication) getApplication();
 
 		Log.e("DBG","LauncherDialogActivity onCreate called");
 

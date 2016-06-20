@@ -71,7 +71,7 @@ public class RecorderService extends Service{
                     startRecording();
                 } catch (Exception e) {
                     Log.e(LOG_TAG, "prepare() failed");
-                    myApplication.setIsRecordUnderGoing(false);
+                    myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
                     recordStatus = true;
                     Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
                     stopService(new Intent(getApplicationContext(), RecorderService.class));
@@ -163,7 +163,7 @@ public class RecorderService extends Service{
 
             mRecorder.setOutputFile(recordFileName);
             mRecorder.prepare();
-            myApplication.setIsRecordUnderGoing(true);
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_NOTE);
             recordStatus = true;
             mRecorder.start();
         }
@@ -175,7 +175,7 @@ public class RecorderService extends Service{
 
     private void stopRecording()   {
         try {
-            myApplication.setIsRecordUnderGoing(false);
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
             recordStatus = false;
             mRecorder.stop();
             mRecorder.release();

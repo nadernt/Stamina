@@ -48,7 +48,7 @@ public class ActivitySettings extends AppCompatActivity {
 
         myApplication =  (MyApplication) getApplicationContext();
 
-        if(myApplication.isRecordUnderGoing())
+        if(myApplication.isRecordUnderGoing()>Constants.CONST_RECORDER_SERVICE_IS_FREE)
         {
             Utility.showMessage("There is an under going record please stop it and try again.","Note",this);
         }else {

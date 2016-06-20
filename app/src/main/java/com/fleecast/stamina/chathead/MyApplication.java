@@ -31,7 +31,7 @@ public class MyApplication extends Application{
     private List<MostUsedAndRecentAppsStruct> mostRecentUsedAppsStruct = new ArrayList<>();
     private boolean isAppsListIsLoading = false;
     private boolean isUserTerminateApp =false;
-    private boolean aRecordIsUnderGoing = false;
+    private int aRecordIsUnderGoing = 0;
     private boolean userWantsRecordPhoneCalls = false;
     public List <AudioNoteInfoStruct> stackPlaylist = new ArrayList<>();
     private int indexSomethingIsPlaying = Constants.CONST_NULL_MINUS;
@@ -142,11 +142,11 @@ public class MyApplication extends Application{
         return currentGroupFilter;
     }
 
-    public boolean isRecordUnderGoing() {
+    public int isRecordUnderGoing() {
         return aRecordIsUnderGoing;
     }
 
-    public void setIsRecordUnderGoing(boolean aRecordIsUnderGoing) {
+    public void setIsRecordUnderGoing(int aRecordIsUnderGoing) {
         this.aRecordIsUnderGoing = aRecordIsUnderGoing;
     }
 

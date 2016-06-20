@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.ArrayAdapter;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,6 +35,7 @@ import android.widget.RelativeLayout;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
+import com.fleecast.stamina.models.RealmAudioNoteHelper;
 import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
@@ -74,7 +77,7 @@ public class AddActivity extends AppCompatActivity {
     private Chronometer txtTimeLaps;
     private String latestRecordFileName;
     private ImageView btnRecordsListPlayer;
-
+    private int currentNoteType=0;
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -192,10 +195,10 @@ public class AddActivity extends AppCompatActivity {
 
     private void setBackGroundOfView(View view,int drawableId,boolean addRemove){
 
-    if(addRemove)
-    view.setBackgroundResource(drawableId);
+        if(addRemove)
+            view.setBackgroundResource(drawableId);
         else
-    view.setBackgroundResource(0);
+            view.setBackgroundResource(0);
 
     }
 
@@ -477,131 +480,126 @@ private void saveNote(){
         textviewTimeLapse = getLayoutInflater().inflate(R.layout.time_laps, null);
         mToolbar.addView(textviewTimeLapse);
 
-        //User wants add.
-        if(populateForAddOrEdit) {
 
-         //   if(myApplication.isUserWantsRecordPhoneCalls())
-
-            btnDeleteRecord.setVisibility(View.INVISIBLE);
-            btnRecordsListPlayer.setVisibility(View.INVISIBLE);
-            mnuItemPlayRecord.setVisible(false);
-            mnuItemDeleteNote.setVisible(false);
-            mnuItemSaveNote.setVisible(true);
-
-        }
-        else
-        {
-            mnuItemPlayRecord.setVisible(true);
-            btnDeleteRecord.setVisibility(View.VISIBLE);
-            btnRecordsListPlayer.setVisibility(View.VISIBLE);
-            mnuItemDeleteNote.setVisible(true);
-            mnuItemSaveNote.setVisible(true);
-        }
 
         txtTimeLaps  = (Chronometer) textviewTimeLapse.findViewById(R.id.txtTimeLaps);
         txtTimeLaps.setVisibility(View.INVISIBLE);
         //recorder = new RecorderService(this,txtTimeLaps,pathToWorkingDirectory,TEMP_FILE);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
 
-        intentHandler(intent);
+        // Check if we have a recording.
+        if(myApplication.isRecordUnderGoing() > Constants.CONST_RECORDER_SERVICE_IS_FREE)
+        {
+            android.app.AlertDialog myDialog;
+
+            String[] items;
+
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+
+            builder.setTitle("Note");
+
+            if(myApplication.isRecordUnderGoing() == Constants.CONST_RECORDER_SERVICE_WORKS_FOR_NOTE) {
+                builder.setMessage("You have an audio recording under progress:");
+                items = new String [] {"Stop and add a new note","Go to current recording","Cancel"};
+            }
+            else {
+                builder.setMessage("You have an phone recording under progress:");
+                items = new String [] {"Stop and add a new note","","Cancel"};
+            }
+
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                   if (which==0){
+
+                        Intent intent = new Intent(AddActivity.this, RecorderService.class);
+                        //false is just fake we don't need value.
+                        intent.putExtra(Constants.EXTRA_STOP_RECORD, false);
+                        startService(intent);
+
+                        intentHandler(intent);
+                   }
+                    else if(which==1){
+                        intentHandler(intent);
+                    }
+
+                }
+            });
+
+            builder.setCancelable(true);
+            myDialog = builder.create();
+            myDialog.show();
+
+        }else{
+            intentHandler(intent);
+        }
+
 
     }
+
 
     private void intentHandler(Intent intent){
 
-        /*switch (phoneEvent){
-            case 0: i.putExtra("PHONE_OUT_GOING_CALL_STARTED", 0);
-                break;
-            case 1: i.putExtra("PHONE_INCOMING_CALL_RECEIVED", 1);
-                break;
-            case 2: i.putExtra("PHONE_INCOMING_CALL_ANSWERED", 2);
-                break;
-            case 3: i.putExtra("PHONE_MISSING_CALL", 3);
-                break;
-            case 4:  i.putExtra("PHONE_INCOMING_CALL_ENDED", 4);
-                break;
-            case 5:  i.putExtra("PHONE_OUT_GOING_CALL_ENDED", 5);
-                break;
-        }*/
-
-        Log.e(TAG, "Audio intent?" + intent.getBooleanExtra("audio", false));
-        Log.e(TAG, "Phone call intent?" + intent.getBooleanExtra("phone_call", false));
-
-
-        if(intent.getBooleanExtra("audio",false) && !myApplication.isRecordUnderGoing()){
-
-
-            Log.e(TAG, "audio note");
-
-
-          //  chosenSourceOfRecord = Prefs.getInt("AudioRecorderSource",MediaRecorder.AudioSource.MIC);
-
-//            recordAudio(chosenSourceOfRecord);
-
-        }
-        else if(intent.getBooleanExtra("phone_call",false)){
-
-
-            Log.e(TAG, "Phone call");
-
-            if(Prefs.getBoolean("IsRecordPhoneCall",false)) {
-
-
-
-
-
-                if (myApplication.isRecordUnderGoing()){
-
-
-                    Log.e(TAG, "We have one record under going so app rejects the phone record.So bye bye!");
-                 //   finish();
-
-                }else {
-
 /*
-                    public static int PHONE_OUT_GOING_CALL_STARTED = 0;
-                    public static final int PHONE_INCOMING_CALL_RECEIVED = 1;
-                    public static final int PHONE_INCOMING_CALL_ANSWERED = 2;
-                    public static int PHONE_MISSING_CALL = 3;
-                    public static final int PHONE_INCOMING_CALL_ENDED = 4;
-                    public static int PHONE_OUT_GOING_CALL_ENDED = 5;
-*/
+        public static final int CONST_IS_ONLY_TEXT = 0;
+        public static final int CONST_IS_TEXT_AND_RECORD = 1;
+        public static final int CONST_IS_EDIT_TEXT_AND_RECORD = 2;
+        public static final int CONST_IS_EDIT_ONLY_TEXT = 3;*/
+        if(intent.hasExtra(Constants.EXTRA_TAKE_NOTE_AND_START_RECORD)){
 
-                    if (intent.getIntExtra("phone_state", -1) == Constants.PHONE_OUT_GOING_CALL_STARTED || (intent.getIntExtra("phone_state", -1) == Constants.PHONE_INCOMING_CALL_RECEIVED)) {
+            currentNoteType = Constants.CONST_IS_EDIT_TEXT_AND_RECORD;
 
-                        // This record check is for the time we are getting a new call while we are recording another one so we bypass the new one.
-                        if (!myApplication.isRecordUnderGoing()) {
-                            Log.e(TAG, "Record phone call started");
-                         //   chosenSourceOfRecord = MediaRecorder.AudioSource.VOICE_CALL;
+            mnuItemPlayRecord.setVisible(true);
+            btnDeleteRecord.setVisibility(View.INVISIBLE);
+            btnRecordsListPlayer.setVisibility(View.INVISIBLE);
+            mnuItemDeleteNote.setVisible(true);
+            mnuItemSaveNote.setVisible(true);
+            recorderControlsLayout.setVisibility(View.VISIBLE);
 
-                            //recordAudio(chosenSourceOfRecord);
-                        }
-
-                    } else if ((intent.getIntExtra("phone_state", -1) == Constants.PHONE_INCOMING_CALL_RECEIVED))
-                    {
-
-
-
-                    }
-
-
-
-                }
-
-            }
-            else
-            {
-                Log.e(TAG, "We have not chosen app record menu option. So bye bye!");
-                //finish();
-            }
-
-
+            setBackGroundOfView(btnNoStopRecord, R.drawable.buttons_recorder_bg, true);
+                startRecord();
+                toggleNoStopRecord=true;
 
         }
+        else if(intent.hasExtra(Constants.EXTRA_TAKE_NOTE_AND_NO_RECORD)){
+
+            currentNoteType = Constants.CONST_IS_ONLY_TEXT;
+            mnuItemPlayRecord.setVisible(false);
+            mnuItemDeleteNote.setVisible(false);
+            mnuItemSaveNote.setVisible(true);
+            recorderControlsLayout.setVisibility(View.GONE);
+
+        }
+        else if(intent.hasExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD)){
+            /*****************************************************************************************************************
+             * ***************************************************************************************************************
+             * now you should get the db key intent and fetch the record from the db and fill it in the text edits.
+             * ***************************************************************************************************************
+             *****************************************************************************************************************/
+            currentNoteType = Constants.CONST_IS_EDIT_ONLY_TEXT;
+            mnuItemPlayRecord.setVisible(false);
+            mnuItemDeleteNote.setVisible(false);
+            mnuItemSaveNote.setVisible(true);
+            recorderControlsLayout.setVisibility(View.GONE);
+        }
+        else if(intent.hasExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD)){
+            /*****************************************************************************************************************
+             * ***************************************************************************************************************
+             * now you should get the db key intent and fetch the record from the db and fill it in the text edits.
+             * ***************************************************************************************************************
+             *****************************************************************************************************************/
+            currentNoteType = Constants.CONST_IS_EDIT_TEXT_AND_RECORD;
+
+        }
+
+
+
     }
 
-private void animateTimeLaps(View view,boolean startStopAnimate){
+
+    private void animateTimeLaps(View view,boolean startStopAnimate){
 
     if(startStopAnimate) {
         //recorder.resetTimer();
@@ -642,7 +640,7 @@ private void animateTimeLaps(View view,boolean startStopAnimate){
             return true;
         }else if (id == R.id.action_play_record) {
 
-            if (!myApplication.isRecordUnderGoing()) {
+            if (myApplication.isRecordUnderGoing()==Constants.CONST_RECORDER_SERVICE_IS_FREE) {
 
                 File file = new File(latestRecordFileName);
 

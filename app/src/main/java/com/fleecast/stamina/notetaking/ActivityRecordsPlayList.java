@@ -614,7 +614,6 @@ public class ActivityRecordsPlayList extends Activity {
         private static ListView playlistListviewInstance;
         private static Context mContextTitlesFragment;
         private ArrayAdapter<Spanned> la;
-        private AlertDialog myDialog;
         private int tmpCurrentPlayingFile = Constants.CONST_NULL_ZERO;
 
         @Override
@@ -657,6 +656,7 @@ public class ActivityRecordsPlayList extends Activity {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                                int pos, long id) {
+                     AlertDialog myDialog;
 
                     //If we are in portrait mode and details panel is showing.
                     if((detailsOfAudioNote.getVisibility()== View.VISIBLE) && !mDualPane)
@@ -747,7 +747,8 @@ public class ActivityRecordsPlayList extends Activity {
                 final EditText et = new EditText(getActivity());
                 String etStr = et.getText().toString();
                 TextView tv1 = new TextView(getActivity());
-                tv1.setText("Type asd (case insensitive)");
+
+                tv1.setText(Html.fromHtml("<font color='BLUE'>Type asd (case insensitive)</font>"));
 
                 LinearLayout.LayoutParams tv1Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 tv1Params.bottomMargin = 5;

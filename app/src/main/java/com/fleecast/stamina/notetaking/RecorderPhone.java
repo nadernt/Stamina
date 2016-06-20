@@ -85,11 +85,11 @@ public class RecorderPhone {
 
         try {
             mRecorder.prepare();
-            myApplication.setIsRecordUnderGoing(true);
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
             mRecorder.start();
         } catch (Exception e) {
             Log.e(LOG_TAG, "prepare() failed");
-            myApplication.setIsRecordUnderGoing(false);
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
@@ -97,7 +97,7 @@ public class RecorderPhone {
     }
 
     private void stopRecording() {
-        myApplication.setIsRecordUnderGoing(false);
+        myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;

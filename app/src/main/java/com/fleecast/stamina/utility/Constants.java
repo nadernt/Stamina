@@ -67,6 +67,17 @@ public class Constants {
     public static final String EXTRA_AUDIO_NOTE_FILE_DB_ID = "ExtraAudioNoteFileDbId";
     public static final int CONST_PLAYER_LIST_TEXT_ELLLIPSIZE = 30;
     public static final String EXTRA_FOLDER_TO_PLAY_ID = "ExtraFolderToPlayId";
+    public static final String EXTRA_TAKE_NOTE_AND_NO_RECORD = "ExtraTakeNoteAndNoRecord";
+    public static final String EXTRA_TAKE_NOTE_AND_START_RECORD = "ExtraTakeNoteAndStartRecord";
+    public static final String EXTRA_EDIT_NOTE_AND_RECORD = "ExtraEditNoteAndRecord";
+    public static final String EXTRA_EDIT_NOTE_AND_NO_RECORD = "ExtraEditNoteAndNoRecord";
+    public static final int CONST_IS_ONLY_TEXT = 0;
+    public static final int CONST_IS_TEXT_AND_RECORD = 1;
+    public static final int CONST_IS_EDIT_TEXT_AND_RECORD = 2;
+    public static final int CONST_IS_EDIT_ONLY_TEXT = 3;
+    public static final int CONST_RECORDER_SERVICE_IS_FREE = 0;
+    public static final int CONST_RECORDER_SERVICE_WORKS_FOR_PHONE = 1;
+    public static final int CONST_RECORDER_SERVICE_WORKS_FOR_NOTE = 2;
 
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
