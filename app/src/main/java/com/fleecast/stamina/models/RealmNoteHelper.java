@@ -49,26 +49,33 @@ public class RealmNoteHelper {
                         Date update_time,Date create_time_stamp, Date start_time,
                         Date end_time, int call_type, String phone_number, int tag,
                         int order) {
-        NoteInfoRealmStruct noteInfoRealmStruct = new NoteInfoRealmStruct();
-        noteInfoRealmStruct.setId(id);
-        noteInfoRealmStruct.setTitle(title);
-        noteInfoRealmStruct.setDescription(description);
-        noteInfoRealmStruct.setHasAudio(has_audio);
-        Date now = new Date();
-        noteInfoRealmStruct.setUpdateTime(now);
-        noteInfoRealmStruct.setCreateTimeStamp(now);
-        //data.add(new NoteInfoStruct(id, title, description,has_audio,update_time,create_time_stamp,null,null,-1,null,0,0));
-        noteInfoRealmStruct.setStartTime(null);
-        noteInfoRealmStruct.setEndTime(null);
-        noteInfoRealmStruct.setCallType(-1);
-        noteInfoRealmStruct.setPhoneNumber(null);
-        noteInfoRealmStruct.setTag(0);
-        noteInfoRealmStruct.setOrder(0);
-        realm.beginTransaction();
-        realm.copyToRealm(noteInfoRealmStruct);
-        realm.commitTransaction();
 
-        showLog("Added ; " + title);
+        if(!isExist(id)) {
+            NoteInfoRealmStruct noteInfoRealmStruct = new NoteInfoRealmStruct();
+            noteInfoRealmStruct.setId(id);
+            noteInfoRealmStruct.setTitle(title);
+            noteInfoRealmStruct.setDescription(description);
+            noteInfoRealmStruct.setHasAudio(has_audio);
+            Date now = new Date();
+            noteInfoRealmStruct.setUpdateTime(now);
+            noteInfoRealmStruct.setCreateTimeStamp(now);
+            //data.add(new NoteInfoStruct(id, title, description,has_audio,update_time,create_time_stamp,null,null,-1,null,0,0));
+            noteInfoRealmStruct.setStartTime(null);
+            noteInfoRealmStruct.setEndTime(null);
+            noteInfoRealmStruct.setCallType(call_type);
+            noteInfoRealmStruct.setPhoneNumber(phone_number);
+            noteInfoRealmStruct.setTag(0);
+            noteInfoRealmStruct.setOrder(0);
+            realm.beginTransaction();
+            realm.copyToRealm(noteInfoRealmStruct);
+            realm.commitTransaction();
+            showLog("Added ; " + title);
+        }
+        else
+        {
+            updateNotes(id,title,description,update_time,tag,order);
+        }
+
     }
 
 
@@ -78,7 +85,7 @@ public class RealmNoteHelper {
      * @param id
      * @return
      */
-    public boolean isNoteExist(int id) {
+    public boolean isExist(int id) {
 
 /*
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
@@ -104,17 +111,18 @@ public class RealmNoteHelper {
         return noteInfoRealmStruct;
     }
 
-/*
-    public boolean update(int id, String title, String iconFilePath, int app_group_code, int app_group_code_order) {
-
+    public void updateNotes(int id, String title, String description,  Date update_time, int tag,  int order) {
         realm.beginTransaction();
-        GroupsDbRealmStruct groupsDbRealmStruct = realm.where(GroupsDbRealmStruct.class).equalTo("id", id).findFirst();
-        groupsDbRealmStruct.setAppGroupOrder(app_group_code_order);
-        realm.commitTransaction();
-        return false;
 
+        NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
+        noteInfoRealmStruct.setTitle(title);
+        noteInfoRealmStruct.setDescription(description);
+        noteInfoRealmStruct.setUpdateTime(update_time);
+        noteInfoRealmStruct.setTag(tag);
+        noteInfoRealmStruct.setOrder(order);
+        realm.commitTransaction();
     }
-*/
+
 
     public void updateNotePhoneCallInfo(int id, Date start_time,
                       Date end_time, int call_type, String phone_number) {
@@ -166,13 +174,13 @@ public class RealmNoteHelper {
     }
 
 
-    /**
+   /* *//**
      * method update article
      *
      * @param id
      * @param title
      * @param description
-     */
+     *//*
     public void updateNote(int id, String title, String description, boolean has_audio)  {
         Date now = new Date();
 
@@ -187,7 +195,7 @@ public class RealmNoteHelper {
 
         realm.commitTransaction();
         showLog("Updated : " + title);
-    }
+    }*/
 
 
     /**

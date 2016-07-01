@@ -20,17 +20,18 @@ public class Constants {
     public static final String EXTRA_NEW_RECORD = "ExetraNewRecord";
     public static final String EXTRA_RECORD_SOURCE = "ExtraRecordSource";
     public static final String EXTRA_STOP_RECORD = "ExtraStopRecord";
-    public static final String EXTRA_STOP_SERVICE = "ExtraStopService";
+    public static final String EXTRA_STOP_RECORD_SERVICE = "ExtraStopRecordService";
+    public static final String EXTRA_CURRENT_DBID_RECORD_SERVICE = "ExtraCurrentDbidRecordService";
     public static final String INTENTFILTER_RECORD_SERVICE = "IntentfilterRecordService";
-    public static final String EXTRA_RECORD_SERVICE_ERROR = "ExtraRecordServiceError";
+    public static final String EXTRA_RECORD_SERVICE_REPORTS = "ExtraRecordServiceError";
     public static final int REPORT_RECORD_ERROR_TO_ACTIVITY = 0;
     public static final int REPORT_RECORDED_FILE_TO_ACTIVITY = 1;
+    public static final int REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY = 2;
     public static final String REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME = "ReportRecordedFileToActivityFilename";
 
     public static final String INTENTFILTER_PLAYER_SERVICE = "IntentfilterPlayerService";
     public static final String EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER = "ExtraPlayMediaFilePortrait";
-    public static final String EXTRA_PORTRAIT_PLAYER_DESCRIPTION = "ExtraPortraitPlayerDescription";
-    public static final String EXTRA_PORTRAIT_PLAYER_TITLE = "ExtraPortraitPlayerTitle";
+    public static final String EXTRA_PORTRAIT_PLAYER_DBID = "ExtraPortraitPlayerDescription";
 
     public static final String ACTION_SHOW_PLAYER_NO_NEW = "com.fleecast.stamina.action.SHOW_PLAYER_NO_NEW";
     public static final String ACTION_CLOSE = "com.fleecast.stamina.action.CLOSE";
@@ -39,8 +40,11 @@ public class Constants {
     public static final String ACTION_NEXT =  "com.fleecast.stamina.action.SKIP";
     public static final String ACTION_STOP =  "com.fleecast.stamina.action.STOP";
     public static final String ACTION_REWIND =  "com.fleecast.stamina.action.REWIND";
+    public static final String ACTION_STOP_RECORD =  "com.fleecast.stamina.action.STOP_RECORD";
+
     public static final String EXTRA_SEEK_TO = "ExtraSeekTo";
     public static final String EXTRA_UPDATE_SEEKBAR = "ExtraUpdateSeekBar";
+
 
     public static final String EXTRA_PLAY_NEW_SESSION =  "ExtraPlayNewSession";
     public static final int ACTION_NULL =  -1;
@@ -67,8 +71,8 @@ public class Constants {
     public static final String EXTRA_AUDIO_NOTE_FILE_DB_ID = "ExtraAudioNoteFileDbId";
     public static final int CONST_PLAYER_LIST_TEXT_ELLLIPSIZE = 30;
     public static final String EXTRA_FOLDER_TO_PLAY_ID = "ExtraFolderToPlayId";
-    public static final String EXTRA_TAKE_NOTE_AND_NO_RECORD = "ExtraTakeNoteAndNoRecord";
-    public static final String EXTRA_TAKE_NOTE_AND_START_RECORD = "ExtraTakeNoteAndStartRecord";
+    public static final String EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD = "ExtraTakeNoteAndNoRecord";
+    public static final String EXTRA_TAKE_NEW_NOTE_AND_START_RECORD = "ExtraTakeNoteAndStartRecord";
     public static final String EXTRA_EDIT_NOTE_AND_RECORD = "ExtraEditNoteAndRecord";
     public static final String EXTRA_EDIT_NOTE_AND_NO_RECORD = "ExtraEditNoteAndNoRecord";
     public static final int CONST_IS_ONLY_TEXT = 0;
@@ -78,6 +82,17 @@ public class Constants {
     public static final int CONST_RECORDER_SERVICE_IS_FREE = 0;
     public static final int CONST_RECORDER_SERVICE_WORKS_FOR_PHONE = 1;
     public static final int CONST_RECORDER_SERVICE_WORKS_FOR_NOTE = 2;
+    public static final String EXTRA_NOTE_DB_ID_FOR_EDIT = "ExtraNoteDbIdForEdit";
+    public static final String PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES = "AutoRunRecorderOnAudioNotes";
+
+    /**
+     * Share and Social
+     */
+    public static final String EXTRA_PROTOCOL_VERSION = "com.facebook.orca.extra.PROTOCOL_VERSION";
+    public static final String EXTRA_APP_ID = "com.facebook.orca.extra.APPLICATION_ID";
+    public static final int PROTOCOL_VERSION = 20150314;
+    public static final String YOUR_APP_ID = "280710328947930";
+    public static final int SHARE_TO_MESSENGER_REQUEST_CODE = 1;
 
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
@@ -125,6 +140,7 @@ public class Constants {
     /**
      * Call constants.
      */
+    public static int PHONE_THIS_IS_NOT_A_PHONE_CALL = -1;
     public static int PHONE_OUT_GOING_CALL_STARTED = 0;
     public static final int PHONE_INCOMING_CALL_RECEIVED = 1;
     public static final int PHONE_INCOMING_CALL_ANSWERED = 2;
@@ -170,4 +186,5 @@ public class Constants {
     public static int RECORD_STOP = 2;
     public static int RECORD_TAP_KEEP = 3;
 
+    public static String TEMP_FOLDER_NAME ="temporary";
 }

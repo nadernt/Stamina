@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompatSideChannelService;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,7 +72,7 @@ public class FragmentNoteTakingSettings extends Fragment {
 
         final CheckBox chkStopPlayerOnListFinish = (CheckBox) fragmentView.findViewById(R.id.chkStopPlayerOnListFinish);
         final CheckBox chkShowFullPlayerNotification = (CheckBox) fragmentView.findViewById(R.id.chkShowFullPlayerNotification);
-
+        final CheckBox chkAutoRecordAudioNote = (CheckBox) fragmentView.findViewById(R.id.chkAutoRecordAudioNote);
 
         if (mRecorder != null)
             mRecorder = null;
@@ -141,6 +142,11 @@ public class FragmentNoteTakingSettings extends Fragment {
             }
         });
 
+        if(Prefs.getBoolean(Constants.PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES,false))
+            chkAutoRecordAudioNote.setChecked(true);
+        else
+            chkAutoRecordAudioNote.setChecked(false);
+
         if(Prefs.getBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false))
             chkStopPlayerOnListFinish.setChecked(true);
         else
@@ -155,6 +161,13 @@ public class FragmentNoteTakingSettings extends Fragment {
             @Override
             public void onClick(View v) {
                 Prefs.putBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,chkStopPlayerOnListFinish.isChecked());
+            }
+        });
+
+        chkAutoRecordAudioNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Prefs.putBoolean(Constants.PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES,chkAutoRecordAudioNote.isChecked());
             }
         });
 

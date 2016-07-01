@@ -44,7 +44,7 @@ public class NoteTakingRecyclerViewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), AddActivity.class));
+                startActivity(new Intent(getApplicationContext(), ActivityAddAudioNote.class));
                 ///finish();
             }
         });

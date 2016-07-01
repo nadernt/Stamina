@@ -149,6 +149,20 @@ public class ExternalStorageManager {
 
     }
 
+
+    public static String getTempWorkingDirectory() {
+
+        String pathToRecordingDirectory = getWorkingDirectory() + File.separator +  Constants.TEMP_FOLDER_NAME;
+
+        File directory = new File(pathToRecordingDirectory);
+
+        if(!directory.exists())
+            directory.mkdirs();
+
+        return pathToRecordingDirectory;
+
+    }
+
     public static String makeRecodingDirectory(String mFileDbUniqueToken){
 
         String pathToRecordingDirectory = getWorkingDirectory() + File.separator +  mFileDbUniqueToken;
@@ -157,6 +171,14 @@ public class ExternalStorageManager {
 
         if(!directory.exists())
              directory.mkdirs();
+
+        return pathToRecordingDirectory;
+
+    }
+
+    public static String getPathToAudioFilesFolderById(String dbId) {
+
+        String pathToRecordingDirectory = getWorkingDirectory() + File.separator +  dbId;
 
         return pathToRecordingDirectory;
 

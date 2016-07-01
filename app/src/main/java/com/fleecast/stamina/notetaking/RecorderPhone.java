@@ -25,8 +25,8 @@ public class RecorderPhone {
 
     private MyApplication myApplication;
 
-    private boolean recordStatus = false;
-    private boolean playStatus = false;
+   // private boolean recordStatus = false;
+   // private boolean playStatus = false;
     private String mFileName = "";
 
     public RecorderPhone(Context context, String workingDirectory, String mFileName) {
@@ -41,26 +41,31 @@ public class RecorderPhone {
         this.mediaRecorderSource = mediaRecorderSource;
         if (start_stop) {
 
-            recordStatus = true;
+           // recordStatus = true;
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
 
             startRecording();
         } else {
-            recordStatus = false;
+           // recordStatus = false;
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
             stopRecording();
         }
     }
 
-    public void playMedia(boolean start_stop) {
+   /* public void playMedia(boolean start_stop) {
         if (start_stop) {
 
             if (mRecorder != null)
                 recordMedia(false, mediaRecorderSource);
 
-            playStatus = true;
+            //playStatus = true;
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
 
             startPlaying();
         } else {
-            playStatus = false;
+            //playStatus = false;
+            myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
+
         }
     }
 
@@ -70,13 +75,13 @@ public class RecorderPhone {
         intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, mFileName);
         context.startActivity(intent);
 
-    }
+    }*/
 
 
     private void startRecording() {
 
         Log.e(LOG_TAG, "Rec Init");
-
+        myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(mediaRecorderSource);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -101,6 +106,7 @@ public class RecorderPhone {
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
+        myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
     }
 
 
@@ -108,7 +114,7 @@ public class RecorderPhone {
      * ******* Getter Setters section ********
      ****************************************/
 
-    public boolean isRecording() {
+    /*public boolean isRecording() {
         return recordStatus;
     }
 
@@ -122,6 +128,6 @@ public class RecorderPhone {
 
     public void setPlayStatus(boolean playStatus) {
         this.playStatus = playStatus;
-    }
+    }*/
 
 }

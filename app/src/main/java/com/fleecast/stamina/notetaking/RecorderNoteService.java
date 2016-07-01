@@ -1,14 +1,23 @@
 package com.fleecast.stamina.notetaking;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
@@ -19,7 +28,7 @@ import java.io.File;
 /**
  * Created by nnt on 7/05/16.
  */
-public class RecorderService extends Service{
+public class RecorderNoteService extends Service{
 
     private static final String LOG_TAG = "AudioRecordService";
     private int recorderSource;
@@ -32,6 +41,11 @@ public class RecorderService extends Service{
     private String recordFileName;
     private int recordQuality;
     private LocalBroadcastManager broadcaster;
+    private int dbId=0;
+    private int idNotification= 125;
+   /* private NotificationCompat.Builder mBuilder;
+    private NotificationManager mNotifyManager;*/
+   private NotificationManager mNotifyManager;
 
     @Override
     public void onCreate() {
@@ -47,15 +61,85 @@ public class RecorderService extends Service{
 
         return null;
     }
+    private NotificationCompat.Action generateAction(int icon, String title, String intentAction ) {
+        Intent intent = new Intent( getApplicationContext(), RecorderNoteService.class );
+        intent.setAction( intentAction );
+        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), idNotification, intent, 0);
+        return new NotificationCompat.Action.Builder( icon, title, pendingIntent ).build();
+    }
+    
+    private PendingIntent createPendingIntent() {
+        Intent intent = new Intent(this, ActivityAddAudioNote.class);
+        intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD,dbId);
 
+        /***********************************************
+         * *********************************************
+         * For some unspecified reason, extras will be
+         * delivered only if we've set some action,
+         * for example setAction("foo").
+         ***********************************************
+         ***********************************************/
+        intent.setAction("FakeAction");
+        return PendingIntent.getActivity(this, 0, intent, 0);
+    }
+
+    void CreateNotification() {
+        PendingIntent pi = createPendingIntent();
+
+        // Defining notification
+        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(
+                this).setSmallIcon(R.drawable.ic_action_mic_stop)
+                .setContentTitle("Recording")
+                .setContentText("Tap to go to record")
+                .setPriority(Notification.PRIORITY_MAX)
+                .setOngoing(true)
+                .setContentIntent(pi)
+                .setShowWhen(false)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setAutoCancel(false)
+                .addAction(generateAction(R.drawable.ic_stop_record, "",Constants.ACTION_STOP_RECORD));
+
+        mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        mNotifyManager.notify(idNotification, nBuilder.build());
+
+    }
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = intent.getAction();
+        if(action!=null) {
 
+            Log.e("DBG","LogMax1");
+            stopRecordingByNotification();
+        }
         if(intent!=null) {
+            Log.e("DBG","LogMax");
 
             if (intent.hasExtra(Constants.EXTRA_NEW_RECORD)) {
                 Log.e(LOG_TAG, "EXTRA_NEW_RECORD");
-
+                //dbId = intent.getIntExtra(Constants.EXTRA_CURRENT_DBID_RECORD_SERVICE,0);
                 this.mFileDbUniqueToken = intent.getStringExtra(Constants.EXTRA_RECORD_FILENAME);
 
                 //recorderSource = intent.getIntExtra(Constants.EXTRA_RECORD_SOURCE,MediaRecorder.AudioSource.MIC);
@@ -68,24 +152,27 @@ public class RecorderService extends Service{
                 }
 
                 try {
+                    CreateNotification();
                     startRecording();
                 } catch (Exception e) {
                     Log.e(LOG_TAG, "prepare() failed");
                     myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
                     recordStatus = true;
                     Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
-                    stopService(new Intent(getApplicationContext(), RecorderService.class));
+                    stopSelf();
                 }
 
             }
             else if(intent.hasExtra(Constants.EXTRA_STOP_RECORD)){
                 Log.e(LOG_TAG, "STOP RECORDING");
-
+                if(mNotifyManager!=null)
+                    mNotifyManager.cancel(idNotification);
                     stopRecording();
             }
-            else if(intent.hasExtra(Constants.EXTRA_STOP_SERVICE)){
-
-                stopService(new Intent(getApplicationContext(), RecorderService.class));
+            else if(intent.hasExtra(Constants.EXTRA_STOP_RECORD_SERVICE)){
+                if(mNotifyManager!=null)
+                    mNotifyManager.cancel(idNotification);
+                stopSelf();
 
             }
 
@@ -116,7 +203,6 @@ public class RecorderService extends Service{
             //MediaRecorder.getAudioSourceMax();
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);*/
-
             mRecorder.setAudioSamplingRate(22050);
             mRecorder.setAudioEncodingBitRate(43000);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -168,13 +254,15 @@ public class RecorderService extends Service{
             mRecorder.start();
         }
         else {
-            stopService(new Intent(getApplicationContext(), RecorderService.class));
+            stopService(new Intent(getApplicationContext(), RecorderNoteService.class));
         }
 
     }
 
     private void stopRecording()   {
         try {
+            if(mNotifyManager!=null)
+                mNotifyManager.cancel(idNotification);
             myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
             recordStatus = false;
             mRecorder.stop();
@@ -187,68 +275,15 @@ public class RecorderService extends Service{
         }
     }
 
-    /*public RecorderService(Context context, View viewTimer,String workingDirectory, String mFileDbUniqueToken){
-
-        this.viewTimer = viewTimer;
-        this.mFileDbUniqueToken = workingDirectory + File.separator + mFileDbUniqueToken;
-        //mChronometer = (Chronometer)viewTimer;
-        this.context = context;
-
-        myApplication =  (MyApplication)context.getApplicationContext();
-
+    /**
+     *It is similar method stopRecording but reports to
+     * activity to make up gui for user after tapping
+     * stop in the activity.
+     */
+    private void stopRecordingByNotification()   {
+            sendBroadcastToActivity(Constants.REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY);
     }
-*/
 
-   /* public RecorderService(Context context,String workingDirectory, String mFileDbUniqueToken){
-        this.mFileDbUniqueToken = workingDirectory + File.separator + mFileDbUniqueToken;
-        this.context = context;
-
-        myApplication =  (MyApplication)context.getApplicationContext();
-
-    }*/
-
-   /* public void recordMedia(boolean start_stop,int mediaRecorderSource) {
-        this.recorderSource = mediaRecorderSource;
-        if (start_stop) {
-
-          *//*  if(mPlayer!=null)
-                playMedia(false);*//*
-
-            recordStatus = true;
-
-            try {
-                startRecording();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            recordStatus = false;
-               stopRecording();
-        }
-    }*/
-
-/*
-    public void playMedia(boolean start_stop) {
-        if (start_stop) {
-
-            if(mRecorder!=null)
-                recordMedia(false, recorderSource);
-
-            playStatus= true;
-
-        } else {
-            playStatus= false;
-            //stopPlaying();
-        }
-    }
-*/
-
-  /*  private void startPlaying() {
-
-        Intent intent = new Intent(this,ActivityPlayerPortrait.class);
-        intent.putExtra("file_name", mFileDbUniqueToken);
-        startActivity(intent);
-    }*/
 
     @Override
     public void onDestroy() {
@@ -259,73 +294,6 @@ public class RecorderService extends Service{
         }
 
     }
-
-    private void stopPlaying() {
-       // mPlayer.release();
-       // mPlayer = null;
-
-    }
-
-  /*  private void startRecording() {
-
-        Log.e(LOG_TAG, "Rec Init");
-*//*        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setAudioEncoder(MediaRecorder.getAudioSourceMax());
-        recorder.setAudioEncodingBitRate(16);
-        recorder.setAudioSamplingRate(44100);
-        recorder.setOutputFile(path);
-        recorder.prepare();
-        recorder.start();*//*
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(recorderSource);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileDbUniqueToken);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        try {
-            mRecorder.prepare();
-            myApplication.setIsRecordUnderGoing(true);
-            mRecorder.start();
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "prepare() failed");
-            myApplication.setIsRecordUnderGoing(false);
-            Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
-        }
-
-
-    }*/
-
-
-
-   /* public void startTimer()
-    {
-        mChronometer.setVisibility(View.VISIBLE);
-       mChronometer.start();
-    }
-
-    public void stopTimer()
-    {
-        mChronometer.stop();
-    }
-
-    public void resetTimer()
-    {
-        mChronometer.setBase(SystemClock.elapsedRealtime());
-    }
-
-    public void formatTimer()
-    {
-        mChronometer.setFormat("Formatted time (%s)");
-    }
-
-    public void clearTimer()
-    {
-        mChronometer.setFormat(null);
-    }
-*/
 
     /****************************************
      ******** Getter Setters section ********
@@ -349,16 +317,22 @@ public class RecorderService extends Service{
                     file.delete();
                 }
 
-                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_ERROR, messageToActivity);
+                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_REPORTS, messageToActivity);
 
                 break;
 
             case Constants.REPORT_RECORDED_FILE_TO_ACTIVITY:
-                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_ERROR, messageToActivity);
+                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_REPORTS, messageToActivity);
+                intent.putExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME, recordFileName);
+                break;
+            case Constants.REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY:
+                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_REPORTS, messageToActivity);
                 intent.putExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME, recordFileName);
                 break;
         }
 
         broadcaster.sendBroadcast(intent);
+
+        stopSelf();
     }
 }

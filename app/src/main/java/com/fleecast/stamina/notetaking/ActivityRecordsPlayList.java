@@ -10,8 +10,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
@@ -19,8 +21,10 @@ import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,6 +46,11 @@ import com.fleecast.stamina.utility.ExternalStorageManager;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -99,7 +108,10 @@ public class ActivityRecordsPlayList extends Activity {
 
         Intent intent = getIntent();
 
-        if(!playlistHasLoaded || intent.hasExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID)) {
+        /*if(intent.hasExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID))
+            playlistHasLoaded=false;*/
+
+        if(!playlistHasLoaded ) {
 
             String mFolderDbUniqueToken  = intent.getStringExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID);
 
@@ -109,7 +121,7 @@ public class ActivityRecordsPlayList extends Activity {
 
             parentDbId = Integer.valueOf(mFolderDbUniqueToken);
 
-           // Log.e("DBG","1465131201");
+            Log.e("DBG","1465131201");
 
         }else {
             TitlesFragment.highlightSelectedNoteItem(notePointer);
@@ -312,7 +324,7 @@ public class ActivityRecordsPlayList extends Activity {
             timer.schedule(task,  500);
     }
 
-    private String unixTimeToReadable(long unixSeconds){
+    private static String unixTimeToReadable(long unixSeconds){
 
         Date date = new Date(unixSeconds*1000L); // *1000 is to convert seconds to milliseconds
         // E, dd MMM yyyy HH:mm:ss z
@@ -324,7 +336,7 @@ public class ActivityRecordsPlayList extends Activity {
 
     }
 
-    private int getFilePostFixId(String file_name)
+    private static int getFilePostFixId(String file_name)
     {
 
         if(file_name==null || file_name.length()==0)
@@ -377,6 +389,7 @@ public class ActivityRecordsPlayList extends Activity {
         }
 
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -449,7 +462,7 @@ public class ActivityRecordsPlayList extends Activity {
             if(detailsAreVisible)
                 imgHideDetails.setVisibility(View.VISIBLE);
         }
-
+        Log.e("BALALB","A");
 
 
 
@@ -623,9 +636,11 @@ public class ActivityRecordsPlayList extends Activity {
             myApplication = (MyApplication) getActivity().getApplication();
 
             la = new ArrayAdapter<Spanned>(getActivity(),
-                    android.R.layout.simple_list_item_activated_1,
+                    R.layout.listview_player,
                     playListHelper.loadAudioListForListViewAdapter());
+
             la.notifyDataSetChanged();
+
             setListAdapter(la);
 
             mContextTitlesFragment = getActivity();
@@ -650,13 +665,27 @@ public class ActivityRecordsPlayList extends Activity {
             }
 
 
+            Handler handler1 = new Handler();
+            handler1.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    highlightSelectedPlayItem(myApplication.getIndexSomethingIsPlaying());
+
+                    highlightSelectedNoteItem(notePointer);
+
+
+                }
+            }, 200);
+
             getListView().setLongClickable(true);
 
             getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                                int pos, long id) {
-                     AlertDialog myDialog;
+                    AlertDialog myDialog;
 
                     //If we are in portrait mode and details panel is showing.
                     if((detailsOfAudioNote.getVisibility()== View.VISIBLE) && !mDualPane)
@@ -689,18 +718,63 @@ public class ActivityRecordsPlayList extends Activity {
                                 // playListHelper = new PlayListHelper(getActivity(), String.valueOf(parentDbId));
 
                                 la = new ArrayAdapter<Spanned>(getActivity(),
-                                        android.R.layout.simple_list_item_activated_1,
+                                        R.layout.listview_player,
                                         playListHelper.loadAudioListForListViewAdapter());
                                 la.notifyDataSetChanged();
 
                                 setListAdapter(la);
 
-/*
-                                myApplication.setIndexSomethingIsPlaying(tmpCurrentPlayingFile);
-*/
                             }
                             else if (which==2){
                                 deleteFileAndNote(true,chosenItemIndex,String.valueOf(parentDbId));
+                            }
+                            else if(which==3){
+
+                                File f=new File(myApplication.stackPlaylist.get(chosenItemIndex).getFileName().toString());
+
+                                //Uri uri = Uri.parse("file://"+f.getAbsolutePath());
+
+                                String tempFile = String.valueOf((int) (System.currentTimeMillis() / 1000));
+
+                                File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + "." + Constants.RECORDER_AUDIO_FORMAT_AAC);
+                                try {
+                                    copy(f,tmp);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Uri uri = Uri.fromFile(tmp);
+
+                                Intent share = new Intent(Intent.ACTION_SEND);
+
+                                String txtTitl  = myApplication.stackPlaylist.get(chosenItemIndex).getTitle();
+
+                                if(txtTitl==null)
+                                    txtTitl = Constants.CONST_STRING_NO_TITLE;
+
+                                String txtDescr  = myApplication.stackPlaylist.get(chosenItemIndex).getDescription();
+
+                                if(txtDescr==null) {
+                                    txtDescr = unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(chosenItemIndex).getFileName())) +
+                                            "\n" + Constants.CONST_STRING_NO_DESCRIPTION;
+                                }
+                                else
+                                {
+                                    txtDescr = unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(chosenItemIndex).getFileName())) +
+                                            "\n" + txtDescr ;
+                                }
+
+
+                                share.putExtra(Intent.EXTRA_SUBJECT,txtTitl);
+                                share.putExtra(Intent.EXTRA_TITLE, txtTitl);
+                                share.putExtra(Intent.EXTRA_TEXT, txtDescr);
+                                share.putExtra(Intent.EXTRA_STREAM, uri);
+
+                                share.setType("audio/*");
+                                share.putExtra(Constants.EXTRA_PROTOCOL_VERSION, Constants.PROTOCOL_VERSION);
+                                share.putExtra(Constants.EXTRA_APP_ID, Constants.YOUR_APP_ID);
+                                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION );
+
+                                startActivityForResult(Intent.createChooser(share, "Share audio File"),Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
                             }
                         }
                     });
@@ -713,9 +787,24 @@ public class ActivityRecordsPlayList extends Activity {
                 }
             });
 
+
         }
 
-        private void deleteFileAndNote(boolean askQuestion, final int itemOrderInStack,final String mFileDbUniqueToken){
+     public void copy(File src, File dst) throws IOException {
+            InputStream in = new FileInputStream(src);
+            OutputStream out = new FileOutputStream(dst);
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        }
+
+    private void deleteFileAndNote(boolean askQuestion, final int itemOrderInStack,final String mFileDbUniqueToken){
 
             if(myApplication.isPlaying()) {
                 //First we try to kill the current working player service.
@@ -748,7 +837,7 @@ public class ActivityRecordsPlayList extends Activity {
                 String etStr = et.getText().toString();
                 TextView tv1 = new TextView(getActivity());
 
-                tv1.setText(Html.fromHtml("<font color='BLUE'>Type asd (case insensitive)</font>"));
+                tv1.setText(Html.fromHtml("Type <font color='BLUE'>ASD</font> (case insensitive)"));
 
                 LinearLayout.LayoutParams tv1Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 tv1Params.bottomMargin = 5;
@@ -757,21 +846,17 @@ public class ActivityRecordsPlayList extends Activity {
 
                 alertDialogBuilder.setView(layout);
                 alertDialogBuilder.setTitle("Some title");
-                // alertDialogBuilder.setMessage("Input Student ID");
                 alertDialogBuilder.setCustomTitle(tv);
 
                 alertDialogBuilder.setIcon(R.drawable.audio_wave);
-                // alertDialogBuilder.setMessage(message);
                 alertDialogBuilder.setCancelable(false);
 
-                // Setting Negative "Cancel" Button
                 alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         dialog.cancel();
                     }
                 });
 
-                // Setting Positive "OK" Button
                 alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if(!et.getText().toString().trim().toLowerCase().contains("asd")){
@@ -781,7 +866,7 @@ public class ActivityRecordsPlayList extends Activity {
                         }
 
                         RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(getActivity());
-                        Log.e("Hongralll",myApplication.stackPlaylist.get(itmOrderInStack).getFileName());
+
                         File file = new File(myApplication.stackPlaylist.get(itmOrderInStack).getFileName());
 
                         File createTrashFolder = new File(ExternalStorageManager.getWorkingDirectory()+ Constants.CONST_RECYCLEBIN_DIRECTORY_NAME);
@@ -813,10 +898,9 @@ public class ActivityRecordsPlayList extends Activity {
                             getActivity().finish();
                         }
                         else{
-                           // playListHelper = new PlayListHelper(getActivity(), String.valueOf(parentDbId));
 
                             la = new ArrayAdapter<Spanned>(getActivity(),
-                                    android.R.layout.simple_list_item_activated_1,
+                                    R.layout.listview_player,
                                     playListHelper.loadAudioListForListViewAdapter());
                             la.notifyDataSetChanged();
 
@@ -838,8 +922,9 @@ public class ActivityRecordsPlayList extends Activity {
                 }
             }
             else{
+
                 RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(getActivity());
-                Log.e("Hongralll",myApplication.stackPlaylist.get(itmOrderInStack).getFileName());
+
                 File file = new File(myApplication.stackPlaylist.get(itmOrderInStack).getFileName());
 
                 File createTrashFolder = new File(ExternalStorageManager.getWorkingDirectory()+ Constants.CONST_RECYCLEBIN_DIRECTORY_NAME);
@@ -871,10 +956,9 @@ public class ActivityRecordsPlayList extends Activity {
                     getActivity().finish();
                 }
                 else {
-                    // playListHelper = new PlayListHelper(getActivity(), String.valueOf(parentDbId));
 
                     la = new ArrayAdapter<Spanned>(getActivity(),
-                            android.R.layout.simple_list_item_activated_1,
+                            R.layout.listview_player,
                             playListHelper.loadAudioListForListViewAdapter());
                     la.notifyDataSetChanged();
 
@@ -904,6 +988,7 @@ public class ActivityRecordsPlayList extends Activity {
                 return;
             else
                 runPlayerForItem(position);
+            Log.e("BADEMJAN","BADDDEERRRR");
         }
 
 
@@ -930,11 +1015,11 @@ public class ActivityRecordsPlayList extends Activity {
                 {
                     // fetch the message String
                     //String message=data.getStringExtra("MESSAGE");
-                   int dbIdFromAddEditDlg = data.getIntExtra(Constants.EXTRA_AUDIO_NOTE_FILE_DB_ID,Constants.CONST_NULL_MINUS);
+                    //int dbIdFromAddEditDlg = data.getIntExtra(Constants.EXTRA_AUDIO_NOTE_FILE_DB_ID,Constants.CONST_NULL_MINUS);
                     playListHelper = new PlayListHelper(getActivity(), String.valueOf(parentDbId));
 
                     la = new ArrayAdapter<Spanned>(getActivity(),
-                            android.R.layout.simple_list_item_activated_1,
+                            R.layout.listview_player,
                             playListHelper.loadAudioListForListViewAdapter());
                     la.notifyDataSetChanged();
 
@@ -953,7 +1038,7 @@ public class ActivityRecordsPlayList extends Activity {
 
             for(int i=0 ; i< playlistListviewInstance.getChildCount();i++) {
                 if (playlistListviewInstance.getCheckedItemPosition()== i) {
-                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.radical_red));
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.amber));
                 }
                 else if (notePointer == i)
                     playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.deep_sky_blue));
@@ -967,8 +1052,8 @@ public class ActivityRecordsPlayList extends Activity {
 
             for (int i = 0; i < playlistListviewInstance.getChildCount(); i++) {
                 if (playlistListviewInstance.getCheckedItemPosition() == i)
-                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.radical_red));
-                 else if (indexNoteItemToHighlight == i) {
+                    playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.amber));
+                else if (indexNoteItemToHighlight == i) {
                     playlistListviewInstance.getChildAt(i).setBackgroundColor(ContextCompat.getColor(mContextTitlesFragment, R.color.deep_sky_blue));
                 }
                 else

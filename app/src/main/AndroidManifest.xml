@@ -63,7 +63,7 @@
         <activity android:name=".launcher.IconChooserActivity" />
         <activity android:name=".notetaking.EditActivity" />
         <activity
-            android:name=".notetaking.AddActivity"
+            android:name=".notetaking.ActivityAddAudioNote"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -78,7 +78,11 @@
 
         <service android:name=".chathead.ChatHeadService" />
         <service android:name=".notetaking.ChatHeadRecordService" />
-        <service android:name=".notetaking.RecorderService" />
+        <service android:name=".notetaking.RecorderNoteService">
+            <intent-filter>
+                <action android:name="com.fleecast.stamina.action.STOP_RECORD" />
+            </intent-filter>
+        </service>
         <service
             android:name=".notetaking.PlayerService"
             android:exported="false">
@@ -131,6 +135,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".notetaking.ActivityRecordsPlayList"
             android:launchMode="singleTask">
+
         </activity>
 
         <!--

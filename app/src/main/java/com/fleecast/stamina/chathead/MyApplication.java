@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import android.util.Log;
 import com.fleecast.stamina.models.MostUsedAndRecentAppsStruct;
 import com.fleecast.stamina.models.AudioNoteInfoStruct;
+import com.fleecast.stamina.models.TempNoteInfoStruct;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
 import java.util.ArrayList;
@@ -34,11 +35,20 @@ public class MyApplication extends Application{
     private int aRecordIsUnderGoing = 0;
     private boolean userWantsRecordPhoneCalls = false;
     public List <AudioNoteInfoStruct> stackPlaylist = new ArrayList<>();
+    public TempNoteInfoStruct tmpCurrentAudioNoteInfoStruct;
+    public TempNoteInfoStruct tmpTempNoteOnlyInfoStruct;
+    private boolean byePassRecordBroadcastReceiverForOnce = false;
+
     private int indexSomethingIsPlaying = Constants.CONST_NULL_MINUS;
     private int currentMediaPosition;
     private int mediaDuration;
     private boolean isPlaying=false;
-    private int playerServiceCurrentState = -1;
+    private int playerServiceCurrentState =  Constants.CONST_NULL_MINUS;
+    private boolean weHaveAnOpenNote = false;
+    private int currentOpenedNoteId =  Constants.CONST_NULL_ZERO;
+    private int lastOpenedNoteId =  Constants.CONST_NULL_ZERO;
+
+    private boolean audioNoteSaved =false;
 
 
 
@@ -196,6 +206,46 @@ public class MyApplication extends Application{
 
     public int getPlayerServiceCurrentState() {
         return playerServiceCurrentState;
+    }
+
+    public boolean isWeHaveAnOpenNote() {
+        return weHaveAnOpenNote;
+    }
+
+    public void setWeHaveAnOpenNote(boolean weHaveAnOpenNote) {
+        this.weHaveAnOpenNote = weHaveAnOpenNote;
+    }
+
+    public int getCurrentOpenedNoteId() {
+        return currentOpenedNoteId;
+    }
+
+    public void setCurrentOpenedNoteId(int currentOpenedNoteId) {
+        this.currentOpenedNoteId = currentOpenedNoteId;
+    }
+
+    public int getLastOpenedNoteId() {
+        return lastOpenedNoteId;
+    }
+
+    public void setLastOpenedNoteId(int lastOpenedNoteId) {
+        this.lastOpenedNoteId = lastOpenedNoteId;
+    }
+
+    public boolean isByePassRecordBroadcastReceiverForOnce() {
+        return byePassRecordBroadcastReceiverForOnce;
+    }
+
+    public void setByePassRecordBroadcastReceiverForOnce(boolean byePassRecordBroadcastReceiverForOnce) {
+        this.byePassRecordBroadcastReceiverForOnce = byePassRecordBroadcastReceiverForOnce;
+    }
+
+    public boolean isAudioNoteSaved() {
+        return audioNoteSaved;
+    }
+
+    public void setAudioNoteSaved(boolean audioNoteSaved) {
+        this.audioNoteSaved = audioNoteSaved;
     }
 
     @Override

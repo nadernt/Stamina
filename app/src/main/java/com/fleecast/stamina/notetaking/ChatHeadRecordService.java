@@ -224,7 +224,7 @@ public class ChatHeadRecordService extends Service {
 						 * user is crazy and just deleted the note from db before stop the call.
 						 */
 
-						if(realmNoteHelper.isNoteExist(dbId)) {
+						if(realmNoteHelper.isExist(dbId)) {
 							//Update the current finished call entry.
 							realmNoteHelper.updateNotePhoneCallInfo(dbId, dateForStopByUser, end, typeOfCallForStopByUser, callNumberForStopByUser);
 						}
@@ -257,7 +257,7 @@ public class ChatHeadRecordService extends Service {
 
 					disableHandler();
 
-					if(!realmNoteHelper.isNoteExist(dbId)) {
+					if(!realmNoteHelper.isExist(dbId)) {
 						// Crazy user deleted message while in the phone call!
 						String title = "Untitled";
 						String description = "";
@@ -339,7 +339,7 @@ public class ChatHeadRecordService extends Service {
 						 * user is crazy and just deleted the note from db before stop the call.
 						 */
 
-						if(realmNoteHelper.isNoteExist(dbId)) {
+						if(realmNoteHelper.isExist(dbId)) {
 							realmNoteHelper.deleteSingleNote(dbId);
 						}
 
@@ -389,7 +389,7 @@ public class ChatHeadRecordService extends Service {
 
 		if (start_stop) {
 
-			if (!recorder.isRecording())
+			if (myApplication.isRecordUnderGoing()==Constants.CONST_RECORDER_SERVICE_IS_FREE)
 			{
 				myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
 				recorder.recordMedia(true, MediaRecorder.AudioSource.VOICE_CALL);

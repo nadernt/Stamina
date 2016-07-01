@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity
             Prefs.putBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false);
             Prefs.putBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION,false);
 
+            Prefs.putBoolean(Constants.PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES,false);
+
+
 
             //Disable the phone recording service in manifest for the first initiation of app to the user. We don't want user records from first use of app!
             ComponentName component = new ComponentName(this, PhonecallReceiver.class);
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity
 
         startActivity(new Intent(this,ActivityRecordsPlayList.class));
 
-     //   startActivity(new Intent(this, AddActivity.class));
+     //   startActivity(new Intent(this, ActivityAddAudioNote.class));
        /* Intent intent = new Intent(this, ActivitySettings.class);
         startActivity(intent);*/
         //startService(new Intent(this, ChatHeadRecordService.class));

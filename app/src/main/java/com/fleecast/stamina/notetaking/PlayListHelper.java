@@ -15,6 +15,7 @@ import com.fleecast.stamina.models.RealmAppHelper;
 import com.fleecast.stamina.models.RealmAudioNoteHelper;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
+import com.fleecast.stamina.utility.Utility;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -39,14 +40,39 @@ public final class PlayListHelper {
 
         this.mContext = mContext;
         this.mFileDbUniqueToken = mFileDbUniqueToken;
-        this.folderToPlay = getPathToAudioFiles();
+        this.folderToPlay = ExternalStorageManager.getPathToAudioFilesFolderById(mFileDbUniqueToken);
 
         realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
         myApplication = (MyApplication) mContext.getApplicationContext();
-        //loadAudioListForListViewAdapter();
+    }
+
+    public PlayListHelper(Context mContext) {
+
+        this.folderToPlay=null;
+        this.mFileDbUniqueToken=null;
+        this.realmAudioNoteHelper=null;
+
+        this.mContext = mContext;
+
+        myApplication = (MyApplication) mContext.getApplicationContext();
+
 
     }
 
+    public void loadJustSingleFileForPlay(String fileName,int dbId)
+    {
+        List <AudioNoteInfoStruct> tmpStackPlaylist = new ArrayList<>();
+Log.e("GGGG", dbId + " filename: " + fileName);
+        tmpStackPlaylist.add(0,new AudioNoteInfoStruct(
+                dbId,
+                dbId,
+                fileName,
+                null,null,Constants.CONST_NULL_ZERO));
+
+        myApplication.stackPlaylist = new ArrayList<AudioNoteInfoStruct>(tmpStackPlaylist);
+
+
+    }
 
     /**
      * Our data, part 1.
@@ -225,12 +251,6 @@ private int lookInsideListForDbKey(List<AudioNoteInfoRealmStruct> adNFo, int fil
            return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
     }
 
-    private String getPathToAudioFiles() {
 
-        String pathToRecordingDirectory = ExternalStorageManager.getWorkingDirectory() + File.separator +  mFileDbUniqueToken;
-
-        return pathToRecordingDirectory;
-
-    }
 
 }

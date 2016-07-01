@@ -37,8 +37,8 @@ public class ActivityPlayerPortrait extends Activity {
     private TextView txtTotalTime;
     private WindowManager windowManager;
     private Point szWindow = new Point();
-    private ImageButton btnPlayPortrait, btnStopPortrait,btnRewindTrackPortrait,btnNextTrackPortrait;
-    private TextView txtTitlePortraitPlayer,txtDescriptionPortraitPlayer;
+    private ImageButton btnPlayPortrait, btnStopPortrait, btnRewindTrackPortrait, btnNextTrackPortrait;
+    private TextView txtTitlePortraitPlayer, txtDescriptionPortraitPlayer;
     private int oldMediaSeekPosition = 0;
 
 
@@ -47,7 +47,7 @@ public class ActivityPlayerPortrait extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_portrait);
 
-        myApplication =  (MyApplication)getApplicationContext();
+        myApplication = (MyApplication) getApplicationContext();
 
         windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
 
@@ -59,11 +59,11 @@ public class ActivityPlayerPortrait extends Activity {
             szWindow.set(w, h);
         }
 
-        int width=0;
+        int width = 0;
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             width = (szWindow.x / 3) * 2;
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             width = szWindow.x;
         }
 
@@ -87,7 +87,6 @@ public class ActivityPlayerPortrait extends Activity {
         seekBar = (SeekBar) findViewById(R.id.seekBar1);
 
 
-
         // Handle Intents & action
         handleIntents(getIntent().getAction());
 
@@ -95,42 +94,40 @@ public class ActivityPlayerPortrait extends Activity {
         seekBar.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(myApplication.isPlaying())
+                if (myApplication.isPlaying())
                     updateSeekChange();
                 else
-                return true;
+                    return true;
                 return false;
             }
         });
 
         // Start
-            btnPlayPortrait.setOnClickListener(new View.OnClickListener() {
+        btnPlayPortrait.setOnClickListener(new View.OnClickListener() {
 
-                public void onClick(View v) {
+            public void onClick(View v) {
 
 
-                    if(!myApplication.isPlaying()) {
-                        sendCommandToPlayerService(Constants.ACTION_PLAY,Constants.ACTION_NULL);
-                        play();
-                    }
-                    else
-                    {
-                        sendCommandToPlayerService(Constants.ACTION_PAUSE,Constants.ACTION_NULL);
-                        pause();
-                    }
-
-                    myApplication.setIsPlaying(!myApplication.isPlaying());
-
+                if (!myApplication.isPlaying()) {
+                    sendCommandToPlayerService(Constants.ACTION_PLAY, Constants.ACTION_NULL);
+                    play();
+                } else {
+                    sendCommandToPlayerService(Constants.ACTION_PAUSE, Constants.ACTION_NULL);
+                    pause();
                 }
-            });
 
-            // Stop
-            btnStopPortrait.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    sendCommandToPlayerService(Constants.ACTION_STOP,Constants.ACTION_NULL);
-                    stop();
-                }
-            });
+                myApplication.setIsPlaying(!myApplication.isPlaying());
+
+            }
+        });
+
+        // Stop
+        btnStopPortrait.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                sendCommandToPlayerService(Constants.ACTION_STOP, Constants.ACTION_NULL);
+                stop();
+            }
+        });
 
         btnNextTrackPortrait.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -146,15 +143,40 @@ public class ActivityPlayerPortrait extends Activity {
 
     }
 
-private void handleIntents(String mAction){
-
-    if(mAction==null){
-
+    private void handleIntents(String mAction) {
+        if(mAction==null){
+            myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_ZERO);
+            PlayListHelper playListHelper = new PlayListHelper(this);
+        int dbId = getIntent().getIntExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, Constants.CONST_NULL_ZERO);
+        String fileName = getIntent().getStringExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER);
+        playListHelper.loadJustSingleFileForPlay(fileName, dbId);
         Intent intent = new Intent(this, PlayerService.class);
         intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
         startService(intent);
+        }else{
 
-    }else{
+            if(mAction.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)){
+                if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+                    btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
+                    myApplication.setIsPlaying(true);
+                }
+                else{
+                    btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
+                    myApplication.setIsPlaying(false);
+                }
+
+                //We set here to be sure there is not any mistake from any control before and thread start correctly.
+                oldMediaSeekPosition=0;
+                seekBar.setMax(myApplication.getMediaDuration());
+                startPlayProgressUpdater();
+            }
+
+
+        }
+
+ /*   if(mAction==null){
+
+    *//*}else{
 
         if(mAction.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)){
             if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
@@ -171,33 +193,31 @@ private void handleIntents(String mAction){
             seekBar.setMax(myApplication.getMediaDuration());
             startPlayProgressUpdater();
         }
+*//*
 
+    }*/
 
     }
 
-}
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
     }
 
-    private void play()
-    {
+    private void play() {
         myApplication.setIsPlaying(true);
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
         seekBar.setMax(myApplication.getMediaDuration());
         startPlayProgressUpdater();
     }
 
-    private void pause()
-    {
+    private void pause() {
         myApplication.setIsPlaying(false);
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
         txtTotalTime.setText("Pause");
     }
 
-    private void stop()
-    {
+    private void stop() {
         myApplication.setIsPlaying(false);
         handler.removeCallbacksAndMessages(null);
         txtTotalTime.setText("Stop");
@@ -206,32 +226,29 @@ private void handleIntents(String mAction){
         btnPlayPortrait.setEnabled(true);
     }
 
-    private void nextTrack()
-    {
+    private void nextTrack() {
         // stop();
-        sendCommandToPlayerService(Constants.ACTION_NEXT,Constants.ACTION_NULL);
+        sendCommandToPlayerService(Constants.ACTION_NEXT, Constants.ACTION_NULL);
 
     }
 
-    private void rewindTrack()
-    {
-        sendCommandToPlayerService(Constants.ACTION_REWIND,Constants.ACTION_NULL);
+    private void rewindTrack() {
+        sendCommandToPlayerService(Constants.ACTION_REWIND, Constants.ACTION_NULL);
 
     }
 
     private void sendCommandToPlayerService(String actionCommand, int seekTo) {
 
-        Intent intent = new Intent(this,PlayerService.class);
+        Intent intent = new Intent(this, PlayerService.class);
 
-        if(!actionCommand.equals(Constants.EXTRA_SEEK_TO) && !actionCommand.equals(Constants.EXTRA_UPDATE_SEEKBAR)) {
+        if (!actionCommand.equals(Constants.EXTRA_SEEK_TO) && !actionCommand.equals(Constants.EXTRA_UPDATE_SEEKBAR)) {
             intent.setAction(actionCommand);
-        }else
-        {
-            if(actionCommand == Constants.EXTRA_SEEK_TO )
-                intent.putExtra(Constants.EXTRA_SEEK_TO,seekTo);
+        } else {
+            if (actionCommand == Constants.EXTRA_SEEK_TO)
+                intent.putExtra(Constants.EXTRA_SEEK_TO, seekTo);
 
-            if(actionCommand == Constants.EXTRA_UPDATE_SEEKBAR)
-                intent.putExtra(Constants.EXTRA_UPDATE_SEEKBAR,true);
+            if (actionCommand == Constants.EXTRA_UPDATE_SEEKBAR)
+                intent.putExtra(Constants.EXTRA_UPDATE_SEEKBAR, true);
 
         }
         startService(intent);
@@ -252,9 +269,9 @@ private void handleIntents(String mAction){
 
         int width = 0;
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-           width = (szWindow.x / 3) * 2;
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-           width = szWindow.x;
+            width = (szWindow.x / 3) * 2;
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            width = szWindow.x;
         }
 
         this.getWindow().setLayout(width,
@@ -264,20 +281,20 @@ private void handleIntents(String mAction){
     }
 
     private void updateSeekChange() {
-        sendCommandToPlayerService(Constants.EXTRA_SEEK_TO,seekBar.getProgress());
+        sendCommandToPlayerService(Constants.EXTRA_SEEK_TO, seekBar.getProgress());
         setProgressText();
     }
 
     public void startPlayProgressUpdater() {
 
-        sendCommandToPlayerService(Constants.EXTRA_UPDATE_SEEKBAR,Constants.ACTION_NULL);
+        sendCommandToPlayerService(Constants.EXTRA_UPDATE_SEEKBAR, Constants.ACTION_NULL);
 
-        if(oldMediaSeekPosition != myApplication.getCurrentMediaPosition()) {
+        if (oldMediaSeekPosition != myApplication.getCurrentMediaPosition()) {
             seekBar.setProgress(myApplication.getCurrentMediaPosition());
             setProgressText();
             oldMediaSeekPosition = myApplication.getCurrentMediaPosition();
         }
-        if (myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+        if (myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
             Runnable notification = new Runnable() {
                 public void run() {
                     startPlayProgressUpdater();
@@ -298,7 +315,7 @@ private void handleIntents(String mAction){
         // TODO Auto-generated method stub
         super.onDestroy();
 
-        if(handler  != null) {
+        if (handler != null) {
             handler.removeCallbacksAndMessages(null);
         }
     }
@@ -337,17 +354,16 @@ private void handleIntents(String mAction){
                 new IntentFilter(Constants.INTENTFILTER_PLAYER_SERVICE)
         );
 
-        if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+        if (myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
             btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_pause);
             myApplication.setIsPlaying(true);
-        }
-        else{
+        } else {
             btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
             myApplication.setIsPlaying(false);
         }
 
         //We set here to be sure there is not any mistake from any control before and thread start correctly.
-        oldMediaSeekPosition=0;
+        oldMediaSeekPosition = 0;
         seekBar.setMax(myApplication.getMediaDuration());
         startPlayProgressUpdater();
 
@@ -356,9 +372,17 @@ private void handleIntents(String mAction){
 
     @Override
     protected void onStop() {
+
+        if (myApplication.isPlaying()) {
+            sendCommandToPlayerService(Constants.ACTION_PAUSE, Constants.ACTION_NULL);
+            pause();
+            myApplication.setIsPlaying(false);
+        }
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onStop();
     }
+
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override

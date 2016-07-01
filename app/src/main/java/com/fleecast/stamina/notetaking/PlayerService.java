@@ -262,7 +262,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         reinitForNewItemOrResume =true;
 
         if (myApplication.getIndexSomethingIsPlaying()== myApplication.stackPlaylist.size()-1) {
-            stopRequest(false);
+            stopRequest(true);
         }
         else
         {
@@ -282,7 +282,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     private void addForegroundService(){
 
-        startForeground(idNotification, mBuilder.getNotification());
+        startForeground(idNotification, mBuilder.build());
 
     }
 
@@ -486,7 +486,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public void onGainedAudioFocus() {
-        Toast.makeText(getApplicationContext(), "gained audio focus.", Toast.LENGTH_SHORT).show();
+        if(myApplication.isPlaying())
+            Toast.makeText(getApplicationContext(), "gained audio focus.", Toast.LENGTH_SHORT).show();
         mAudioFocus = AudioFocus.Focused;
 
         //Check if before losing focus
@@ -496,7 +497,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public void onLostAudioFocus(boolean canDuck) {
-        Toast.makeText(getApplicationContext(), "lost audio focus." + (canDuck ? "can duck" :
+        if(myApplication.isPlaying())
+            Toast.makeText(getApplicationContext(), "lost audio focus." + (canDuck ? "can duck" :
                 "no duck"), Toast.LENGTH_SHORT).show();
         mAudioFocus = canDuck ? AudioFocus.NoFocusCanDuck : AudioFocus.NoFocusNoDuck;
         lastStateBeforeLoseAudioFocuse = myApplication.getPlayerServiceCurrentState();

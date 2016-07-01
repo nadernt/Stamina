@@ -26,13 +26,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.launcher.AddEditGroupItem;
 import com.fleecast.stamina.launcher.IconChooserActivity;
 import com.fleecast.stamina.launcher.LauncherDialogActivity;
-import com.fleecast.stamina.notetaking.AddActivity;
+import com.fleecast.stamina.notetaking.ActivityAddAudioNote;
 import com.fleecast.stamina.notetaking.NoteTakingRecyclerViewActivity;
+import com.fleecast.stamina.notetaking.RecorderNoteService;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
@@ -526,23 +528,77 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                             }else if (isViewOverlapping(note_take_audio_img, chatheadImg)) {
 
-                                Intent intent = new Intent(ChatHeadService.this, AddActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                                 // If we do not have any on going record.
-                                if (myApplication.isRecordUnderGoing()==Constants.CONST_RECORDER_SERVICE_IS_FREE){
 
-                                    intent.putExtra(Constants.EXTRA_TAKE_NOTE_AND_START_RECORD, true);
+                                    if(myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
 
-                                }
-                                    updateChatHeadSize(1);
-                                    myApplication.getAppContext().startActivity(intent);
+                                        /*if (myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_IS_FREE) {
+                                            *//**
+                                             *We bye pass the messaging between record service and GUI for a while
+                                             * becasue we want to initial new values for gui.
+                                             *//*
+                                            myApplication.setByePassRecordBroadcastReceiverForOnce(true);
+
+                                            Intent intent1 = new Intent(ChatHeadService.this, RecorderNoteService.class);
+                                            intent1.putExtra(Constants.EXTRA_STOP_RECORD, false);
+                                            startService(intent1);
+                                        }
+*/
+                                        Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD, true);
+                                        //intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD, myApplication.tmpCurrentAudioNoteInfoStruct.getId());
+
+                                        //   updateChatHeadSize(1);
+                                        startActivity(intent);
+                                    }
+                                    else {
+                                        Toast.makeText(ChatHeadService.this,"Note: A phone recording is in progress. You can not take audio note.",Toast.LENGTH_LONG).show();
+                                    }
+
                             }
+             /*               // If we do not have any on going record.
+
+                            if(myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
+
+                                if (myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_IS_FREE) {
+                                    *//**
+                                     *We bye pass the messaging between record service and GUI for a while
+                                     * becasue we want to initial new values for gui.
+                                     *//*
+                                    myApplication.setByePassRecordBroadcastReceiverForOnce(true);
+
+                                    Intent intent1 = new Intent(ChatHeadService.this, RecorderNoteService.class);
+                                    intent1.putExtra(Constants.EXTRA_STOP_RECORD, false);
+                                    startService(intent1);
+                                }
+
+                                Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD, true);
+                                //intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD, myApplication.tmpCurrentAudioNoteInfoStruct.getId());
+
+                                //   updateChatHeadSize(1);
+                                startActivity(intent);
+                            }
+                            else {
+                                Toast.makeText(ChatHeadService.this,"Note: A phone recording is in progress. You can not take audio note.",Toast.LENGTH_LONG).show();
+                            }*/
 
                             else if (isViewOverlapping(note_take_text_img, chatheadImg)) {
 
-                                Intent intent = new Intent(ChatHeadService.this, AddActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtra(Constants.EXTRA_TAKE_NOTE_AND_NO_RECORD,true);
-                                updateChatHeadSize(1);
-                                myApplication.getAppContext().startActivity(intent);
+                                Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
+                                //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
+
+                                                Intent.FLAG_ACTIVITY_NEW_TASK);
+                                /*Intent intent = new Intent(SyncActivity.this, MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);*/
+                                intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD,true);
+                               // updateChatHeadSize(1);
+                                startActivity(intent);
 
                             }
                             else if (isViewOverlapping(notelist_img, chatheadImg)) {

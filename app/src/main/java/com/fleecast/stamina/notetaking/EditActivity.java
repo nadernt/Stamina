@@ -14,6 +14,7 @@ import com.fleecast.stamina.models.NoteInfoStruct;
 import com.fleecast.stamina.models.RealmNoteHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -115,8 +116,9 @@ private void deleteNote(){
         noteTitle = inputTitle.getText().toString();
         description = inputDescription.getText().toString();
 
+        Date now = new Date();
         // Update articles
-        realmNoteHelper.updateNote(noteId, noteTitle, description, true);
+        realmNoteHelper.updateNotes(noteId, noteTitle, description,now, 0,0);
 
         //Go to MainActivity
         startActivity(new Intent(EditActivity.this, NoteTakingRecyclerViewActivity.class));
