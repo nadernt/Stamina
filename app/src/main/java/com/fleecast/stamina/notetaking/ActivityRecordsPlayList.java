@@ -43,6 +43,7 @@ import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.models.RealmAudioNoteHelper;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
+import com.fleecast.stamina.utility.Prefs;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -68,17 +69,16 @@ public class ActivityRecordsPlayList extends Activity {
     private static TextView txtDetailsPlayer;
     private int oldMediaSeekPosition = 0;
     private MyApplication myApplication;
-    private static boolean playlistHasLoaded =false;
+    //private static boolean playlistHasLoaded =false;
     private static ImageButton btnRewindNote;
     private ImageButton btnNextNote;
-    private static int notePointer =-1;
+    private static int notePointer =Constants.CONST_NULL_MINUS;
     private ImageView imgNoNotePlaceHolder;
     private static RelativeLayout detailsOfAudioNote;
     private static int parentDbId;
     private ImageButton imgHideDetails;
     private static boolean detailsAreVisible = false;
     private boolean theOrintationIsLandscape = false;
-
 
 
     @Override
@@ -108,14 +108,11 @@ public class ActivityRecordsPlayList extends Activity {
 
         Intent intent = getIntent();
 
-        /*if(intent.hasExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID))
-            playlistHasLoaded=false;*/
-
-        if(!playlistHasLoaded ) {
+        if(!myApplication.isPlaylistHasLoaded() ) {
 
             String mFolderDbUniqueToken  = intent.getStringExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID);
 
-            loadPlayListForListViw(mFolderDbUniqueToken, false);
+            loadPlayListForListViw(mFolderDbUniqueToken, Prefs.getBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,false));
 
             myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_ZERO);
 
@@ -349,9 +346,9 @@ public class ActivityRecordsPlayList extends Activity {
 
         playListHelper = new PlayListHelper(this, mFileDbUniqueId);
 
-        myApplication.setIndexSomethingIsPlaying(0);
+        myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_ZERO);
 
-        playlistHasLoaded =true;
+        myApplication.setPlaylistHasLoaded(true);
 
         if(startAutoPlayeOnStart) {
             handleIntents(null);
@@ -388,11 +385,6 @@ public class ActivityRecordsPlayList extends Activity {
 
         }
 
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
     }
 
     private void play()

@@ -49,8 +49,7 @@ public class MyApplication extends Application{
     private int lastOpenedNoteId =  Constants.CONST_NULL_ZERO;
 
     private boolean audioNoteSaved =false;
-
-
+    private boolean playlistHasLoaded =false;
 
     public MyApplication getInstance(){
         return singleton;
@@ -247,6 +246,15 @@ public class MyApplication extends Application{
     public void setAudioNoteSaved(boolean audioNoteSaved) {
         this.audioNoteSaved = audioNoteSaved;
     }
+
+    public boolean isPlaylistHasLoaded() {
+        return playlistHasLoaded;
+    }
+
+    public void setPlaylistHasLoaded(boolean playlistHasLoaded) {
+        this.playlistHasLoaded = playlistHasLoaded;
+    }
+
 
     @Override
     public void onTerminate() {

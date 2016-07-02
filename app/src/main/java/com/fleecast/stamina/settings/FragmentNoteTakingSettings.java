@@ -73,6 +73,7 @@ public class FragmentNoteTakingSettings extends Fragment {
         final CheckBox chkStopPlayerOnListFinish = (CheckBox) fragmentView.findViewById(R.id.chkStopPlayerOnListFinish);
         final CheckBox chkShowFullPlayerNotification = (CheckBox) fragmentView.findViewById(R.id.chkShowFullPlayerNotification);
         final CheckBox chkAutoRecordAudioNote = (CheckBox) fragmentView.findViewById(R.id.chkAutoRecordAudioNote);
+        final CheckBox chkAutoPlayerListPlayer = (CheckBox) fragmentView.findViewById(R.id.chkAutoPlayerListPlayer);
 
         if (mRecorder != null)
             mRecorder = null;
@@ -156,6 +157,18 @@ public class FragmentNoteTakingSettings extends Fragment {
             chkShowFullPlayerNotification.setChecked(true);
         else
             chkShowFullPlayerNotification.setChecked(false);
+
+        if(Prefs.getBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,false))
+            chkAutoPlayerListPlayer.setChecked(true);
+        else
+            chkAutoPlayerListPlayer.setChecked(false);
+
+        chkAutoPlayerListPlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Prefs.putBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,chkAutoPlayerListPlayer.isChecked());
+            }
+        });
 
         chkStopPlayerOnListFinish.setOnClickListener(new View.OnClickListener() {
             @Override

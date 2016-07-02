@@ -12,7 +12,6 @@ public class Constants {
     public static final String CONST_STRING_NO_TITLE =  "No title";
     public static final int RESULT_CODE_REQUEST_DIRECTORY = 123;
     public static final String EXTRA_RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
-    public static final String PREF_WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
     public static final String CONST_WORKING_DIRECTORY_NAME = "/stamina";
     public static final String CONST_RECYCLEBIN_DIRECTORY_NAME = "/trash";
 
@@ -57,8 +56,7 @@ public class Constants {
     public static final int PLAYER_SERVICE_STATUS_SEEK_BAR_UPDATED = 5;
     public static final int PLAYER_SERVICE_STATUS_CLOSE_PLAYER = 6;
     public static final String EXTRA_PLAYER_SERVICE_TRACK_NUMBER = "ExtraPlayerServiceTrackNumber";
-    public static final String PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE = "OnFinishListClosePlayerRemote";
-    public static final String PREF_SHOW_PLAYER_FULL_NOTIFICATION = "ShowPlayerFullNnotification";
+
     public static final int CONST_PLAY_SERVICE_STATE_NOT_ALIVE = -1;
     public static final int CONST_PLAY_SERVICE_STATE_STOPPED = 0;
     public static final int CONST_PLAY_SERVICE_STATE_PAUSED = 1;
@@ -83,7 +81,6 @@ public class Constants {
     public static final int CONST_RECORDER_SERVICE_WORKS_FOR_PHONE = 1;
     public static final int CONST_RECORDER_SERVICE_WORKS_FOR_NOTE = 2;
     public static final String EXTRA_NOTE_DB_ID_FOR_EDIT = "ExtraNoteDbIdForEdit";
-    public static final String PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES = "AutoRunRecorderOnAudioNotes";
 
     /**
      * Share and Social
@@ -94,13 +91,22 @@ public class Constants {
     public static final String YOUR_APP_ID = "280710328947930";
     public static final int SHARE_TO_MESSENGER_REQUEST_CODE = 1;
 
+    //public static final String EXTRA_KILL_AND_RESTART_ME = "ExtraKillAndRestartMe";
+
 
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
+    public static final String PREF_AUTO_RUN_PLAYER_ON_START = "PrefAutoRunPlayerOnStart";
+    public static final String PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES = "AutoRunRecorderOnAudioNotes";
+    public static final String PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE = "OnFinishListClosePlayerRemote";
+    public static final String PREF_SHOW_PLAYER_FULL_NOTIFICATION = "ShowPlayerFullNnotification";
+    public static final String PREF_WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
+    public static final String PREF_SORT_IS_ALPHABETIC_OR_DATE = "SortIsAlphabeticOrDate";
+
     public static final int LIST_FOR_GRID = 0;
     public static final long CONST_PLAYER_PROGRESS_UPDATE_TIME = 100;
     public static final int AUDIO_RECORDING_NOTIFICATION_ID = 0;
 
-    public static final String PREF_SORT_IS_ALPHABETIC_OR_DATE = "SortIsAlphabeticOrDate";
+
 
 
     public static int LIST_FOR_MOST_USE =1;

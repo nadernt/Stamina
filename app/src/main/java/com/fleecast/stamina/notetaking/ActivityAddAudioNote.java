@@ -763,7 +763,9 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                         Intent intent = new Intent(ActivityAddAudioNote.this,PlayerService.class);
                         intent.setAction(Constants.ACTION_STOP);
                         startService(intent);
-                    }                    Intent intent = new Intent(ActivityAddAudioNote.this, ActivityRecordsPlayList.class);
+                    }
+
+                    Intent intent = new Intent(ActivityAddAudioNote.this, ActivityRecordsPlayList.class);
                     intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(dbId));
                     startActivity(intent);
 

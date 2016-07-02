@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity
             Prefs.putBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION,false);
 
             Prefs.putBoolean(Constants.PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES,false);
+            Prefs.putBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,false);
 
 
 
