@@ -2,6 +2,7 @@ package com.fleecast.stamina.launcher;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,6 +23,12 @@ public class LauncherDialogActivity extends AppCompatActivity {
 	public static boolean lostFocus = false;
 	public static Activity myActivityInstance;
 	public MyApplication myApplication;
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		Log.e("FFFDSFSDFSDF","SDFSSSSSSSSSSs");
+	}
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -49,17 +56,14 @@ public class LauncherDialogActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.e("ALA","MALA " + Math.random());
 		super.onCreate(savedInstanceState);
 
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-//		getSupportActionBar().hide();
-
 		setContentView(R.layout.dialog);
 
 
-		myApplication = (MyApplication) getApplication();
+		myApplication = (MyApplication) getApplicationContext();
 
 		Log.e("DBG","LauncherDialogActivity onCreate called");
 
@@ -73,23 +77,6 @@ public class LauncherDialogActivity extends AppCompatActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.container);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
-
-		/*RelativeLayout fragment_container = (RelativeLayout) findViewById(R.id.fragment_container);
-		FragmentManager fragmentManager = getFragmentManager();
-		if (savedInstanceState == null) {
-			Log.e("DBG","NNNNNNNNNNNNNNNNNNNNN");
-
-			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-			AppLauncherFragment appLauncherFragment = new AppLauncherFragment();
-			fragmentTransaction.add(R.id.fragment_container, appLauncherFragment, "Async_Task_Demo_Fragment");
-			fragmentTransaction.commit();
-
-		} else {
-			AppLauncherFragment appLauncherFragment = (AppLauncherFragment) fragmentManager.findFragmentByTag("Async_Task_Demo_Fragment");
-		}*/
-
 
 	}
 

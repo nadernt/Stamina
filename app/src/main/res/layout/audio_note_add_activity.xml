@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/tool_bar_audio_note"
+        layout="@layout/tool_bar_audio_note_add_edit"></include>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recorderControlsLayout"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/btnTapRecord"
+            android:src="@drawable/ic_tap_record"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/btnStopRecord"
+            android:layout_toEndOf="@+id/btnStopRecord"
+            android:layout_margin="5dp" />
+        <ImageView
+            android:layout_width="5dp"
+            android:layout_height="48dp"
+            android:id="@+id/btnStopRecord"
+            android:src="@drawable/ic_stop_record"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/btnNoStopRecord"
+            android:src="@drawable/ic_nostop_record"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/btnStopRecord"
+            android:layout_toStartOf="@+id/btnStopRecord"
+            android:layout_margin="5dp" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/btnDeleteRecord"
+            android:src="@drawable/ic_del_latest_record"
+            android:layout_alignTop="@+id/btnNoStopRecord"
+            android:layout_toLeftOf="@+id/btnNoStopRecord"
+            android:layout_toStartOf="@+id/btnNoStopRecord" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/btnRecordsListPlayer"
+            android:src="@drawable/ic_records_playlist"
+            android:layout_alignTop="@+id/btnTapRecord"
+            android:layout_toRightOf="@+id/btnTapRecord"
+            android:layout_toEndOf="@+id/btnTapRecord" />
+
+    </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:id="@+id/scrollViewAudioNoteAddActivity"
+        android:layout_below="@id/tool_bar_audio_note">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
+            <EditText
+                android:id="@+id/inputTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:inputType="textCapSentences"
+                android:hint="Title"
+                android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
+            <EditText
+                android:id="@+id/inputDescription"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Description" />
+            </android.support.design.widget.TextInputLayout>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+    </ScrollView>
+</android.support.v7.widget.LinearLayoutCompat>

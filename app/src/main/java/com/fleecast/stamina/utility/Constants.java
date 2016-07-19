@@ -14,6 +14,10 @@ public class Constants {
     public static final String EXTRA_RESULT_SELECTED_DIR = "SelectedWorkingDirectoryPath";
     public static final String CONST_WORKING_DIRECTORY_NAME = "/stamina";
     public static final String CONST_RECYCLEBIN_DIRECTORY_NAME = "/trash";
+    public static final String CONST_PHONE_CALLS_DIRECTORY_NAME = "/phonecalls"; // My birthday as folder name
+    public static final String CHATHEAD_X = "ChatHeadX";
+    public static final String CHATHEAD_Y = "ChatHeadY";
+
 
     public static final String EXTRA_RECORD_FILENAME = "ExtraRecordFilename";
     public static final String EXTRA_NEW_RECORD = "ExetraNewRecord";
@@ -30,7 +34,10 @@ public class Constants {
 
     public static final String INTENTFILTER_PLAYER_SERVICE = "IntentfilterPlayerService";
     public static final String EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER = "ExtraPlayMediaFilePortrait";
-    public static final String EXTRA_PORTRAIT_PLAYER_DBID = "ExtraPortraitPlayerDescription";
+    public static final String EXTRA_PORTRAIT_PLAYER_DBID = "ExtraPortraitPlayerDBID";
+    public static final String EXTRA_PORTRAIT_PLAYER_DESCRIPTION = "ExtraPortraitPlayerDescription";
+    public static final String EXTRA_PORTRAIT_PLAYER_TITLE = "ExtraPortraitPlayerTitle";
+
 
     public static final String ACTION_SHOW_PLAYER_NO_NEW = "com.fleecast.stamina.action.SHOW_PLAYER_NO_NEW";
     public static final String ACTION_CLOSE = "com.fleecast.stamina.action.CLOSE";
@@ -46,6 +53,7 @@ public class Constants {
 
 
     public static final String EXTRA_PLAY_NEW_SESSION =  "ExtraPlayNewSession";
+    public static final String EXTRA_PLAY_REQUEST_ISـFROM_PORTRATE_PLAYER =  "ExtraPlayRequestIsFromPortratePlayer";
     public static final int ACTION_NULL =  -1;
     public static final String EXTRA_PLAYER_SERVICE_PLAY_STATUS = "ExtraPlayerServicePlayStarted";
     public static final int PLAYER_SERVICE_STATUS_ERROR = 0;
@@ -73,6 +81,9 @@ public class Constants {
     public static final String EXTRA_TAKE_NEW_NOTE_AND_START_RECORD = "ExtraTakeNoteAndStartRecord";
     public static final String EXTRA_EDIT_NOTE_AND_RECORD = "ExtraEditNoteAndRecord";
     public static final String EXTRA_EDIT_NOTE_AND_NO_RECORD = "ExtraEditNoteAndNoRecord";
+    public static final String EXTRA_EDIT_PHONE_RECORD_NOTE = "ExtraEditPhoneRecordNote";
+    public static final String EXTRA_EDIT_PHONE_RECORD_NOTE_PHONE_NUMBER = "ExtraEditPhoneRecordNotePhoneNumber";
+
     public static final int CONST_IS_ONLY_TEXT = 0;
     public static final int CONST_IS_TEXT_AND_RECORD = 1;
     public static final int CONST_IS_EDIT_TEXT_AND_RECORD = 2;
@@ -90,6 +101,23 @@ public class Constants {
     public static final int PROTOCOL_VERSION = 20150314;
     public static final String YOUR_APP_ID = "280710328947930";
     public static final int SHARE_TO_MESSENGER_REQUEST_CODE = 1;
+    public static final int TRANSIATION_TIME = 5000;
+
+    //Notes List Constants
+    public static final int CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION = 0;
+    public static final int CONST_SEARCH_NOTE_TIME = 1;
+    public static final int CONST_SEARCH_NOTE_CONTACTS = 2;
+    public static final boolean CONST_NOTELIST_ACCEDING = false;
+    public static final boolean CONST_NOTELIST_DESCENDING = true;
+    public static final String PREF_NOTELIST_SEARCH_FILTER = "PrefNotelistSearchFilter";
+    public static final String PREF_NOTELIST_SEARCH_SORT_OPTION = "PrefNotelistSearchSortOption";
+    public static final String PREF_NOTELIST_SHOW_TEXT_NOTE = "PrefNotelistShowTextNote";
+    public static final String PREF_NOTELIST_SHOW_AUDIO_NOTE = "PrefNotelistShowAudioNote";
+    public static final String PREF_NOTELIST_SHOW_PHONE_RECORD = "PrefNotelistShowPhoneRecords";
+    public static final int RESULT_CODE_REQUEST_LIST = 777;
+    public static final String PHONE_RECORDER_CHATHEAD_Y = "PhoneRecorderChatheadY";
+    public static final String PHONE_RECORDER_CHATHEAD_X = "PhoneRecorderChatheadX";
+
 
     //public static final String EXTRA_KILL_AND_RESTART_ME = "ExtraKillAndRestartMe";
 
@@ -107,6 +135,7 @@ public class Constants {
     public static final int AUDIO_RECORDING_NOTIFICATION_ID = 0;
 
 
+    public static final String PREF_FIRST_QUESTION_PHONERECORDING = "PrefFirstQuestionPhonerecording";
 
 
     public static int LIST_FOR_MOST_USE =1;
@@ -182,10 +211,10 @@ public class Constants {
     public static int RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM = 1;
     public static int RECORDER_AUDIO_RECORDER_QUALITY_HIGH = 2;
 
-    public static String RECORDER_AUDIO_FORMAT_3GP = "3gp";
-    public static String RECORDER_AUDIO_FORMAT_WAV = "wav";
-    public static String RECORDER_AUDIO_FORMAT_AAC = "aac";
-    public static String RECORDER_AUDIO_FORMAT_AMR = "amr";
+    public static String RECORDER_AUDIO_FORMAT_3GP = ".3gp";
+    public static String RECORDER_AUDIO_FORMAT_WAV = ".wav";
+    public static String RECORDER_AUDIO_FORMAT_AAC = ".aac";
+    public static String RECORDER_AUDIO_FORMAT_AMR = ".amr";
 
     public static String CONST_SEPARATOR_OF_AUDIO_FILE = "_";
     public static int RECORD_INFINIT_UP_STOP = 1;
@@ -193,4 +222,5 @@ public class Constants {
     public static int RECORD_TAP_KEEP = 3;
 
     public static String TEMP_FOLDER_NAME ="temporary";
+
 }

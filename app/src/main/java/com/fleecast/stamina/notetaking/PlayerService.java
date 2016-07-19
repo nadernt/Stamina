@@ -28,11 +28,8 @@ import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
-import com.fleecast.stamina.utility.Utility;
 
-import java.io.IOException;
-
-public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,MediaPlayer.OnCompletionListener,MusicFocusable {
+public class PlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,MediaPlayer.OnCompletionListener, MusicFocusable {
     private MyApplication myApplication;
 
     private Context mContext;
@@ -48,6 +45,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private NotificationCompat.Builder mBuilder;
     AudioFocusHelper mAudioFocusHelper = null;
     private int lastStateBeforeLoseAudioFocuse =-1;
+    private boolean playRequestIsFromPortraitePlayer=false;
 
     // do we have audio focus?
     enum AudioFocus {
@@ -72,15 +70,22 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }*/
 
     private NotificationCompat.Action generateAction(int icon, String title, String intentAction ) {
-        Intent intent = new Intent( getApplicationContext(), PlayerService.class );
+        Intent intent = new Intent( this, PlayerService.class );
         intent.setAction( intentAction );
         PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), idNotification, intent, 0);
         return new NotificationCompat.Action.Builder( icon, title, pendingIntent ).build();
     }
 
     private PendingIntent createPendingIntent() {
-        Intent intent = new Intent(this, ActivityRecordsPlayList.class);
+        Intent intent;
+
+        if(playRequestIsFromPortraitePlayer)
+            intent = new Intent(this, ActivityPlayerPortrait.class);
+        else
+            intent = new Intent(this, ActivityRecordsPlayList.class);
+
         intent.setAction(Constants.ACTION_SHOW_PLAYER_NO_NEW);
+
         return PendingIntent.getActivity(this, 0, intent, 0);
     }
     private void buildNotification( NotificationCompat.Action action ) {
@@ -180,10 +185,15 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
 
         if(intent!=null) {
-
             if (intent.hasExtra(Constants.EXTRA_SEEK_TO)) requestSeekTo(intent);
             else if (intent.hasExtra(Constants.EXTRA_UPDATE_SEEKBAR)) updateSeekBarRequest();
-            else if (intent.hasExtra(Constants.EXTRA_PLAY_NEW_SESSION)) preparePlaylist();
+            else if (intent.hasExtra(Constants.EXTRA_PLAY_NEW_SESSION)) {
+                if(intent.hasExtra(Constants.EXTRA_PLAY_REQUEST_ISـFROM_PORTRATE_PLAYER))
+                    playRequestIsFromPortraitePlayer = true;
+                else
+                    playRequestIsFromPortraitePlayer = false;
+                preparePlaylist();
+            }
 
         }
 
@@ -262,10 +272,12 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         reinitForNewItemOrResume =true;
 
         if (myApplication.getIndexSomethingIsPlaying()== myApplication.stackPlaylist.size()-1) {
+            Log.e("DDDDDDDd","SOmraya");
             stopRequest(true);
         }
         else
         {
+            Log.e("DDDDDDDd","Momra");
             myApplication.setIndexSomethingIsPlaying(myApplication.getIndexSomethingIsPlaying()+1);
             playRequest();
         }
@@ -297,7 +309,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_PLAYING);
         sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_PLAYING);
         addForegroundService();
-
     }
 
     private void playRequest() {
@@ -486,20 +497,22 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
     @Override
     public void onGainedAudioFocus() {
-        if(myApplication.isPlaying())
-            Toast.makeText(getApplicationContext(), "gained audio focus.", Toast.LENGTH_SHORT).show();
+        /*if(myApplication.isPlaying())
+            Toast.makeText(getApplicationContext(), "Gained audio focus.", Toast.LENGTH_SHORT).show();*/
         mAudioFocus = AudioFocus.Focused;
 
         //Check if before losing focus
         if(lastStateBeforeLoseAudioFocuse ==Constants.CONST_PLAY_SERVICE_STATE_PLAYING)
-            playRequest();
+            configAndStartMediaPlayer();
     }
 
     @Override
     public void onLostAudioFocus(boolean canDuck) {
+/*
         if(myApplication.isPlaying())
             Toast.makeText(getApplicationContext(), "lost audio focus." + (canDuck ? "can duck" :
                 "no duck"), Toast.LENGTH_SHORT).show();
+*/
         mAudioFocus = canDuck ? AudioFocus.NoFocusCanDuck : AudioFocus.NoFocusNoDuck;
         lastStateBeforeLoseAudioFocuse = myApplication.getPlayerServiceCurrentState();
 
@@ -507,6 +520,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         if (mPlayer != null && mPlayer.isPlaying())
             configAndStartMediaPlayer();
     }
+
 
     /**
      * Reconfigures MediaPlayer according to audio focus settings and starts/restarts it. This
@@ -524,10 +538,14 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             if (mPlayer.isPlaying()) pauseRequest();
             return;
         }
-        else if (mAudioFocus == AudioFocus.NoFocusCanDuck)
+        else if (mAudioFocus == AudioFocus.NoFocusCanDuck) {
             mPlayer.setVolume(Constants.DUCK_VOLUME, Constants.DUCK_VOLUME);  // we'll be relatively quiet
-        else
+            Log.e("DBG","DUCK");
+        }
+        else {
             mPlayer.setVolume(1.0f, 1.0f); // we can be loud
+            Log.e("DBG","Aloud");
+        }
 
         if (!mPlayer.isPlaying()) playRequest();
     }

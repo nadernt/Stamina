@@ -36,7 +36,7 @@ public class MyApplication extends Application{
     private boolean userWantsRecordPhoneCalls = false;
     public List <AudioNoteInfoStruct> stackPlaylist = new ArrayList<>();
     public TempNoteInfoStruct tmpCurrentAudioNoteInfoStruct;
-    public TempNoteInfoStruct tmpTempNoteOnlyInfoStruct;
+    public TempNoteInfoStruct tmpCurrentTextNoteInfoStruct;
     private boolean byePassRecordBroadcastReceiverForOnce = false;
 
     private int indexSomethingIsPlaying = Constants.CONST_NULL_MINUS;
@@ -45,11 +45,14 @@ public class MyApplication extends Application{
     private boolean isPlaying=false;
     private int playerServiceCurrentState =  Constants.CONST_NULL_MINUS;
     private boolean weHaveAnOpenNote = false;
-    private int currentOpenedNoteId =  Constants.CONST_NULL_ZERO;
+    private int currentOpenedTextNoteId =  Constants.CONST_NULL_ZERO;
+    private int currentRecordingAudioNoteId =  Constants.CONST_NULL_ZERO;
     private int lastOpenedNoteId =  Constants.CONST_NULL_ZERO;
 
+    private boolean textNoteSaved =false;
     private boolean audioNoteSaved =false;
     private boolean playlistHasLoaded =false;
+    private long recordTimeTick;
 
     public MyApplication getInstance(){
         return singleton;
@@ -63,7 +66,7 @@ public class MyApplication extends Application{
 
         singleton = this;
 
-        this.context = getApplicationContext();
+        context = getApplicationContext();
 
         // Initialize the Prefs class
         new Prefs.Builder()
@@ -87,7 +90,7 @@ public class MyApplication extends Application{
     }
 
      public Context getAppContext() {
-        return this.context;
+        return context;
     }
 
 
@@ -215,12 +218,12 @@ public class MyApplication extends Application{
         this.weHaveAnOpenNote = weHaveAnOpenNote;
     }
 
-    public int getCurrentOpenedNoteId() {
-        return currentOpenedNoteId;
+    public int getCurrentOpenedTextNoteId() {
+        return currentOpenedTextNoteId;
     }
 
-    public void setCurrentOpenedNoteId(int currentOpenedNoteId) {
-        this.currentOpenedNoteId = currentOpenedNoteId;
+    public void setCurrentOpenedTextNoteId(int currentOpenedTextNoteId) {
+        this.currentOpenedTextNoteId = currentOpenedTextNoteId;
     }
 
     public int getLastOpenedNoteId() {
@@ -247,6 +250,15 @@ public class MyApplication extends Application{
         this.audioNoteSaved = audioNoteSaved;
     }
 
+    public boolean isTextNoteSaved() {
+        return textNoteSaved;
+    }
+
+    public void setTextNoteSaved(boolean textNoteSaved) {
+        this.textNoteSaved = textNoteSaved;
+    }
+
+
     public boolean isPlaylistHasLoaded() {
         return playlistHasLoaded;
     }
@@ -255,6 +267,21 @@ public class MyApplication extends Application{
         this.playlistHasLoaded = playlistHasLoaded;
     }
 
+    public long getRecordTimeTick() {
+        return recordTimeTick;
+    }
+
+    public void setRecordTimeTick(long recordTimeTick) {
+        this.recordTimeTick = recordTimeTick;
+    }
+
+    public int getCurrentRecordingAudioNoteId() {
+        return currentRecordingAudioNoteId;
+    }
+
+    public void setCurrentRecordingAudioNoteId(int currentRecordingAudioNoteId) {
+        this.currentRecordingAudioNoteId = currentRecordingAudioNoteId;
+    }
 
     @Override
     public void onTerminate() {

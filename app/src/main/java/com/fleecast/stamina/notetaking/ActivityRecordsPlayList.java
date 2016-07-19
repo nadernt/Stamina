@@ -13,7 +13,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
@@ -21,10 +20,8 @@ import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,10 +37,12 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
+import com.fleecast.stamina.models.PlayListHelper;
 import com.fleecast.stamina.models.RealmAudioNoteHelper;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
+import com.fleecast.stamina.utility.Utility;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -112,17 +111,19 @@ public class ActivityRecordsPlayList extends Activity {
 
             String mFolderDbUniqueToken  = intent.getStringExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID);
 
+            //Log.e("ddddddddddddd",Prefs.getBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,false) + "");
+
             loadPlayListForListViw(mFolderDbUniqueToken, Prefs.getBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,false));
 
-            myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_ZERO);
+            //myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_ZERO);
 
             parentDbId = Integer.valueOf(mFolderDbUniqueToken);
 
             Log.e("DBG","1465131201");
 
-        }else {
+        }/*else {
             TitlesFragment.highlightSelectedNoteItem(notePointer);
-        }
+        }*/
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             theOrintationIsLandscape=true;
@@ -270,14 +271,14 @@ public class ActivityRecordsPlayList extends Activity {
 
         if(txtDescr==null) {
             txtDescr = "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" +
-                    unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(notePointer).getFileName())) +
+                    Utility.unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(notePointer).getFileName())) +
                     "</font></small><br>" + "<font color='" + getHexStringFromInt(R.color.black_cat) + "'>" + Constants.CONST_STRING_NO_DESCRIPTION + "</font>";
 
         }
         else
         {
             txtDescr = "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" +
-                    unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(notePointer).getFileName())) +
+                    Utility.unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(notePointer).getFileName())) +
                     "</font></small><br>" + "<font color='" + getHexStringFromInt(R.color.black_cat) + "'>" + txtDescr + "</font>";
         }
 
@@ -321,17 +322,6 @@ public class ActivityRecordsPlayList extends Activity {
             timer.schedule(task,  500);
     }
 
-    private static String unixTimeToReadable(long unixSeconds){
-
-        Date date = new Date(unixSeconds*1000L); // *1000 is to convert seconds to milliseconds
-        // E, dd MMM yyyy HH:mm:ss z
-        SimpleDateFormat sdf = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss a"); // the format of your date
-        //sdf.setTimeZone(TimeZone.getTimeZone("GMT-4")); // give a timezone reference for formating (see comment at the bottom
-        String formattedDate = sdf.format(date);
-        //System.out.println(formattedDate);
-        return formattedDate;
-
-    }
 
     private static int getFilePostFixId(String file_name)
     {
@@ -342,7 +332,7 @@ public class ActivityRecordsPlayList extends Activity {
             return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
     }
 
-    private void loadPlayListForListViw(String mFileDbUniqueId,boolean startAutoPlayeOnStart) {
+    private void loadPlayListForListViw(String mFileDbUniqueId,boolean startAutoPlayOnStart) {
 
         playListHelper = new PlayListHelper(this, mFileDbUniqueId);
 
@@ -350,7 +340,13 @@ public class ActivityRecordsPlayList extends Activity {
 
         myApplication.setPlaylistHasLoaded(true);
 
-        if(startAutoPlayeOnStart) {
+        notePointer =Constants.CONST_NULL_MINUS;
+
+       // fillTextNotesForUser();
+
+        if(startAutoPlayOnStart) {
+            Log.e("DBG","KKKKKKKKKKKKKKKKKKKK");
+
             handleIntents(null);
         }
 
@@ -441,7 +437,7 @@ public class ActivityRecordsPlayList extends Activity {
 
     }
 
-    @Override
+/*    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
@@ -458,7 +454,7 @@ public class ActivityRecordsPlayList extends Activity {
 
 
 
-    }
+    }*/
 
     private void updateSeekChange() {
         sendCommandToPlayerService(Constants.EXTRA_SEEK_TO,seekBar.getProgress());
@@ -656,21 +652,7 @@ public class ActivityRecordsPlayList extends Activity {
                 mDualPane=false;
             }
 
-
-            Handler handler1 = new Handler();
-            handler1.postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    highlightSelectedPlayItem(myApplication.getIndexSomethingIsPlaying());
-
-                    highlightSelectedNoteItem(notePointer);
-
-
-                }
-            }, 200);
-
+            highLightList();
             getListView().setLongClickable(true);
 
             getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -696,9 +678,6 @@ public class ActivityRecordsPlayList extends Activity {
                         public void onClick(DialogInterface dialog, int which) {
                             if (which==0){
                                 tmpCurrentPlayingFile = myApplication.getIndexSomethingIsPlaying();
-                                Intent intent = new Intent(getActivity(),AddNoteToAudio.class);
-                                //myApplication.stackPlaylist.get(chosenItemIndex).
-                                //Log.e("DBG",)
                                 runAddAudioNoteActivity(parentDbId,myApplication.stackPlaylist.get(chosenItemIndex).getId());
                             }
                             else if(which==1){
@@ -728,7 +707,7 @@ public class ActivityRecordsPlayList extends Activity {
 
                                 String tempFile = String.valueOf((int) (System.currentTimeMillis() / 1000));
 
-                                File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + "." + Constants.RECORDER_AUDIO_FORMAT_AAC);
+                                File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + Constants.RECORDER_AUDIO_FORMAT_AAC);
                                 try {
                                     copy(f,tmp);
                                 } catch (IOException e) {
@@ -746,12 +725,12 @@ public class ActivityRecordsPlayList extends Activity {
                                 String txtDescr  = myApplication.stackPlaylist.get(chosenItemIndex).getDescription();
 
                                 if(txtDescr==null) {
-                                    txtDescr = unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(chosenItemIndex).getFileName())) +
+                                    txtDescr = Utility.unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(chosenItemIndex).getFileName())) +
                                             "\n" + Constants.CONST_STRING_NO_DESCRIPTION;
                                 }
                                 else
                                 {
-                                    txtDescr = unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(chosenItemIndex).getFileName())) +
+                                    txtDescr = Utility.unixTimeToReadable((long) getFilePostFixId(myApplication.stackPlaylist.get(chosenItemIndex).getFileName())) +
                                             "\n" + txtDescr ;
                                 }
 
@@ -766,7 +745,7 @@ public class ActivityRecordsPlayList extends Activity {
                                 share.putExtra(Constants.EXTRA_APP_ID, Constants.YOUR_APP_ID);
                                 share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION );
 
-                                startActivityForResult(Intent.createChooser(share, "Share audio File"),Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
+                                startActivityForResult(Intent.createChooser(share, "Share Audio File"),Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
                             }
                         }
                     });
@@ -780,6 +759,22 @@ public class ActivityRecordsPlayList extends Activity {
             });
 
 
+        }
+
+        public void highLightList(){
+            Handler handler1 = new Handler();
+            handler1.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    highlightSelectedPlayItem(myApplication.getIndexSomethingIsPlaying());
+
+                    highlightSelectedNoteItem(notePointer);
+
+
+                }
+            }, 200);
         }
 
      public void copy(File src, File dst) throws IOException {
@@ -827,7 +822,9 @@ public class ActivityRecordsPlayList extends Activity {
 
                 final EditText et = new EditText(getActivity());
                 String etStr = et.getText().toString();
+                
                 TextView tv1 = new TextView(getActivity());
+                tv1.setPadding(20, 10, 20, 10);
 
                 tv1.setText(Html.fromHtml("Type <font color='BLUE'>ASD</font> (case insensitive)"));
 
@@ -837,7 +834,7 @@ public class ActivityRecordsPlayList extends Activity {
                 layout.addView(et, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
                 alertDialogBuilder.setView(layout);
-                alertDialogBuilder.setTitle("Some title");
+                alertDialogBuilder.setTitle("Note");
                 alertDialogBuilder.setCustomTitle(tv);
 
                 alertDialogBuilder.setIcon(R.drawable.audio_wave);

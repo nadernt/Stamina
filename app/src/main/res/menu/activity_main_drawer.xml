@@ -1,62 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_take_note"
-            android:icon="@drawable/ic_action_add"
-            android:title="Take note" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
-
-    <item android:title="Audio Recording">
+    <item android:title="Note Taking">
         <menu>
             <item
-                android:id="@+id/nav_audio_record"
+                android:id="@+id/nav_take_text_note"
+                android:icon="@drawable/ic_action_list"
+                android:title="Text" />
+            <item
+                android:id="@+id/nav_take_audio_note"
                 android:icon="@drawable/ic_action_record"
-                android:title="Audio recorder" />
-        </menu>
-    </item>
-
-    <item android:title="Phone Recording">
-        <menu>
+                android:title="Audio" />
             <item
                 android:id="@+id/nav_phone_record"
                 android:icon="@drawable/ic_action_phone_start"
-                android:checkable="true"
                 android:title="Record calls?" />
             <item
                 android:id="@+id/nav_phone_ignorelist"
                 android:icon="@drawable/ic_action_halt"
-                android:checkable="true"
-                android:title="Ignore list" />
+                android:title="Ignore List" />
+            <item
+                android:id="@+id/nav_chathead"
+                android:icon="@drawable/ic_action_emo_basic"
+                android:title="Float Control" />
         </menu>
     </item>
     <item android:title="Sync &amp; Reports">
         <menu>
             <item
-                android:id="@+id/nav_phone_report"
+                android:id="@+id/nav_backup_report"
                 android:icon="@drawable/ic_action_copy"
-                android:title="Create report" />
+                android:title="Create Report &amp; Backup" />
         </menu>
     </item>
-    <item android:title="Settings">
+    <item android:title="Misc">
         <menu>
             <item
                 android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/ic_action_settings"
                 android:title="Settings" />
+            <item
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/ic_action_heart"
+                android:title="Rate" />
+            <item
+                android:id="@+id/nav_emptytrash"
+                android:icon="@drawable/ic_action_trash"
+                android:title="Empty Trash" />
+            <item
+                android:id="@+id/nav_report_bug"
+                android:icon="@drawable/ic_action_bug"
+                android:title="Report Bug &amp; Suggestion" />
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_action_help"
+                android:title="Help" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_action_info"
+                android:title="About" />
         </menu>
     </item>
 </menu>

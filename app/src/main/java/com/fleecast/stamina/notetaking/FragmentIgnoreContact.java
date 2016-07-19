@@ -115,73 +115,6 @@ public class FragmentIgnoreContact extends Fragment  implements SearchView.OnQue
 
     }
 
-  /*  public void doodk() {
-
-        recyclerView.setAdapter(null);
-        recyclerView.setLayoutManager(null);
-        recyclerView.setAdapter(ignoreListAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-       *//* if(null != mContactStruct)
-            mContactStruct.clear();
-        RealmContactHelper realmContactHelper1 = new RealmContactHelper(getActivity());
-        mContactStruct = new ArrayList<>(realmContactHelper1.getIgnoreList());*//*
-       // mContactStruct = mContactStruct1;
-*//*        RealmContactHelper realmContactHelper1 = new RealmContactHelper(getActivity());
-        mContactStruct = realmContactHelper1.getIgnoreList();*//*
-        *//*ignoreListAdapter = new IgnoreContactsRecyclerViewAdapter(mContactStruct, mListener);
-        ignoreListAdapter.notifyItemRemoved(0);
-        ignoreListAdapter.notifyDataSetChanged();*//*
-        //ignoreListAdapter = new IgnoreContactsRecyclerViewAdapter(mContactStruct, mListener);
-        //ignoreListAdapter.noo(mContactStruct);
-       *//* recyclerView.setAdapter(null);
-        recyclerView.setLayoutManager(null);
-        recyclerView.setAdapter(ignoreListAdapter);
-        recyclerView.setLayoutManager(myLayoutManager);
-        myAdapter.notifyDataSetChanged();*//*
-
-
-        // Set the adapter
-// Set the adapter
-        *//*if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(getContext(), mColumnCount));
-            }
-            loadList();
-        }*//*
-
-        //recyclerView.
-        *//*new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        Log.e("DDDDssss", "dfdfsdf");
-
-                        ignoreListAdapter = new IgnoreContactsRecyclerViewAdapter(realmContactHelper.getIgnoreList(), mListener);
-                        ignoreListAdapter.notifyDataSetChanged();
-
-                        //contactsListAdapter = new ContactsRecyclerViewAdapter(mContactStruct,mListener);
-                        recyclerView.setAdapter(ignoreListAdapter);
-                    }
-                },
-                5000
-        );*//*
-
-    *//*new Timer().schedule(new TimerTask() {
-        @Override
-        public void run () {
-
-        }
-    }
-
-    ,0,1000);*//*
-}
-*/
-
     @Override
     public void setMenuVisibility(final boolean visible) {
         super.setMenuVisibility(visible);
@@ -263,24 +196,6 @@ public class FragmentIgnoreContact extends Fragment  implements SearchView.OnQue
         return filteredModelList;
     }
 
-  /*  @Override
-    public void onResume() {
-        super.onResume();
-        Log.e("DDDDssss", "dfdfsdf");
-
-        loadList();
-    }*/
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnIgnoreListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onIgnoreListFragmentInteraction(ContactStruct item);

@@ -33,8 +33,7 @@ import com.fleecast.stamina.launcher.AddEditGroupItem;
 import com.fleecast.stamina.launcher.IconChooserActivity;
 import com.fleecast.stamina.launcher.LauncherDialogActivity;
 import com.fleecast.stamina.notetaking.ActivityAddAudioNote;
-import com.fleecast.stamina.notetaking.NoteTakingRecyclerViewActivity;
-import com.fleecast.stamina.notetaking.RecorderNoteService;
+import com.fleecast.stamina.notetaking.ActivityAddTextNote;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
@@ -132,7 +131,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         /*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             notification = createNotification(pendingIntent);
         } else {*/
-            notification = createNotificationCompat(pendingIntent);
+        notification = createNotificationCompat(pendingIntent);
         //}
 
         startForeground(FOREGROUND_ID, notification);
@@ -217,11 +216,11 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         //params.height =(int) (48 * scale + 0.5f);
 
         //params.width =48;
-       // params.height =48;
+        // params.height =48;
 
         windowManager.addView(chatheadView, params);
 
-      chatHeadYFinalPos = chatheadView.getHeight() -CHATHEAD_HOME_Y_OFFSET_IN_PIXEL;
+        chatHeadYFinalPos = chatheadView.getHeight() -CHATHEAD_HOME_Y_OFFSET_IN_PIXEL;
 
 
         runTransparentTimer();
@@ -528,85 +527,44 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                             }else if (isViewOverlapping(note_take_audio_img, chatheadImg)) {
 
-
                                 // If we do not have any on going record.
+                                if(myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
 
-                                    if(myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
+                                    Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                        /*if (myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_IS_FREE) {
-                                            *//**
-                                             *We bye pass the messaging between record service and GUI for a while
-                                             * becasue we want to initial new values for gui.
-                                             *//*
-                                            myApplication.setByePassRecordBroadcastReceiverForOnce(true);
-
-                                            Intent intent1 = new Intent(ChatHeadService.this, RecorderNoteService.class);
-                                            intent1.putExtra(Constants.EXTRA_STOP_RECORD, false);
-                                            startService(intent1);
-                                        }
-*/
-                                        Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    if(myApplication.getCurrentRecordingAudioNoteId()>0)
+                                        intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD,myApplication.getCurrentRecordingAudioNoteId());
+                                    else
                                         intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD, true);
-                                        //intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD, myApplication.tmpCurrentAudioNoteInfoStruct.getId());
 
-                                        //   updateChatHeadSize(1);
-                                        startActivity(intent);
-                                    }
-                                    else {
-                                        Toast.makeText(ChatHeadService.this,"Note: A phone recording is in progress. You can not take audio note.",Toast.LENGTH_LONG).show();
-                                    }
-
-                            }
-             /*               // If we do not have any on going record.
-
-                            if(myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
-
-                                if (myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_IS_FREE) {
-                                    *//**
-                                     *We bye pass the messaging between record service and GUI for a while
-                                     * becasue we want to initial new values for gui.
-                                     *//*
-                                    myApplication.setByePassRecordBroadcastReceiverForOnce(true);
-
-                                    Intent intent1 = new Intent(ChatHeadService.this, RecorderNoteService.class);
-                                    intent1.putExtra(Constants.EXTRA_STOP_RECORD, false);
-                                    startService(intent1);
+                                    startActivity(intent);
+                                }
+                                else {
+                                    Toast.makeText(ChatHeadService.this,"Note: A phone recording is in progress. You can not take audio note.",Toast.LENGTH_LONG).show();
                                 }
 
-                                Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD, true);
-                                //intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD, myApplication.tmpCurrentAudioNoteInfoStruct.getId());
-
-                                //   updateChatHeadSize(1);
-                                startActivity(intent);
                             }
-                            else {
-                                Toast.makeText(ChatHeadService.this,"Note: A phone recording is in progress. You can not take audio note.",Toast.LENGTH_LONG).show();
-                            }*/
-
                             else if (isViewOverlapping(note_take_text_img, chatheadImg)) {
 
-                                Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
+                                Intent intent = new Intent(ChatHeadService.this, ActivityAddTextNote.class);
                                 //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                                Intent.FLAG_ACTIVITY_NEW_TASK);
-                                /*Intent intent = new Intent(SyncActivity.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);*/
-                                intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD,true);
-                               // updateChatHeadSize(1);
+                                if(myApplication.getCurrentOpenedTextNoteId()>0)
+                                    intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD,myApplication.getCurrentOpenedTextNoteId());
+                                else
+                                    intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD, true);
+
+                                //   updateChatHeadSize(1);
                                 startActivity(intent);
 
                             }
                             else if (isViewOverlapping(notelist_img, chatheadImg)) {
-
-                                Log.i("FUCKKKKKKKKKK", "notelist_img");
                                 //initValuesToZeroForNewPolicies();
-                                Intent intent = new Intent(ChatHeadService.this, NoteTakingRecyclerViewActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Intent intent = new Intent(ChatHeadService.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
+
                             }
                             else if (isViewOverlapping(resize_buble_img, chatheadImg)) {
 
@@ -617,14 +575,14 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                                 //initValuesToZeroForNewPolicies();
                                 lockPositionOnButtomCorner = true;
 
-                                    layoutParams.x = 0;
-                                    layoutParams.y = szWindow.y;
+                                layoutParams.x = 0;
+                                layoutParams.y = szWindow.y;
 
                                 int sizeofChathead=calcPixelIndependent(20);
                                 txtInfoBubble.setTextSize(12);
                                 layoutParams.width = sizeofChathead;
                                 layoutParams.height = sizeofChathead;
-                                    windowManager.updateViewLayout(chatheadView, layoutParams);
+                                windowManager.updateViewLayout(chatheadView, layoutParams);
                                 //Toast.makeText(ChatHeadRecordService.this, "app_settings_img", Toast.LENGTH_SHORT).show();
                             } else if (isViewOverlapping(cancel_everything_img, chatheadImg)) {
 
@@ -764,57 +722,57 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
     private void timeoutCounter(long timeout_milisec) {
 
-            if(timeout_milisec==0)
-            {
-                if(handlerScreenTimeoutTimer!=null)
-                   handlerScreenTimeoutTimer.removeCallbacks(runnableScreenTimeoutTimer);
+        if(timeout_milisec==0)
+        {
+            if(handlerScreenTimeoutTimer!=null)
+                handlerScreenTimeoutTimer.removeCallbacks(runnableScreenTimeoutTimer);
 
-                    userPowerPolicies.setScreenAlwaysON(chatheadView,false);
+            userPowerPolicies.setScreenAlwaysON(chatheadView,false);
 
-            }
-            else {
-
-
-
-                handlerScreenTimeoutTimer = new Handler();
-
-                runnableScreenTimeoutTimer = new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        chosenNumberToTurnOffScreen--;
-                        if(chosenNumberToTurnOffScreen >= 0) {
-
-                            long timeIntervals=0;
-
-                            // Normal count
-                            if(chosenNumberToTurnOffScreen!=0){
-                                updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
-                                timeIntervals=defaultTimeStepsToTurnOffScreen * 1000;
-                            } else { // Time finished
-                                updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
-                                // Time to dim the screen.
-                                timeIntervals=3000;
-                            }
-
-                            handlerScreenTimeoutTimer.postDelayed(runnableScreenTimeoutTimer, timeIntervals);
+        }
+        else {
 
 
+
+            handlerScreenTimeoutTimer = new Handler();
+
+            runnableScreenTimeoutTimer = new Runnable() {
+
+                @Override
+                public void run() {
+
+                    chosenNumberToTurnOffScreen--;
+                    if(chosenNumberToTurnOffScreen >= 0) {
+
+                        long timeIntervals=0;
+
+                        // Normal count
+                        if(chosenNumberToTurnOffScreen!=0){
+                            updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
+                            timeIntervals=defaultTimeStepsToTurnOffScreen * 1000;
+                        } else { // Time finished
+                            updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
+                            // Time to dim the screen.
+                            timeIntervals=3000;
                         }
-                        else
-                        {
-                            userPowerPolicies.setScreenAlwaysON(chatheadView, false);
-                            userPowerPolicies.turnOFFScreen(ChatHeadService.this);
-                            chosenNumberToTurnOffScreen=0;
-                            updateUserView(" ", false);
-                            handlerScreenTimeoutTimer.removeCallbacks(runnableScreenTimeoutTimer);
-                        }
+
+                        handlerScreenTimeoutTimer.postDelayed(runnableScreenTimeoutTimer, timeIntervals);
+
+
                     }
-                };
+                    else
+                    {
+                        userPowerPolicies.setScreenAlwaysON(chatheadView, false);
+                        userPowerPolicies.turnOFFScreen(ChatHeadService.this);
+                        chosenNumberToTurnOffScreen=0;
+                        updateUserView(" ", false);
+                        handlerScreenTimeoutTimer.removeCallbacks(runnableScreenTimeoutTimer);
+                    }
+                }
+            };
 
-                handlerScreenTimeoutTimer.postDelayed(runnableScreenTimeoutTimer, defaultTimeStepsToTurnOffScreen*1000);
-            }
+            handlerScreenTimeoutTimer.postDelayed(runnableScreenTimeoutTimer, defaultTimeStepsToTurnOffScreen*1000);
+        }
 
     }
 
@@ -837,12 +795,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         int distanceFromZeroXAxis =  Math.abs((chatheadViewPosition[0]+ (viewOfChathead.getWidth()/2)) - (szWindow.x/2)) ;
 
-        if((distanceFromZeroXAxis < xOffsetAccptableTriger) &&  (topAccptableOffsetToTriger < distance) && (distance < buttomAccptableOffsetToTriger)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return (distanceFromZeroXAxis < xOffsetAccptableTriger) && (topAccptableOffsetToTriger < distance) && (distance < buttomAccptableOffsetToTriger);
 
        /* int yOffsetAccptableTriger =  viewOfChathead.getHeight() + (int)(double)(viewOfChathead.getHeight()/2);
         int leftOffsetAccptableTriger =  (int) (double)(szWindow.x-(viewOfChathead.getWidth()*2))/2;
@@ -922,20 +875,20 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         secondView.getLocationOnScreen(secondPosition);
 
         int x11,y11,x12,y12,x21,y21,x22,y22;
-                x11 = firstPosition[0];
-                y11 = firstPosition[1];
-                x12 = firstPosition[0] + firstView.getMeasuredWidth();
-                y12 = firstPosition[1] + firstView.getMeasuredHeight();
-                x21 = secondPosition[0];
-                y21 = secondPosition[1];
+        x11 = firstPosition[0];
+        y11 = firstPosition[1];
+        x12 = firstPosition[0] + firstView.getMeasuredWidth();
+        y12 = firstPosition[1] + firstView.getMeasuredHeight();
+        x21 = secondPosition[0];
+        y21 = secondPosition[1];
 
         int chatheadScaleFactor=1;
 
         if(chatheadSize)
-                chatheadScaleFactor=2;
+            chatheadScaleFactor=2;
 
-                x22 = secondPosition[0] + (secondView.getMeasuredWidth() * chatheadScaleFactor);
-                y22 = secondPosition[1] + (secondView.getMeasuredHeight() * chatheadScaleFactor);
+        x22 = secondPosition[0] + (secondView.getMeasuredWidth() * chatheadScaleFactor);
+        y22 = secondPosition[1] + (secondView.getMeasuredHeight() * chatheadScaleFactor);
 
 
         int x_overlap = Math.max(0, Math.min(x12,x22) - Math.max(x11,x21));
@@ -1062,9 +1015,9 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
             }
             else
             {
-               layoutParams.x = 0;
-               layoutParams.y = szWindow.y;
-               windowManager.updateViewLayout(chatheadView, layoutParams);
+                layoutParams.x = 0;
+                layoutParams.y = szWindow.y;
+                windowManager.updateViewLayout(chatheadView, layoutParams);
             }
 
 
@@ -1075,7 +1028,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
     }
 
-   private void resetPosition() {
+    private void resetPosition() {
 
         blStopAnimate=false;
 
@@ -1092,31 +1045,31 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         runnableAnimation = new Runnable() {
             public void run() {
-                    if (!blStopAnimate){
-                        WindowManager.LayoutParams mParams = (WindowManager.LayoutParams) chatheadView.getLayoutParams();
+                if (!blStopAnimate){
+                    WindowManager.LayoutParams mParams = (WindowManager.LayoutParams) chatheadView.getLayoutParams();
 
-                        float xDistance =((szWindow.x-chatheadView.getWidth())/2)- mParams.x;
-                        float yDistance =  HOME_Y_ZERO - mParams.y - chatHeadYFinalPos;
+                    float xDistance =((szWindow.x-chatheadView.getWidth())/2)- mParams.x;
+                    float yDistance =  HOME_Y_ZERO - mParams.y - chatHeadYFinalPos;
 
-                        double distance = Math.sqrt((double) (xDistance * xDistance + yDistance * yDistance));
+                    double distance = Math.sqrt((double) (xDistance * xDistance + yDistance * yDistance));
 
-                        if (distance > TRIANGULAR_DISTANCE) {
-                            mParams.x= (int) (mParams.x + (xDistance * easingAmount));
-                            mParams.y= (int) (mParams.y + (yDistance * easingAmount));
-                            windowManager.updateViewLayout(chatheadView, mParams);
-                            //Log.e("Tag:","X:" + mParams.x + " " + chatheadView.getX() + " Y:" + mParams.y + " Distance:" + distance);
-                            handlerAnimation.postDelayed(this, 10);
-                            return;
-                        }
-                        else
-                        {
-                            blStopAnimate=true;
-                            runTransparentTimer();
-                            return;
-                        }
-
-
+                    if (distance > TRIANGULAR_DISTANCE) {
+                        mParams.x= (int) (mParams.x + (xDistance * easingAmount));
+                        mParams.y= (int) (mParams.y + (yDistance * easingAmount));
+                        windowManager.updateViewLayout(chatheadView, mParams);
+                        //Log.e("Tag:","X:" + mParams.x + " " + chatheadView.getX() + " Y:" + mParams.y + " Distance:" + distance);
+                        handlerAnimation.postDelayed(this, 10);
+                        return;
                     }
+                    else
+                    {
+                        blStopAnimate=true;
+                        runTransparentTimer();
+                        return;
+                    }
+
+
+                }
 
             }
 
@@ -1128,8 +1081,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     }
 
     private void runAppListActivity(){
-
-
         Intent it = new Intent(this,LauncherDialogActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS );
         myApplication.setLauncherDialogNotVisible(false);
         startActivity(it);
@@ -1174,7 +1125,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
     private int getStatusBarHeight() {
         int statusBarHeight = (int) Math.ceil(25 * getApplicationContext().getResources().getDisplayMetrics().density);
-       // Log.e("DBG", "statusBarHeight " + statusBarHeight);
+        // Log.e("DBG", "statusBarHeight " + statusBarHeight);
 
         return statusBarHeight;
     }
@@ -1182,7 +1133,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     private void chathead_click(){
         if(LauncherDialogActivity.active){
 
-            //Log.e("DBG", "getLauncherDialogNotVisible() " + myApplication.getLauncherDialogNotVisible());
+            Log.e("DBG", "getLauncherDialogNotVisible() " + myApplication.getLauncherDialogNotVisible());
 
             if(LauncherDialogActivity.lostFocus) {
                 LauncherDialogActivity.lostFocus=false;
@@ -1213,7 +1164,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                 Intent it = new Intent(this,LauncherDialogActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS );
 
 
-               startActivity(it);
+                startActivity(it);
 
 
             } else {
@@ -1298,18 +1249,24 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
-        Log.d(Utility.LogTag, "Gonzales");
+
         Log.d(Utility.LogTag, "ChatHeadService.onStartCommand() -> startId=" + startId);
 
         if (intent != null) {
             Bundle bd = intent.getExtras();
 
             if (bd != null) {
-                if (bd.containsKey("fabX")) {
-                    xFabIcon = (int)bd.getFloat("fabX");
-                    yFabIcon = (int)bd.getFloat("fabY");
+                if (bd.containsKey(Constants.CHATHEAD_X)) {
+                    xFabIcon = (int)bd.getFloat(Constants.CHATHEAD_X);
+                    yFabIcon = (int)bd.getFloat(Constants.CHATHEAD_Y);
                 }
-                if (bd.containsKey(Utility.EXTRA_MSG))
+                else
+                {
+                    xFabIcon = 0;
+                    yFabIcon = 0;
+
+                }
+               /* if (bd.containsKey(Utility.EXTRA_MSG))
                     sMsg = bd.getString(Utility.EXTRA_MSG);
 
                 if (sMsg != null && sMsg.length() > 0) {
@@ -1327,7 +1284,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                         showMsg(sMsg);
                     }
 
-                }
+                }*/
 
             }
         }
@@ -1369,7 +1326,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         Log.e("TAG:", "I am gono to destroy!");
 
         if(ismReceiverRegistered)
-        unregisterReceiver(mReceiver);
+            unregisterReceiver(mReceiver);
 
 
 
@@ -1399,4 +1356,3 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
 
 }
-

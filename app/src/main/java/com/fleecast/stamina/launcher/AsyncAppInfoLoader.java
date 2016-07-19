@@ -77,11 +77,11 @@ public class AsyncAppInfoLoader extends AsyncTask<PackageManagerStruct, GridView
 
                     icon = null;
 
-                   // index++;
+                    /*index++;
 
-                    //if(index>5)
-                    //break;
-
+                    if(index>5)
+                    break;
+*/
 
                 }
 

@@ -7,7 +7,7 @@ import android.content.Intent;
 /**
  * Created by cxphong on 7/12/15.
  */
-public class DeviceAdminSampleReceiver extends DeviceAdminReceiver {
+public class DeviceAdminSampleReceiver extends android.app.admin.DeviceAdminReceiver {
     void showToast(Context context, String msg) {
     }
 

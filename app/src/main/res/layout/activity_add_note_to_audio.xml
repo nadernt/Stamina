@@ -6,7 +6,7 @@
     android:paddingBottom="8dp">
     <include
         android:id="@+id/tool_bar_audio_note"
-        layout="@layout/tool_bar_note_add_edit"></include>
+        layout="@layout/tool_bar_audio_note_add_edit"></include>
     <ScrollView
         android:id="@+id/scrollViewAddAudioNoteText"
         android:layout_width="match_parent"

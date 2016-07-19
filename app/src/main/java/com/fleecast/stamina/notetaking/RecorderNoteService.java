@@ -5,10 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -70,7 +66,10 @@ public class RecorderNoteService extends Service{
     
     private PendingIntent createPendingIntent() {
         Intent intent = new Intent(this, ActivityAddAudioNote.class);
-        intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD,dbId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        //intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD, true);
+        Log.e("DBGJJJJ",dbId+"");
+        intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD,dbId);
 
         /***********************************************
          * *********************************************
@@ -80,7 +79,7 @@ public class RecorderNoteService extends Service{
          ***********************************************
          ***********************************************/
         intent.setAction("FakeAction");
-        return PendingIntent.getActivity(this, 0, intent, 0);
+        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     void CreateNotification() {
@@ -88,7 +87,7 @@ public class RecorderNoteService extends Service{
 
         // Defining notification
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(
-                this).setSmallIcon(R.drawable.ic_action_mic_stop)
+                this).setSmallIcon(R.drawable.mic_note_recorder_notifi)
                 .setContentTitle("Recording")
                 .setContentText("Tap to go to record")
                 .setPriority(Notification.PRIORITY_MAX)
@@ -105,27 +104,6 @@ public class RecorderNoteService extends Service{
 
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
@@ -138,8 +116,13 @@ public class RecorderNoteService extends Service{
             Log.e("DBG","LogMax");
 
             if (intent.hasExtra(Constants.EXTRA_NEW_RECORD)) {
+
                 Log.e(LOG_TAG, "EXTRA_NEW_RECORD");
-                //dbId = intent.getIntExtra(Constants.EXTRA_CURRENT_DBID_RECORD_SERVICE,0);
+
+                dbId = myApplication.tmpCurrentAudioNoteInfoStruct.getId();
+
+                myApplication.setCurrentRecordingAudioNoteId(dbId);
+
                 this.mFileDbUniqueToken = intent.getStringExtra(Constants.EXTRA_RECORD_FILENAME);
 
                 //recorderSource = intent.getIntExtra(Constants.EXTRA_RECORD_SOURCE,MediaRecorder.AudioSource.MIC);
@@ -156,6 +139,7 @@ public class RecorderNoteService extends Service{
                     startRecording();
                 } catch (Exception e) {
                     Log.e(LOG_TAG, "prepare() failed");
+                    myApplication.setCurrentRecordingAudioNoteId(Constants.CONST_NULL_ZERO);
                     myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
                     recordStatus = true;
                     Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
@@ -268,9 +252,11 @@ public class RecorderNoteService extends Service{
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
+            myApplication.setCurrentRecordingAudioNoteId(Constants.CONST_NULL_ZERO);
             sendBroadcastToActivity(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY);
         }
         catch (Exception e){
+            myApplication.setCurrentRecordingAudioNoteId(Constants.CONST_NULL_ZERO);
             sendBroadcastToActivity(Constants.REPORT_RECORD_ERROR_TO_ACTIVITY);
         }
     }
@@ -281,9 +267,19 @@ public class RecorderNoteService extends Service{
      * stop in the activity.
      */
     private void stopRecordingByNotification()   {
-            sendBroadcastToActivity(Constants.REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY);
-    }
+        if(mNotifyManager!=null)
+            mNotifyManager.cancel(idNotification);
+            stopRecording();
+            //sendBroadcastToActivity(Constants.REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY);
+        /*Intent intent = new Intent(this, ActivityAddAudioNote.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD, true);*/
 
+        Intent intent = new Intent(this, ActivityAddAudioNote.class);
+        intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD,dbId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
 
     @Override
     public void onDestroy() {
@@ -311,14 +307,19 @@ public class RecorderNoteService extends Service{
 
             case Constants.REPORT_RECORD_ERROR_TO_ACTIVITY:
 
-                File file = new File(recordFileName);
+                try {
 
-                if (file.exists()) {
-                    file.delete();
+                    File file = new File(recordFileName);
+
+                    if (file.exists()) {
+                        file.delete();
+                    }
+
+                    intent.putExtra(Constants.EXTRA_RECORD_SERVICE_REPORTS, messageToActivity);
                 }
-
-                intent.putExtra(Constants.EXTRA_RECORD_SERVICE_REPORTS, messageToActivity);
-
+                catch (Exception e) {
+                    Log.e("Error:", e.getMessage());
+                }
                 break;
 
             case Constants.REPORT_RECORDED_FILE_TO_ACTIVITY:
@@ -326,8 +327,12 @@ public class RecorderNoteService extends Service{
                 intent.putExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME, recordFileName);
                 break;
             case Constants.REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY:
+           //     EXTRA_EDIT_NOTE_AND_RECORD
+/*
                 intent.putExtra(Constants.EXTRA_RECORD_SERVICE_REPORTS, messageToActivity);
+
                 intent.putExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME, recordFileName);
+*/
                 break;
         }
 

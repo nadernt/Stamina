@@ -91,7 +91,7 @@ public class RealmGroupsHelper {
 
 
         realmResult = realm.where(GroupsDbRealmStruct.class).findAll();
-        realmResult.sort("id", Sort.DESCENDING);
+        realmResult = realmResult.sort("id", Sort.DESCENDING);
         if (realmResult.size() > 0) {
             showLog("Size : " + realmResult.size());
 
@@ -119,7 +119,7 @@ public class RealmGroupsHelper {
 
 
         realmResult = realm.where(GroupsDbRealmStruct.class).findAll();
-        realmResult.sort("app_group_order", Sort.ASCENDING);
+        realmResult = realmResult.sort("app_group_order", Sort.ASCENDING);
         if (realmResult.size() > 0) {
             for (int i = 0; i < realmResult.size(); i++) {
 

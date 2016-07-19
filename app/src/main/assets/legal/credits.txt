@@ -1,0 +1,16 @@
+<h1>Libraries:</h1>
+<a href="https://github.com/realm/realm-java">Realm Java</a><br>
+<a href="https://github.com/nostra13/Android-Universal-Image-Loader">Android Universal Image Loader - Sergey Tarasevich</a><br>
+<a href="https://github.com/Pixplicity/EasyPreferences"> EasyPreferences - Pixplicity (Mathijs Lagerberg)</a><br>
+<h1>Icon Files By:</h1>
+<a href="http://www.flaticon.com/authors/freepik">Freepik</a><br>
+<a href="http://www.flaticon.com/authors/plainicon">Plainicon</a><br>
+<a href="http://www.flaticon.com/authors/chanut-is-industries">Chanut is Industries</a><br>
+<a href="http://www.flaticon.com/authors/simpleicon">Simpleicon</a><br>
+<a href="http://www.flaticon.com/authors/dave-gandy">Dave Gandy</a><br>
+<a href="http://www.flaticon.com/authors/hanan">Hanan</a><br>
+<a href="http://www.flaticon.com/authors/alessio-atzeni">Alessio Atzeni</a><br>
+<a href="http://www.flaticon.com/authors/robin-kylander">Robin Kylander</a><br>
+<a href="http://www.flaticon.com/authors/yannick">Yannick</a><br>
+<a href="http://www.flaticon.com/authors/madebyoliver">Wonderful works of: Madebyoliver</a><br>
+<a href="https://roundicons.com/">50 Free Filled,100 Free Flat,60 Free flat round by: roundicons.com</a><br>

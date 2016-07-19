@@ -19,7 +19,7 @@ public class NotificationHelper {
     public void removeNotification(int idNotification) {
 
 
-        android.app.NotificationManager notificationManager = (android.app.NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+        android.app.NotificationManager notificationManager = (android.app.NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(idNotification);
     }
 
@@ -38,7 +38,7 @@ public class NotificationHelper {
                 .setAutoCancel(false)
                 .build();
 
-        android.app.NotificationManager notificationManager = (android.app.NotificationManager) mContext.getSystemService(mContext.NOTIFICATION_SERVICE);
+        android.app.NotificationManager notificationManager = (android.app.NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(notificationId, notification);
     }
 }

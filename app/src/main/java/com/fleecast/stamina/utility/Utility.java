@@ -1,22 +1,28 @@
 package com.fleecast.stamina.utility;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +43,8 @@ public class Utility {
     private static final String APP_DETAILS_PACKAGE_NAME = "com.android.settings";
 
     private static final String APP_DETAILS_CLASS_NAME = "com.android.settings.InstalledAppDetails";
+
+    private final static String NON_THIN = "[^iIl1\\.,']";
 
     public float getSystemIndependentPixel(Context context , int pixel){
 
@@ -60,6 +68,41 @@ public class Utility {
         }
         else
             return "";
+    }
+
+    private static int textWidth(String str) {
+        return str.length() - str.replaceAll(NON_THIN, "").length() / 2;
+    }
+
+    public static String ellipsize(String text, int max) {
+
+        if(text==null)
+            return "";
+
+        if (textWidth(text) <= max)
+            return text;
+
+        // Start by chopping off at the word before max
+        // This is an over-approximation due to thin-characters...
+        int end = text.lastIndexOf(' ', max - 3);
+
+        // Just one long word. Chop it off.
+        if (end == -1)
+            return text.substring(0, max-3) + "...";
+
+        // Step forward as long as textWidth allows.
+        int newEnd = end;
+        do {
+            end = newEnd;
+            newEnd = text.indexOf(' ', end + 1);
+
+            // No more spaces.
+            if (newEnd == -1)
+                newEnd = text.length();
+
+        } while (textWidth(text.substring(0, newEnd) + "...") < max);
+
+        return text.substring(0, end) + "...";
     }
 
     public static void showInstalledAppDetails(Context context, String packageName) {
@@ -137,7 +180,7 @@ public class Utility {
         return now;
     }*/
 
-    public static void showMessage(String messageToUser, String titleOfDialog, Context context){
+    public static void showMessage(CharSequence messageToUser, String titleOfDialog, Context context){
 
         new AlertDialog.Builder(context)
                 .setTitle(titleOfDialog)
@@ -166,4 +209,53 @@ public class Utility {
         snackbar.show();
     }
 
+    public static String unixTimeToReadable(long unixSeconds){
+
+        Date date = new Date(unixSeconds*1000L); // *1000 is to convert seconds to milliseconds
+        // E, dd MMM yyyy HH:mm:ss z
+        SimpleDateFormat sdf = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss a"); // the format of your date
+        //sdf.setTimeZone(TimeZone.getTimeZone("GMT-4")); // give a timezone reference for formating (see comment at the bottom
+        String formattedDate = sdf.format(date);
+        //System.out.println(formattedDate);
+        return formattedDate;
+
+    }
+
+
+    public static String getContactName(Context context, String phoneNumber) {
+
+        if(phoneNumber==null)
+           return "";
+        else
+            Log.e("DBG", phoneNumber);
+
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = null;
+        if(cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+
+        if(cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        if(contactName==null)
+            return phoneNumber;
+        else
+            return contactName;
+    }
+
+    public static int getFilePostFixId(String file_name)
+    {
+
+        if(file_name==null || file_name.length()==0)
+            return -1;
+        else
+            return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
+    }
 }

@@ -119,9 +119,6 @@ public class CustomRoundButton extends ImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        //if(1<2)
-            Log.e("DDDDDDAAAAAaaa", "KKKKKKK");
-          //  return;
         setBackgroundColor(Color.TRANSPARENT);
 
        // drawImageViewShape(canvas);
@@ -131,8 +128,6 @@ public class CustomRoundButton extends ImageView {
 
         int viewWidthHalf = this.getMeasuredWidth() / 2;
         int viewHeightHalf = this.getMeasuredHeight() / 2;
-
-     //   Log.e("Bangggggggggggggggggiii", "Bangiiii");
 
         if(blHighLightMe) {
             // circle
@@ -175,7 +170,7 @@ public class CustomRoundButton extends ImageView {
         mCanvas.setShadowLayer(2.0f, 5.0f, 5.0f, Color.BLACK);
         //Log.e("Acha", utility.wordEllipsizeMaker(buttonText,12,15));
 
-        canvas.drawText(utility.wordEllipsizeMaker(buttonText, 12, 15), viewWidthHalf, this.getMeasuredHeight()-6 , mCanvas);
+        canvas.drawText(Utility.wordEllipsizeMaker(buttonText, 12, 15), viewWidthHalf, this.getMeasuredHeight()-6 , mCanvas);
 
         bitmap.recycle();
         bitmap=null;

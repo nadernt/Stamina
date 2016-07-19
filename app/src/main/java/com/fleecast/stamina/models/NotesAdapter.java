@@ -1,23 +1,36 @@
 package com.fleecast.stamina.models;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.CollationElementIterator;
 import java.util.ArrayList;
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.utility.Constants;
+import com.fleecast.stamina.utility.Utility;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
 
 
-    private final OnItemClickListener listener;
+    private final OnItemClickListener clickListener;
+    private final OnItemLongClickListener longClickListener;
+    private final Context context;
+
     private ArrayList<NoteInfoStruct> noteInfoStructs;
 
 
-    public NotesAdapter(ArrayList<NoteInfoStruct> noteInfoStructs, OnItemClickListener listener) {
-        this.noteInfoStructs = noteInfoStructs;
-        this.listener = listener;
+    public NotesAdapter(Context context, ArrayList<NoteInfoStruct> noteInfoStructs, OnItemClickListener listener, OnItemLongClickListener longClickListener) {
+        this.noteInfoStructs = new ArrayList(noteInfoStructs);
+        this.clickListener = listener;
+        this.longClickListener = longClickListener;
+        this.context = context;
     }
 
 
@@ -31,11 +44,42 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(NotesAdapter.ViewHolder holder, int position) {
-        holder.click(noteInfoStructs.get(position), listener);
+        holder.click(noteInfoStructs.get(position), clickListener);
+        holder.longClick(noteInfoStructs.get(position), longClickListener);
         holder.tvId.setText(String.valueOf(noteInfoStructs.get(position).getId()));
-        holder.title.setText(noteInfoStructs.get(position).getTitle());
-        holder.description.setText(noteInfoStructs.get(position).getDescription());
-        holder.update_time.setText(noteInfoStructs.get(position).getUpdate_time().toString());
+        holder.title.setText(Utility.ellipsize(noteInfoStructs.get(position).getTitle(),50));
+
+        holder.description.setText(Utility.ellipsize(noteInfoStructs.get(position).getDescription(),150));
+        holder.create_time.setText(noteInfoStructs.get(position).getCreateTimeStamp().toString());
+
+       // Log.e("DBG",noteInfoStructs.get(position).getHasAudio() + "");
+        if(noteInfoStructs.get(position).getHasAudio()) {
+
+            String contactNmae = Utility.ellipsize(Utility.getContactName(context,noteInfoStructs.get(position).getPhoneNumber()),20);
+
+            if(noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_OUTGOING) {
+                holder.audioType.setBackgroundResource(R.drawable.outcoming_call);
+                holder.phone_number.setVisibility(View.VISIBLE);
+                holder.phone_number.setText(contactNmae);
+            }
+            else if(noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_INCOMING) {
+                holder.audioType.setBackgroundResource(R.drawable.incoming_calls);
+                holder.phone_number.setVisibility(View.VISIBLE);
+                holder.phone_number.setText(contactNmae);
+            }
+            else {
+                holder.audioType.setBackgroundResource(R.drawable.audio_wave);
+                holder.phone_number.setVisibility(View.INVISIBLE);
+            }
+        }
+        else
+        {
+            holder.audioType.setBackgroundResource(R.drawable.text);
+            holder.phone_number.setVisibility(View.INVISIBLE);
+        }
+
+
+
     }
 
 
@@ -46,15 +90,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvId, title, description,update_time;
-
+        TextView tvId, title, description, create_time,phone_number;
+        ImageView audioType;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvId = (TextView) itemView.findViewById(R.id.tvId);
             title = (TextView) itemView.findViewById(R.id.tvTitle);
             description = (TextView) itemView.findViewById(R.id.tvDescription);
-            update_time = (TextView) itemView.findViewById(R.id.tvUpdateTime);
+            create_time = (TextView) itemView.findViewById(R.id.tvCreateTime);
+            phone_number= (TextView) itemView.findViewById(R.id.tvPhoneNumber);
+            audioType = (ImageView) itemView.findViewById(R.id.audioType);
         }
 
 
@@ -66,11 +112,33 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 }
             });
         }
+
+        public void longClick(final NoteInfoStruct noteInfoStruct, final OnItemLongClickListener listener) {
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onLongClick(noteInfoStruct);
+                    return false;
+                }
+            });
+        }
+
     }
 
+    public NoteInfoStruct getItemAtPosition(int i) {
+        return noteInfoStructs.get(i);
+    }
+
+    public void removeItem(int i) {
+        noteInfoStructs.remove(i);
+        this.notifyItemRemoved(i);
+    }
 
     public interface OnItemClickListener {
         void onClick(NoteInfoStruct noteInfoStruct);
+    }
+    public interface OnItemLongClickListener {
+        void onLongClick(NoteInfoStruct noteInfoStruct);
     }
 
 

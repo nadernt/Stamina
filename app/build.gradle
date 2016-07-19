@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId 'com.fleecast.stamina'
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
     }
@@ -27,7 +27,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "io.realm:realm-gradle-plugin:0.89.1"
+        classpath "io.realm:realm-gradle-plugin:1.1.0"
     }
 }
 
@@ -35,18 +35,20 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     /*
-            compile 'io.realm:realm-android:0.87.2'
-        */
+                compile 'io.realm:realm-android:0.87.2'
+            */
     /* compile 'io.realm:realm-android:0.88.2'*/
     /*
-            compile 'io.realm:realm-android:0.84.1'
-        */
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:design:23.2.0'
-    compile 'com.android.support:support-v4:23.2.0'
-    compile 'com.android.support:cardview-v7:23.2.0'
+                compile 'io.realm:realm-android:0.84.1'
+            */
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:design:24.0.0'
+    compile 'com.android.support:support-v4:24.0.0'
+    compile 'com.android.support:cardview-v7:24.0.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile 'com.android.support:recyclerview-v7:23.2.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.github.medyo:android-about-page:1.0.9'
+    compile 'com.dropbox.core:dropbox-core-sdk:2.0.6'
 }
 
 

@@ -28,6 +28,7 @@ import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
+import com.fleecast.stamina.utility.Prefs;
 
 import java.io.File;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class ChatHeadRecordService extends Service {
 	private WindowManager windowManager;
 	private ImageView chatHeadRecord;
 	private GestureDetector gestureDetector;
-	WindowManager.LayoutParams params;
+	private WindowManager.LayoutParams params;
 	private LinearLayout popupRecordDialogView;
 	private Button btnPopCancelRecord;
 	private Button btnPopStopRecord;
@@ -48,8 +49,8 @@ public class ChatHeadRecordService extends Service {
 
 	private Handler myHandler = new Handler();
 	private Point szWindow = new Point();
-	Point p1;
-	Point p2;
+	private Point p1;
+	private Point p2;
 	private String pathToWorkingDirectory;
 	private boolean ignoreIntentsWeHaveError=false;
 	private MyApplication myApplication;
@@ -99,7 +100,8 @@ public class ChatHeadRecordService extends Service {
 			ignoreIntentsWeHaveError=true;
 
 			showErrorsToUser(inflater, "<h5>Note:</h5>\n<p><font color=\"gray\">Another record is under progress by application." +
-					"I can't record your call now.</font></p>");
+					"The app cannot record your call now.</font></p>");
+			stopSelf();
 
 		} else {
 
@@ -128,8 +130,9 @@ public class ChatHeadRecordService extends Service {
 
 			params.gravity = Gravity.TOP | Gravity.LEFT;
 
-			params.x = 0;
-			params.y = 100;
+			params.x = Prefs.getInt(Constants.PHONE_RECORDER_CHATHEAD_X,params.x);
+
+			params.y = Prefs.getInt(Constants.PHONE_RECORDER_CHATHEAD_Y,params.y);
 
 			windowManager.addView(chatHeadRecord, params);
 
@@ -162,6 +165,8 @@ public class ChatHeadRecordService extends Service {
 								initialTouchY = event.getRawY();
 								return true;
 							case MotionEvent.ACTION_UP:
+								Prefs.putInt(Constants.PHONE_RECORDER_CHATHEAD_X,params.x);
+								Prefs.putInt(Constants.PHONE_RECORDER_CHATHEAD_Y,params.y);
 								return true;
 							case MotionEvent.ACTION_MOVE:
 
@@ -230,14 +235,17 @@ public class ChatHeadRecordService extends Service {
 						}
 						else{
 							// Crazy user deleted message while in the phone call!
-							String title = "Untitled";
+							String title = callNumberForStopByUser;
 							String description = "";
 							realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, end, typeOfCallForStopByUser, callNumberForStopByUser, 0, 0);
 						}
 
 						File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
 
-						file.renameTo(new File(pathToWorkingDirectory + File.separator + String.valueOf(dbId) + ".amr"));
+						File phoneCallsFolder = new File(pathToWorkingDirectory + File.separator +  Constants.CONST_PHONE_CALLS_DIRECTORY_NAME);
+						phoneCallsFolder.mkdir();
+
+						file.renameTo(new File(phoneCallsFolder.getPath() + File.separator + String.valueOf(dbId) + Constants.RECORDER_AUDIO_FORMAT_AMR));
 
 						Log.e(TAG, "End Record");
 
@@ -259,13 +267,15 @@ public class ChatHeadRecordService extends Service {
 
 					if(!realmNoteHelper.isExist(dbId)) {
 						// Crazy user deleted message while in the phone call!
-						String title = "Untitled";
+						String title = callNumberForStopByUser;
 						String description = "";
 						realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, null, typeOfCallForStopByUser, callNumberForStopByUser, 0, 0);
 					}
 
-					Intent intent = new Intent(getApplicationContext(), EditActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					intent.putExtra("id", dbId);
+					Intent intent = new Intent(getApplicationContext(), ActivityEditPhoneRecordNote.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.putExtra(Constants.EXTRA_EDIT_PHONE_RECORD_NOTE, dbId);
+					//intent.putExtra(Constants.EXTRA_EDIT_PHONE_RECORD_NOTE_PHONE_NUMBER, callNumberForStopByUser);
+
 					startActivity(intent);
 
 				}
@@ -304,7 +314,7 @@ public class ChatHeadRecordService extends Service {
 		// we are after crash and we should stop the service
 		if(intent==null) {
 			Log.e("DBG", "Error null intent stop service.");
-			stopService(new Intent(getApplicationContext(), ChatHeadRecordService.class));
+			stopSelf();
 			return;
 		}
 
@@ -314,7 +324,7 @@ public class ChatHeadRecordService extends Service {
 				callNumberForStopByUser = intent.getStringExtra(Constants.CHAT_HEAD_RECORD_INTENTS_NUMBER);
 				typeOfCallForStopByUser = intent.getIntExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, -1);
 
-				String title = "Untitled";
+				String title = callNumberForStopByUser;
 				String description = "";
 				Date end = new Date();
 
@@ -330,7 +340,7 @@ public class ChatHeadRecordService extends Service {
 
 				if (recordStoppedByUser) {
 					// We will wait up to conversation be finished then we stop service.
-					stopService(new Intent(getApplicationContext(), ChatHeadRecordService.class));
+					stopSelf();
 				} else if (recordHasCanceled) {
 					try {
 
@@ -353,7 +363,7 @@ public class ChatHeadRecordService extends Service {
 					} catch (Exception e) {
 
 					} finally {
-						stopService(new Intent(getApplicationContext(), ChatHeadRecordService.class));
+						stopSelf();
 					}
 				} else {
 
@@ -366,19 +376,25 @@ public class ChatHeadRecordService extends Service {
 
 					int typeOfCall = intent.getIntExtra(Constants.CHAT_HEAD_RECORD_INTENTS_INGOING_OUTGOING, -1);
 
-						//update the call info.
-						realmNoteHelper.updateNotePhoneCallInfo(dbId, start, end, typeOfCall, number);
+					//update the call info.
+					realmNoteHelper.updateNotePhoneCallInfo(dbId, start, end, typeOfCall, number);
 
 					File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
 
-					file.renameTo(new File(pathToWorkingDirectory + File.separator + String.valueOf(dbId) + ".amr"));
+					File phoneCallsFolder = new File(pathToWorkingDirectory + File.separator +  Constants.CONST_PHONE_CALLS_DIRECTORY_NAME);
+
+					phoneCallsFolder.mkdir();
+
+					Log.e(TAG, phoneCallsFolder.getPath() + "  ddddd");
+
+					file.renameTo(new File(phoneCallsFolder.getPath() + File.separator + String.valueOf(dbId) + Constants.RECORDER_AUDIO_FORMAT_AMR));
 
 					Log.e(TAG, "End Record");
 
 
 					Toast.makeText(getApplicationContext(), "New phone call record saved", Toast.LENGTH_LONG);
 
-					stopService(new Intent(getApplicationContext(), ChatHeadRecordService.class));
+					stopSelf();
 				}
 			}
 		}
@@ -396,7 +412,8 @@ public class ChatHeadRecordService extends Service {
 			}
 			else{
 				showErrorsToUser(inflater, "<h5>Note:</h5>\n<p><font color=\"gray\">Another record is under progress by application." +
-						"I can't record your call now.</font></p>");
+						"The app cannot record your call now.</font></p>");
+				stopSelf();
 			}
 
 		} else {
@@ -431,7 +448,7 @@ public class ChatHeadRecordService extends Service {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				windowManager.removeView(layoutSnackMessageToUser);
-				stopService(new Intent(getApplicationContext(), ChatHeadRecordService.class));
+				stopSelf();
 				return false;
 			}
 		}) ;

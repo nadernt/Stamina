@@ -10,10 +10,10 @@ package com.fleecast.stamina.notetaking;
         import android.content.Intent;
         import android.telephony.TelephonyManager;
         import android.util.Log;
+        import android.widget.Toast;
 
         import com.fleecast.stamina.chathead.MyApplication;
         import com.fleecast.stamina.models.RealmContactHelper;
-        import com.fleecast.stamina.models.RealmNoteHelper;
         import com.fleecast.stamina.utility.Constants;
 
 public class PhonecallReceiver extends BroadcastReceiver {
@@ -26,7 +26,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
     private static boolean isIncoming;
     private static String savedNumber;  //because the passed incoming is only valid in ringing
     private RealmContactHelper realmContactHelper;
-
+    private static boolean recordHasBeenBusyForAudioNote =false;
     // private CallReceiver mCallReceiver;
     private Context context;
 
@@ -60,7 +60,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
             }
 
 
-            onCallStateChanged(context, state, number);
+            onCallStateChanged(state, number);
         }
     }
 
@@ -73,7 +73,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
     //Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
     //Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
-    public void onCallStateChanged(Context context, int state, String number) {
+    public void onCallStateChanged(int state, String number) {
         if(lastState == state){
             //No change, debounce extras
             return;
@@ -129,8 +129,17 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
 
     private void sendCommandsToService(int whatHappenedEvent, String number, Date start,Date end) {
+
     if(number != null){
-            if (!realmContactHelper.checkIfExistsInIgnoreList(number)) {
+
+            if (!realmContactHelper.checkIfExistsInIgnoreList(number) ) {
+
+                if((myApplication.isRecordUnderGoing() == Constants.CONST_RECORDER_SERVICE_WORKS_FOR_NOTE) && !recordHasBeenBusyForAudioNote) {
+                    recordHasBeenBusyForAudioNote = true;
+                    Toast.makeText(context,"nother record is under progress by application." + "\n" + "The app cannot record your call now.",Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 Intent intentOfCall = new Intent(context, ChatHeadRecordService.class);
 
                 if (whatHappenedEvent == Constants.PHONE_OUT_GOING_CALL_STARTED || whatHappenedEvent == Constants.PHONE_INCOMING_CALL_RECEIVED) {
@@ -147,7 +156,12 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
                     Log.e(TAG, "Start Record");
 
-                } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_OUTGOING_CALL_ENDED || whatHappenedEvent == Constants.PHONE_MISSING_CALL) {
+                        context.startService(intentOfCall);
+
+                } else if (whatHappenedEvent == Constants.PHONE_INCOMING_CALL_ENDED ||
+                        whatHappenedEvent == Constants.PHONE_OUTGOING_CALL_ENDED ||
+                        whatHappenedEvent == Constants.PHONE_MISSING_CALL ) {
+
                     intentOfCall = new Intent(context, ChatHeadRecordService.class);
 
                     intentOfCall.putExtra(Constants.CHAT_HEAD_RECORD_INTENTS_STOP, true);
@@ -172,9 +186,13 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
                     Log.e(TAG, "End Record");
 
+                    if(!recordHasBeenBusyForAudioNote)
+                    context.startService(intentOfCall);
+                    recordHasBeenBusyForAudioNote =false;
+
                 }
 
-                context.startService(intentOfCall);
+
             }
         }
     }

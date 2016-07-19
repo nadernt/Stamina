@@ -1,10 +1,13 @@
 package com.fleecast.stamina.notetaking;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -53,7 +56,7 @@ public class ActivityIgnoreListManager extends AppCompatActivity implements
         setContentView(R.layout.activity_ignore_list_manager);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarIgnoreListManager);
 
         setSupportActionBar(toolbar);
 
@@ -136,10 +139,13 @@ public class ActivityIgnoreListManager extends AppCompatActivity implements
                         }
                         else{
                             try {
-                                String uri = "tel:" + cStr.getContactNumber().trim();
-                                Intent intent = new Intent(Intent.ACTION_CALL);
-                                intent.setData(Uri.parse(uri));
-                                startActivity(intent);
+                                if (ContextCompat.checkSelfPermission(ActivityIgnoreListManager.this, Manifest.permission.READ_CONTACTS)
+                                        == PackageManager.PERMISSION_GRANTED) {
+                                    String uri = "tel:" + cStr.getContactNumber().trim();
+                                    Intent intent = new Intent(Intent.ACTION_CALL);
+                                    intent.setData(Uri.parse(uri));
+                                    startActivity(intent);
+                                }
                             } catch (Exception e) {
                             }
                         }

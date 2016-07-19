@@ -71,8 +71,8 @@ public class FragmentPhoneCallSettings extends Fragment {
 
 
         // linearLayAudioSources = (LinearLayout) fragmentView.findViewById(R.id.linearLayAudioSources);
-        for (int index = 0; index < ((RadioGroup) radioGroupSources).getChildCount(); ++index) {
-            View nextChild = ((RadioGroup) radioGroupSources).getChildAt(index);
+        for (int index = 0; index < radioGroupSources.getChildCount(); ++index) {
+            View nextChild = radioGroupSources.getChildAt(index);
 
             if (nextChild != null && nextChild instanceof RadioButton) {
                 try {

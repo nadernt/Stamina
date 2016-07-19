@@ -10,11 +10,11 @@
         android:text="Play"
         android:src="@drawable/ic_action_playback_play"
         android:background="@color/amber"
-        android:layout_toLeftOf="@+id/space2"
-        android:layout_toStartOf="@+id/space2"
-        android:layout_below="@+id/seekBar1"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_alignTop="@+id/btnStopPortrait"
+        android:layout_toRightOf="@+id/btnRewindTrackPortrait"
+        android:layout_toEndOf="@+id/btnRewindTrackPortrait"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
 
     <ImageButton
         android:id="@+id/btnStopPortrait"
@@ -23,11 +23,11 @@
         android:text="Stop"
         android:src="@drawable/ic_action_playback_stop"
         android:background="@color/american_rose"
-        android:layout_below="@+id/seekBar1"
-        android:layout_toRightOf="@+id/space2"
-        android:layout_toEndOf="@+id/space2"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="22dp"
+        android:layout_alignTop="@+id/btnNextTrackPortrait"
+        android:layout_toRightOf="@+id/btnPlayPortrait"
+        android:layout_toEndOf="@+id/btnPlayPortrait" />
 
     <SeekBar
         android:id="@+id/seekBar1"
@@ -49,38 +49,6 @@
         android:layout_marginLeft="14dp"
         android:layout_marginTop="8dp" />
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/txtTitlePortraitPlayer"
-        android:layout_below="@+id/btnPlayPortrait"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textColor="@color/air_force_blue"
-        android:visibility="gone"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="14dp"
-        android:layout_marginBottom="14dp"
-        android:ellipsize="end"
-        android:maxLines="2" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/txtDescriptionPortraitPlayer"
-        android:layout_below="@+id/txtTitlePortraitPlayer"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:visibility="gone"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="14dp"
-        android:layout_marginBottom="14dp"
-        android:scrollbars="vertical" />
-
     <ImageButton
         android:id="@+id/btnRewindTrackPortrait"
         android:layout_width="wrap_content"
@@ -88,10 +56,8 @@
         android:text="Stop"
         android:src="@drawable/ic_action_playback_prev"
         android:background="@color/alien_green"
-        android:layout_toLeftOf="@+id/btnPlayPortrait"
-        android:layout_toStartOf="@+id/btnPlayPortrait"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/seekBar1" />
+        android:visibility="gone"
+        android:layout_alignTop="@+id/btnPlayPortrait" />
 
     <ImageButton
         android:id="@+id/btnNextTrackPortrait"
@@ -103,7 +69,8 @@
         android:layout_below="@+id/seekBar1"
         android:layout_toRightOf="@+id/btnStopPortrait"
         android:layout_toEndOf="@+id/btnStopPortrait"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        android:visibility="invisible" />
 
     <Space
         android:layout_width="10dp"
@@ -112,5 +79,44 @@
         android:layout_below="@+id/seekBar1"
         android:layout_centerHorizontal="true" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/btnNextTrackPortrait"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" >
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/txtTitlePortraitPlayer"
+                android:textColor="@color/air_force_blue"
+                android:visibility="gone"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginBottom="14dp"
+                android:ellipsize="end"
+                android:maxLines="2" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/txtDescriptionPortraitPlayer"
+                android:visibility="gone"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginBottom="14dp"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

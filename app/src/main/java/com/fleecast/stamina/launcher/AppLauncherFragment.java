@@ -131,51 +131,11 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
 
     }
 
-   /* @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            windowManager.getDefaultDisplay().getSize(szWindow);
-        } else {
-
-            int w = windowManager.getDefaultDisplay().getWidth();
-            int h = windowManager.getDefaultDisplay().getHeight();
-            szWindow.set(w, h);
-        }
-
-        gesturePadHeight = szWindow.y/3;
-
-        gesturePad.getLayoutParams().height =gesturePadHeight;
-
-    }*/
-
-
-    /* public void onBackPressed() {
-
-            Log.e("DBG", "Mucah");
-
-
-        }
-    */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         Log.e("DBG", "onCreateView");
-        /*windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            windowManager.getDefaultDisplay().getSize(szWindow);
-        } else {
-
-            int w = windowManager.getDefaultDisplay().getWidth();
-            int h = windowManager.getDefaultDisplay().getHeight();
-            szWindow.set(w, h);
-        }
-
-        gesturePadHeight = szWindow.y/3;*/
-
 
         // inflate the root view of the fragment
         fragmentView = inflater.inflate(R.layout.fragment_app_launcher, container, false);
@@ -183,39 +143,6 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
         filterText = (EditText) fragmentView.findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
 
-/*
-        layCategoryContainer = (LinearLayout) fragmentView.findViewById(R.id.layCategoryContainer);
-
-        //LinearLayout parentLayout = new LinearLayout(fragmentView.getContext());
-        LinearLayout linearLayout1 = new LinearLayout(fragmentView.getContext());
-        //LinearLayout linearLayout2= new LinearLayout(fragmentView.getContext());
-CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        params.gravity = Gravity.CENTER_VERTICAL;
-
-        //parentLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-        layCategoryContainer.addView(customRoundButton, params);
-*/
-
-
-
-
-
-
-      /*  imgBtnAlphaOrDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (Prefs.getBoolean(Constants.PREF_SORT_IS_ALPHABETIC_OR_DATE, false))
-                    sortOrder(false);
-                else
-                    sortOrder(true);
-
-            }
-        });*/
 
         // Check if back key pressed and virtual keyboard is showing remove the soft keyboard and clean the text inside of textedit.
         filterText.setOnKeyListener(new View.OnKeyListener() {
@@ -281,83 +208,17 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
 
                 public void onSwipeRight() {
 
-                    //Toast.makeText(LauncherDialogActivity.myActivityInstance, "right", Toast.LENGTH_SHORT).show();
-
-/*
-                    if (gesturePad.getVisibility() == View.GONE) {
-
-                        showHideVirtualKeyboard(filterText, LauncherDialogActivity.myActivityInstance, false);
-
-                        gesturePad.setVisibility(View.VISIBLE);
-
-                        ValueAnimator va = ValueAnimator.ofInt(0, gesturePadHeight);
-                        va.setDuration(700);
-                        va.setInterpolator(new BounceInterpolator());
-                        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                            public void onAnimationUpdate(ValueAnimator animation) {
-                                Integer value = (Integer) animation.getAnimatedValue();
-                                gesturePad.getLayoutParams().height = value.intValue();
-                                gesturePad.requestLayout();
-                                // gesturePad.setVisibility(View.VISIBLE);
-
-                            }
-                        });
-                        va.start();
-                        va.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                //            Toast.makeText(LauncherDialogActivity.myActivityInstance, "End Fuck Yo", Toast.LENGTH_LONG).show();
-                                //           gesturePad.setVisibility(View.VISIBLE);
-
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        });
-
-                    } else {
-
-                        gesturePad.setVisibility(View.GONE);
-                    }
-*/
-
                 }
 
                 public void onSwipeLeft() {
                     filterText.setText("");
                 }
 
-          /*  public void onSwipeTop() {
-                sortOrder(false);
-            }
-
-            public void onSwipeBottom() {
-                sortOrder(true);
-            }*/
-
-
                 public void onClick() {
-
-                    //gesturePad.setVisibility(View.GONE);
                     filterText.requestFocus();
 
                     showHideVirtualKeyboard(filterText,LauncherDialogActivity.myActivityInstance,true);
-                /*InputMethodManager imm = (InputMethodManager) LauncherDialogActivity.myActivityInstance.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                imm.showSoftInput(filterText, InputMethodManager.SHOW_FORCED);*/
+
                 }
 
             });
@@ -365,52 +226,11 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
 
         }
 
-
-       /* gesturePad = (GestureOverlayView)fragmentView.findViewById(R.id.gestureOverlayView1);
-        gesturePad.setVisibility(View.GONE);
-        gesturePad.getLayoutParams().height=0;
-        gesturePad.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.french_blue));
-        gesturePad.setGestureColor(ContextCompat.getColor(getActivity(), R.color.light_blue));
-        gesturePad.addOnGesturePerformedListener(this);
-        gLibrary = GestureLibraries.fromRawResource(LauncherDialogActivity.myActivityInstance, R.raw.gestures);
-        gLibrary.load();
-
-        *//***** This is for bypassing the swipe of the fragment the gesture *****//*
-        gesturePad.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-
-                return false;
-            }
-        });*/
-
         hList =(HorizontalScrollView) fragmentView.findViewById(R.id.hList);
-
 
         linearLayoutCategoryButtonContainer=(LinearLayout) fragmentView.findViewById(R.id.layCategoryContainer);
 
         populateAppGroupsBar();
-
-      /*  View.OnTouchListener otl = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        int clickedArea = (filterText.getWidth() - filterText.getPaddingRight() - calcPixelIndependent(Constants.SIZE_OF_DRAWABLE_OF_EDITTEXT_FILTER));
-                        if((int) event.getX() >  clickedArea)
-                        {
-                            customRoundButton.get(0).performClick();
-
-                            return true;
-                        }
-                        else {   return false;   }
-                }
-                return false;
-            }
-        };
-
-        filterText.setOnTouchListener(otl);*/
 
         return fragmentView;
     }
@@ -426,7 +246,7 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
 
         customRoundButton.clear();
 
-        int appsIconSize = 46;
+        int appsIconSize = 32;
         float buttonCircleSize =  28.0f;
 
         int circleCenterColor = ContextCompat.getColor(getActivity(),R.color.yellow_orange);
@@ -453,7 +273,6 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
         customRoundButton.get(0).setAppGroupCode(Constants.ALL_APPS_DEFAULT_GROUP);
 
         params.setMargins(20, 0, 30, 0);
-        //customRoundButton.get(0).setPadding(5,5,5,5);
 
         customRoundButton.get(0).setLayoutParams(params);
 
@@ -496,7 +315,6 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
                 customRoundButton.get(i+1).setAppGroupCode(gpModel.get(i).getAppGroupCode());
 
                 customRoundButton.get(i+1).setGroupsModel(gpModel.get(i));
-
 
                 params.setMargins(20, 0, 20, 0);
 
@@ -655,7 +473,7 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
     private void menuItemText(PopupMenu popupMenu, int resourceIdItem, String setTitle){
 
         Menu popupMenuOptionsItems = popupMenu.getMenu();
-        MenuItem mi = (MenuItem) popupMenuOptionsItems.findItem(resourceIdItem);
+        MenuItem mi = popupMenuOptionsItems.findItem(resourceIdItem);
         mi.setTitle(setTitle);
     }
 
@@ -850,7 +668,7 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
                             btnAppInfo.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    util.showInstalledAppDetails(fragmentView.getContext(), draggedItem.getActivityInfo().getPackageName());
+                                    Utility.showInstalledAppDetails(fragmentView.getContext(), draggedItem.getActivityInfo().getPackageName());
                                     dialog.dismiss();
                                 }
                             });
@@ -949,8 +767,10 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
     public void onStart() {
         super.onStart();
 
-        filterText.setText("");
-        filterText.clearFocus();
+        if(filterText!=null) {
+            filterText.setText("");
+            filterText.clearFocus();
+        }
     }
 
     @Override
@@ -1039,9 +859,11 @@ CategoryImageView customRoundButton = new CategoryImageView(fragmentView.getCont
                 mAdapter.resetData();
             }
 
-            mAdapter.getFilter().filter(s);
+            if(mAdapter!=null) {
+                mAdapter.getFilter().filter(s);
 
-            gridView.setSelection(0);
+                gridView.setSelection(0);
+            }
         }
 
     };

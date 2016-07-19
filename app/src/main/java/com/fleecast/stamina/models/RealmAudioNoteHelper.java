@@ -179,6 +179,20 @@ public class RealmAudioNoteHelper {
 
     }
 
+    public void deleteAllAudioNoteByParentId(int ParentId) {
+        final RealmResults<AudioNoteInfoRealmStruct> audioNotesToDelete = realm.where(AudioNoteInfoRealmStruct.class).equalTo("parent_db_id", ParentId).findAll();
+        realm.beginTransaction();
+        audioNotesToDelete.deleteAllFromRealm();
+        realm.commitTransaction();
+        // All changes to data must happen in a transaction
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                // Delete all matches
+                audioNotesToDelete.deleteAllFromRealm();
+            }
+        });
+    }
 
     /**
      * make log

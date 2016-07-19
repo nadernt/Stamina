@@ -1,6 +1,5 @@
 package com.fleecast.stamina.notetaking;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -10,11 +9,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,8 +20,6 @@ import com.fleecast.stamina.R;
 import com.fleecast.stamina.models.AudioNoteInfoRealmStruct;
 import com.fleecast.stamina.models.RealmAudioNoteHelper;
 import com.fleecast.stamina.utility.Constants;
-
-import java.io.File;
 
 /**
  * A login screen that offers login via email/password.
@@ -35,17 +30,15 @@ public class AddNoteToAudio extends AppCompatActivity{
     // UI references.
     private EditText mTxtTitle;
     private EditText mTxtDescription;
-    private Button btnSaveAudioNoteText;
-    private Button btnSaveAudioCancel;
     private TextView mTxtAudioNoteTitleError;
     private RealmAudioNoteHelper realmAudioNoteHelper;
     private int idParentDb;
     private int dbIdFile;
     private AudioNoteInfoRealmStruct audioNoteInfoRealmStruct;
-    private MenuItem mnuItemSaveNote;
     private Toolbar mToolbar;
     private boolean weTypedSomethingNew;
     private boolean weNeedUpdate;
+    private UndoRedoHelper undoRedoHelper;
 
 
     @Override
@@ -117,6 +110,7 @@ public class AddNoteToAudio extends AppCompatActivity{
             }
         });
 
+        undoRedoHelper = new UndoRedoHelper(mTxtDescription);
 
     }
 
@@ -124,13 +118,10 @@ public class AddNoteToAudio extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_note_add, menu);
+        getMenuInflater().inflate(R.menu.menu_audio_note_add, menu);
 
-        MenuItem mnuItemDeleteNote = menu.findItem(R.id.action_delete);
-        mnuItemSaveNote = menu.findItem(R.id.action_save);
         MenuItem mnuItemPlayRecord = menu.findItem(R.id.action_play_record);
 
-        mnuItemDeleteNote.setVisible(false);
         mnuItemPlayRecord.setVisible(false);
 
         return true;
@@ -155,7 +146,17 @@ public class AddNoteToAudio extends AppCompatActivity{
                 finish();
 
             }
+       return true;
+        }
+        else if (id == R.id.action_undo) {
+            undoRedoHelper.undo();
             return true;
+
+        }
+        else if (id == R.id.action_redo) {
+            undoRedoHelper.redo();
+            return true;
+
         }
         return super.onOptionsItemSelected(item);
     }

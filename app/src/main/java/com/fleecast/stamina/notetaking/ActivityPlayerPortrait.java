@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.app.Activity;
 
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
+import com.fleecast.stamina.models.PlayListHelper;
 import com.fleecast.stamina.utility.Constants;
 
 
@@ -147,12 +147,43 @@ public class ActivityPlayerPortrait extends Activity {
         if(mAction==null){
             myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_ZERO);
             PlayListHelper playListHelper = new PlayListHelper(this);
-        int dbId = getIntent().getIntExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, Constants.CONST_NULL_ZERO);
-        String fileName = getIntent().getStringExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER);
-        playListHelper.loadJustSingleFileForPlay(fileName, dbId);
-        Intent intent = new Intent(this, PlayerService.class);
-        intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
-        startService(intent);
+            int dbId = getIntent().getIntExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, Constants.CONST_NULL_ZERO);
+
+            if(getIntent().hasExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE)){
+                String title = getIntent().getStringExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE);
+                if(title==null)
+                    title="No title";
+                if(title.isEmpty())
+                    title="No title";
+                txtTitlePortraitPlayer.setText(title);
+                txtTitlePortraitPlayer.setVisibility(View.VISIBLE);
+            }
+
+            if(getIntent().hasExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION)){
+                String description = getIntent().getStringExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION);
+                if(description==null)
+                    description="No description";
+                if(description.isEmpty())
+                    description="No description";
+                /*description = "Where does it come from?" +
+                        "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32." +
+                        "The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham." +
+                "Where does it come from?" +
+                        "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32." +
+                        "The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.";*/
+                txtDescriptionPortraitPlayer.setText(description);
+                txtDescriptionPortraitPlayer.setVisibility(View.VISIBLE);
+            }
+
+            String fileName = getIntent().getStringExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER);
+            playListHelper.loadJustSingleFileForPlay(fileName, dbId);
+            Intent intent = new Intent(this, PlayerService.class);
+            intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
+            // We inform the notification in the service to create the returning intent for the ActivityPlayerPortrait
+            intent.putExtra(Constants.EXTRA_PLAY_REQUEST_ISـFROM_PORTRATE_PLAYER, true);
+
+            startService(intent);
+
         }else{
 
             if(mAction.equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)){
@@ -373,11 +404,11 @@ public class ActivityPlayerPortrait extends Activity {
     @Override
     protected void onStop() {
 
-        if (myApplication.isPlaying()) {
+       /* if (myApplication.isPlaying()) {
             sendCommandToPlayerService(Constants.ACTION_PAUSE, Constants.ACTION_NULL);
             pause();
             myApplication.setIsPlaying(false);
-        }
+        }*/
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onStop();

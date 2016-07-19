@@ -38,6 +38,7 @@ public class NoteInfoStruct {
         this.update_time = update_time;
     }
 
+
 /*
     public NoteInfoStruct() {
         this.create_time_stamp = create_time_stamp;

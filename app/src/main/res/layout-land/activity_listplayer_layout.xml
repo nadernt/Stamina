@@ -42,7 +42,6 @@
             android:layout_gravity="center_horizontal|top"
             android:textColor="#000000"
             android:textSize="16dp"
-            android:text="TITLE"
             android:scrollbars="vertical"
             android:padding="5dp"
             android:layout_alignParentTop="true"
@@ -67,8 +66,7 @@
                 android:id="@+id/txtDetailsPlayer"
                 android:textColor="#000000"
                 android:textSize="14dp"
-                android:padding="5dp"
-                android:text="DETAILS" />
+                android:padding="5dp" />
         </ScrollView>
 
         <ImageButton

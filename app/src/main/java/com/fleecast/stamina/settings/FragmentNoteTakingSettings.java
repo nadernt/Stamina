@@ -85,8 +85,8 @@ public class FragmentNoteTakingSettings extends Fragment {
 
 
         // initial radio buttons
-        for (int index = 0; index < ((RadioGroup) radioGroupSources).getChildCount(); ++index) {
-            View nextChild = ((RadioGroup) radioGroupSources).getChildAt(index);
+        for (int index = 0; index < radioGroupSources.getChildCount(); ++index) {
+            View nextChild = radioGroupSources.getChildAt(index);
 
             if (nextChild != null && nextChild instanceof RadioButton) {
                 try {
@@ -108,8 +108,8 @@ public class FragmentNoteTakingSettings extends Fragment {
         }
 
 
-        for (int index = 0; index < ((RadioGroup) radioGroupQuality).getChildCount(); ++index) {
-            View nextChild = ((RadioGroup) radioGroupQuality).getChildAt(index);
+        for (int index = 0; index < radioGroupQuality.getChildCount(); ++index) {
+            View nextChild = radioGroupQuality.getChildAt(index);
 
             if (nextChild != null && nextChild instanceof RadioButton) {
                     // The default is medium quality

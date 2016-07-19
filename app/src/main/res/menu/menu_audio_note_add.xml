@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_undo"
+        android:icon="@drawable/ic_action_undo"
+        android:orderInCategory="1"
+        android:title="Undo"
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/action_redo"
+        android:icon="@drawable/ic_action_redo"
+        android:orderInCategory="2"
+        android:title="Redo"
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_action_tick"
+        android:orderInCategory="3"
+        android:title="Save &amp; Close"
+        app:showAsAction="always"></item>
+    <item
+        android:id="@+id/action_play_record"
+        android:icon="@drawable/ic_action_playback_play"
+        android:orderInCategory="4"
+        android:title="Play Latest Record"
+        app:showAsAction="always"></item>
+</menu>

@@ -46,37 +46,66 @@
         <activity
             android:name=".launcher.LauncherDialogActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
+            android:hardwareAccelerated="true"
+            android:persistent="true"
             android:windowSoftInputMode="adjustPan">
-
-            <!--
-        <intent-filter>
-            <category android:name="android.intent.category.HOME" />
-            <category android:name="android.intent.category.APP_BROWSER" />
-        </intent-filter>
-            -->
-
+            <!--       //android:stateNotNeeded="true"// -->
         </activity>
+        <activity
+            android:name=".notetaking.ActivityAddTextNote"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".launcher.AddEditGroupItem"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".launcher.IconChooserActivity" />
-        <activity android:name=".notetaking.EditActivity" />
+        <activity android:name=".notetaking.ActivityEditPhoneRecordNote" />
         <activity
             android:name=".notetaking.ActivityAddAudioNote"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".notetaking.NoteTakingRecyclerViewActivity"
-            android:launchMode="singleTask" />
-        <activity
             android:name=".notetaking.ActivityPlayerPortrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.PopPlayer" />
+        <activity
+            android:name=".notetaking.ActivityIgnoreListManager"
+            android:label="@string/title_activity_ignore_list_manager"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".settings.ActivitySettings"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".settings.ActivityChooseDirectory"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".notetaking.ActivityRecordsPlayList"
+            android:launchMode="singleTask" />
 
-        <service android:name=".chathead.ChatHeadService" />
+        <!--
+            <service
+            android:name=".notetaking.PlayerService"
+            android:enabled="false"
+            android:exported="true"></service>
+        -->
+        <activity
+            android:name=".notetaking.AddNoteToAudio"
+            android:label="@string/title_activity_add_note_to_audio"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".notetaking.ActivityViewTextNote" />
+        <activity android:name=".chathead.ActivityAbout"></activity>
+
+        <service android:name=".chathead.ChatHeadService"
+            />
         <service android:name=".notetaking.ChatHeadRecordService" />
         <service android:name=".notetaking.RecorderNoteService">
             <intent-filter>
@@ -119,35 +148,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".notetaking.ActivityIgnoreListManager"
-            android:label="@string/title_activity_ignore_list_manager"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".settings.ActivitySettings"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".settings.ActivityChooseDirectory"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait" />
-        <activity android:name=".notetaking.ActivityRecordsPlayList"
-            android:launchMode="singleTask">
-
-        </activity>
-
-        <!--
-            <service
-            android:name=".notetaking.PlayerService"
-            android:enabled="false"
-            android:exported="true"></service>
-        -->
-        <activity
-            android:name=".notetaking.AddNoteToAudio"
-            android:label="@string/title_activity_add_note_to_audio"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
