@@ -140,11 +140,14 @@ public class ActivityRecordsPlayList extends Activity {
         seekBar.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(myApplication.isPlaying())
+                updateSeekChange();
+                return false;
+
+              /*  if(myApplication.isPlaying())
                     updateSeekChange();
                 else
                     return true;
-                return false;
+                return false;*/
             }
         });
 

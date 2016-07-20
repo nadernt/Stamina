@@ -93,12 +93,15 @@ public class ActivityPlayerPortrait extends Activity {
 
         seekBar.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
-
+                updateSeekChange();
+                return false;
+/*
                 if (myApplication.isPlaying())
                     updateSeekChange();
                 else
                     return true;
                 return false;
+*/
             }
         });
 

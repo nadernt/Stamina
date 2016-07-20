@@ -3,6 +3,7 @@ package com.fleecast.stamina.customgui;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 /**
@@ -36,7 +37,6 @@ public class ExtendedEditText extends EditText {
             dispatchKeyEvent(event);
             return false;
         }
-
         return super.onKeyPreIme(keyCode, event);
     }
 

@@ -148,7 +148,11 @@ public class MainActivity extends AppCompatActivity
 
             Prefs.putBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION, Constants.CONST_NOTELIST_DESCENDING);
 
-            Prefs.putBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false);
+            //Prefs.putBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false);
+
+            Prefs.putBoolean(Constants.PREF_GROUP_ICON_SIZE, true);
+
+
             Prefs.putBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION,false);
 
             Prefs.putBoolean(Constants.PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES,false);
@@ -624,17 +628,20 @@ if(wakeLock.isHeld()) {
 
                 } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
-                    if (myApplication.isRecordUnderGoing() == Constants.CONST_RECORDER_SERVICE_IS_FREE) {
-                        if (myApplication.isPlaying()) {
-                            Intent intent = new Intent(context, PlayerService.class);
-                            intent.setAction(Constants.ACTION_STOP);
-                            startService(intent);
-                        }
-                        myApplication.setPlaylistHasLoaded(false);
+                    if(doWeHaveRecordsInPath(item.getId())) {
 
-                        Intent intent = new Intent(context, ActivityRecordsPlayList.class);
-                        intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(item.getId()));
-                        startActivity(intent);
+                        if (myApplication.isRecordUnderGoing() == Constants.CONST_RECORDER_SERVICE_IS_FREE) {
+                            if (myApplication.isPlaying()) {
+                                Intent intent = new Intent(context, PlayerService.class);
+                                intent.setAction(Constants.ACTION_STOP);
+                                startService(intent);
+                            }
+                            myApplication.setPlaylistHasLoaded(false);
+
+                            Intent intent = new Intent(context, ActivityRecordsPlayList.class);
+                            intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(item.getId()));
+                            startActivity(intent);
+                        }
                     }
                 } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
 
@@ -1157,6 +1164,36 @@ if(wakeLock.isHeld()) {
         adb.show();
 
     }
+
+    private boolean doWeHaveRecordsInPath(int dbId){
+
+        String folderOfRecords = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(dbId));
+
+        boolean foundAnyFile= false;
+        File file = new File(folderOfRecords);
+//        Log.e("MAMAM", file.exists() + " " + file.isDirectory() );
+
+        if(file.exists() && file.isDirectory()) {
+            for (File tmpFile : file.listFiles()) {
+                if (tmpFile.isFile()) {
+                    foundAnyFile = true;
+                    break;
+                }
+            }
+
+            //Folder is exist but it is empty empty.
+            if(!foundAnyFile)
+            {
+                file.delete();
+            }
+        }
+        else{
+            return foundAnyFile;
+        }
+
+        return foundAnyFile;
+    }
+
     public static void removeDirectory(File dir) {
         if (dir.isDirectory()) {
             File[] files = dir.listFiles();

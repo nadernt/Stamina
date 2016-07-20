@@ -11,7 +11,7 @@ import android.widget.TextView;
  * Created by nnt on 17/04/16.
  */
 public class HorizontalDivider extends TextView {
-    private  float dividerLineThickness = 5.0f;
+    private  float dividerLineThickness = 2.0f;
     private  int dividerLineColor= -1;
 
     public HorizontalDivider(Context context, AttributeSet attrs){

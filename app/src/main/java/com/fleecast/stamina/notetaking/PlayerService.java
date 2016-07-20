@@ -139,7 +139,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
 
         mNotifyManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
-        mNotifyManager.notify( idNotification, mBuilder.build());
+        //mNotifyManager.notify( idNotification, mBuilder.build());
+
+        startForeground(idNotification, mBuilder.build());
     }
 
     public static Bitmap drawableToBitmap (Drawable drawable) {
@@ -221,8 +223,10 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
         sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_TRACK_FINISHED);
 
-        mMediaSession.release();
-        mMediaSessionManager=null;
+        if(mMediaSession!=null) {
+            mMediaSession.release();
+            mMediaSessionManager = null;
+        }
 
         if(mNotifyManager!=null)
             mNotifyManager.cancel(idNotification);
@@ -260,9 +264,11 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     private void requestSeekTo(Intent intent) {
-        int mediaPosition = intent.getIntExtra(Constants.EXTRA_SEEK_TO,0);
-        myApplication.setCurrentMediaPosition(mediaPosition);
-        mPlayer.seekTo(mediaPosition);
+        if(mPlayer!=null) {
+            int mediaPosition = intent.getIntExtra(Constants.EXTRA_SEEK_TO, 0);
+            myApplication.setCurrentMediaPosition(mediaPosition);
+            mPlayer.seekTo(mediaPosition);
+        }
     }
 
     @Override
@@ -292,11 +298,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         return false;
     }
 
-    private void addForegroundService(){
-
-        startForeground(idNotification, mBuilder.build());
-
-    }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
@@ -308,7 +309,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         myApplication.setCurrentMediaPosition(0);
         myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_PLAYING);
         sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_PLAYING);
-        addForegroundService();
     }
 
     private void playRequest() {
@@ -377,9 +377,11 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
         giveUpAudioFocus();
 
-        // If yes close the remote control after finish the play list.
-        if (Prefs.getBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false) || stopAndKillTheService)
-            killServiceRequest();
+
+        //if (Prefs.getBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false) || stopAndKillTheService)
+            // If yes close the remote control after finish the play list.
+        if (stopAndKillTheService)
+                killServiceRequest();
         else
             mController.getTransportControls().play();
 

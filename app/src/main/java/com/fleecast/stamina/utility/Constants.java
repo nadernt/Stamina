@@ -125,10 +125,13 @@ public class Constants {
     public static String PREF_FIRST_INITIAL_OF_APP = "FistInitialOfAPP";
     public static final String PREF_AUTO_RUN_PLAYER_ON_START = "PrefAutoRunPlayerOnStart";
     public static final String PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES = "AutoRunRecorderOnAudioNotes";
-    public static final String PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE = "OnFinishListClosePlayerRemote";
+    //public static final String PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE = "OnFinishListClosePlayerRemote";
     public static final String PREF_SHOW_PLAYER_FULL_NOTIFICATION = "ShowPlayerFullNnotification";
     public static final String PREF_WORKING_DIRECTORY_PATH = "WorkingDirectoryPath";
     public static final String PREF_SORT_IS_ALPHABETIC_OR_DATE = "SortIsAlphabeticOrDate";
+    public static final String PREF_GROUP_ICON_SIZE = "PrefGroupIconSize";
+
+
 
     public static final int LIST_FOR_GRID = 0;
     public static final long CONST_PLAYER_PROGRESS_UPDATE_TIME = 100;

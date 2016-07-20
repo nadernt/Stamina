@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppLauncherGridViewAdapter extends BaseAdapter implements Filterable {
-   // private final DisplayImageOptions options;
+    // private final DisplayImageOptions options;
     private MyApplication myApplication;
     private Context mContext;
     private List<GridViewAppItemStruct> mItems;
@@ -25,24 +25,13 @@ public class AppLauncherGridViewAdapter extends BaseAdapter implements Filterabl
 
     private List<GridViewAppItemStruct> originalGridViewItem;
 
-    public AppLauncherGridViewAdapter(Context context, List<GridViewAppItemStruct> items, MyApplication myApplication) {
-        //super(context, R.layout.gridview_item, items);
+    public AppLauncherGridViewAdapter(Context context, List<GridViewAppItemStruct> items) {
 
-        this.myApplication =  myApplication;
+        this.myApplication = (MyApplication) context.getApplicationContext();
+
         mContext = context;
         mItems = items;
         originalGridViewItem = items;
-        //Log.e("MAMA", myApplication.getAppJustLaunchedByUser() + "");
-        /*options = new DisplayImageOptions.Builder()
-					*//*.showImageOnLoading(R.drawable.ic_stub)
-					.showImageForEmptyUri(R.drawable.ic_empty)
-					.showImageOnFail(R.drawable.ic_error)*//*
-                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(false)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();*/
     }
 
     @Override
@@ -60,11 +49,34 @@ public class AppLauncherGridViewAdapter extends BaseAdapter implements Filterabl
         return position;
     }
 
+    /*  // create a new ImageView for each item referenced by the Adapter
+      public View getView(int position, View convertView, ViewGroup parent) {
+          ImageView imageView;
+          if (convertView == null) {
+
+              //Calculation of ImageView Size - density independent.
+              //maybe you should do this calculation not exactly in this method but put is somewhere else.
+              Resources r = Resources.getSystem();
+              float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, r.getDisplayMetrics());
+
+
+              imageView = new ImageView(mContext);
+              imageView.setLayoutParams(new GridView.LayoutParams((int)px, (int)px));
+              imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+              //imageView.setPadding(8, 8, 8, 8);
+              imageView.setBackgroundColor(Color.BLUE);
+          } else {
+              imageView = (ImageView) convertView;
+          }
+
+          imageView.setImageResource(mThumbIds[position]);
+          return imageView;
+      }*/
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
 
-        if(convertView == null) {
+        if (convertView == null) {
             // inflate the GridView item layout
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(R.layout.gridview_item, parent, false);
@@ -81,28 +93,26 @@ public class AppLauncherGridViewAdapter extends BaseAdapter implements Filterabl
 
         // update the item view
         GridViewAppItemStruct item = mItems.get(position);
-        //ImageLoader.getInstance().displayImage("drawable://" + R.drawable.lightbulb, viewHolder.ivIcon, options);
         viewHolder.ivIcon.setImageDrawable(item.getIcon());
         viewHolder.tvTitle.setText(item.getTitle());
-        //mItems.set(position,null);
         return convertView;
     }
 
-    public void applyGroupFilterToAdapter(){
+    public void applyGroupFilterToAdapter() {
 
-         mItems =  filterByGroupCode("");
-         notifyDataSetChanged();
+        mItems = filterByGroupCode("");
+        notifyDataSetChanged();
 
     }
 
 
-    private List<GridViewAppItemStruct> filterByGroupCode(CharSequence stringFilter){
+    private List<GridViewAppItemStruct> filterByGroupCode(CharSequence stringFilter) {
 
         List<GridViewAppItemStruct> nItemList = new ArrayList<GridViewAppItemStruct>();
-final CharSequence nn = stringFilter;
-        int chosenFilter  = myApplication.getCurrentGroupFilter();
 
-        if(chosenFilter>0) {
+        int chosenFilter = myApplication.getCurrentGroupFilter();
+
+        if (chosenFilter > 0) {
             for (GridViewAppItemStruct mitem : originalGridViewItem) {
 
                 // Implementing group filter
@@ -110,28 +120,24 @@ final CharSequence nn = stringFilter;
 
                     if (stringFilter == null || stringFilter.length() == 0) {
                         nItemList.add(mitem);
-                    }
-                    else{
-                            if (findTheLetterInSentence(mitem.getTitle(),stringFilter))
-                                nItemList.add(mitem);
+                    } else {
+                        if (findTheLetterInSentence(mitem.getTitle(), stringFilter))
+                            nItemList.add(mitem);
                     }
                 }
 
             }
             return nItemList;
-        }
-        else{
+        } else {
 
             if (stringFilter == null || stringFilter.length() == 0) {
 
                 return originalGridViewItem;
 
-             }
-
-            else{
+            } else {
 
                 for (GridViewAppItemStruct mitem : mItems) {
-                    if (findTheLetterInSentence(mitem.getTitle(),stringFilter))
+                    if (findTheLetterInSentence(mitem.getTitle(), stringFilter))
                         nItemList.add(mitem);
                 }
 
@@ -145,12 +151,12 @@ final CharSequence nn = stringFilter;
 
     }
 
-    private boolean findTheLetterInSentence(String sentence, CharSequence filterLetter){
+    private boolean findTheLetterInSentence(String sentence, CharSequence filterLetter) {
         String[] splitedStrArr = sentence.split("\\s+");
 
-        for(int i=0; i < splitedStrArr.length; i++){
+        for (int i = 0; i < splitedStrArr.length; i++) {
 
-            if(splitedStrArr[i].toUpperCase().startsWith(filterLetter.toString().trim().toUpperCase()))
+            if (splitedStrArr[i].toUpperCase().startsWith(filterLetter.toString().trim().toUpperCase()))
                 return true;
         }
 
@@ -181,7 +187,6 @@ final CharSequence nn = stringFilter;
     }
 
 
-
     private class GridViewAdapterFilter extends Filter {
 
         @Override
@@ -195,8 +200,7 @@ final CharSequence nn = stringFilter;
                 List<GridViewAppItemStruct> filteredItems = filterByGroupCode("");
                 results.values = filteredItems;
                 results.count = filteredItems.size();
-            }
-            else {
+            } else {
                 /*// We perform filtering operation
                 List<GridViewAppItemStruct> nItemList = new ArrayList<GridViewAppItemStruct>();
 
@@ -217,8 +221,8 @@ final CharSequence nn = stringFilter;
         protected void publishResults(CharSequence constraint,
                                       FilterResults results) {
 
-                mItems = (List<GridViewAppItemStruct>) results.values;
-                notifyDataSetChanged();
+            mItems = (List<GridViewAppItemStruct>) results.values;
+            notifyDataSetChanged();
         }
 
     }

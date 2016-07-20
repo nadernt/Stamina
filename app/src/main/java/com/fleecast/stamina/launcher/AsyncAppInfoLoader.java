@@ -150,8 +150,5 @@ public class AsyncAppInfoLoader extends AsyncTask<PackageManagerStruct, GridView
         return index;
     }
 
-    public int getTotalDetectedAppNumbers(){return totalDetectedAppNumbers;}
-
-
 }
 

@@ -153,6 +153,10 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
                     filterText.setText("");
                     return true;
                 }
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(fragmentView.getWindowToken(), 0);
+                }
 
                 return false;
 
@@ -168,7 +172,7 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
 
             // initialize the adapter
 
-            mAdapter = new AppLauncherGridViewAdapter(LauncherDialogActivity.myActivityInstance, mItems,myApplication);
+            mAdapter = new AppLauncherGridViewAdapter(LauncherDialogActivity.myActivityInstance, mItems);
 
 
             // initialize the GridView
@@ -246,7 +250,11 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
 
         customRoundButton.clear();
 
-        int appsIconSize = 32;
+
+        int appsIconSize = 36; // small size
+        if(Prefs.getBoolean(Constants.PREF_GROUP_ICON_SIZE,true)) //large size
+            appsIconSize = 42;
+
         float buttonCircleSize =  28.0f;
 
         int circleCenterColor = ContextCompat.getColor(getActivity(),R.color.yellow_orange);
@@ -950,9 +958,6 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
 
         draggedItem = (GridViewAppItemStruct) parent.getItemAtPosition(position);
 
-
-        Log.e("GGGGGGGGg","LONG");
-
         MyDragShadowBuilder shadowBuilder = new MyDragShadowBuilder(view);
 
         view.startDrag(null, shadowBuilder, gridView.getItemAtPosition(position), 0);
@@ -980,18 +985,6 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
 
         }
     }
-  /*  @Override
-    public boolean onDrag(View v, DragEvent event) {
-        Log.e("GGGGGGGGg","DRAG");
-        return false;
-    }*/
-
-
-    /*@Override
-    public boolean onDrag(View v, DragEvent event) {
-        Log.e("GGGGGGGGg","DRA");
-        return true;
-    }*/
 
     private static class MyDragShadowBuilder extends View.DragShadowBuilder {
 
@@ -1081,7 +1074,7 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
                     mItems = new ArrayList<GridViewAppItemStruct>(tmpItems);
 
                     // initialize the adapter
-                    mAdapter = new AppLauncherGridViewAdapter(LauncherDialogActivity.myActivityInstance, mItems, myApplication);
+                    mAdapter = new AppLauncherGridViewAdapter(LauncherDialogActivity.myActivityInstance, mItems);
                     //gridView.setNumColumns(3);
                     gridView.setAdapter(mAdapter);
 
@@ -1115,54 +1108,5 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
         return grdVwAppItm;
 
     }
-    /*
-    class PInfo {
-        private String appname = "";
-        private String pname = "";
-        private String versionName = "";
-        private int versionCode = 0;
-        private Drawable icon;
-        private void prettyPrint() {
-            Log.e("DBG:" ,appname + "\t" + pname + '\t' + versionName + '\t' + versionCode);
-        }
-    }
-
-    private ArrayList<PInfo> getPackages() {
-        ArrayList<PInfo> apps = getInstalledApps(false); */
-/* false = no system packages *//*
-
-        final int max = apps.size();
-        for (int i=0; i<max; i++) {
-            apps.get(i).prettyPrint();
-        }
-        return apps;
-    }
-
-    private ArrayList<PInfo> getInstalledApps(boolean getSysPackages) {
-        ArrayList<PInfo> res = new ArrayList<PInfo>();
-        List<PackageInfo> packs = getActivity().getPackageManager().getInstalledPackages(0);
-
-        Intent intent = new Intent(Intent.ACTION_MAIN, null);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-        for(int i=0;i<packs.size();i++) {
-            PackageInfo p = packs.get(i);
-            if ((!getSysPackages) && (p.versionName == null)) {
-                continue ;
-            }
-            PInfo newInfo = new PInfo();
-            newInfo.appname = p.applicationInfo.loadLabel(getActivity().getPackageManager()).toString();
-            newInfo.pname = p.packageName;
-            newInfo.versionName = p.versionName;
-            newInfo.versionCode = p.versionCode;
-            newInfo.icon = p.applicationInfo.loadIcon(getActivity().getPackageManager());
-            res.add(newInfo);
-            mItems.add(new GridViewAppItemStruct(newInfo.icon,newInfo.appname, p.activities[0]));
-        }
-        mAdapter.notifyDataSetChanged();
-
-        return res;
-    }
-*/
 
 }

@@ -148,6 +148,9 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         myApplication = (MyApplication)getApplicationContext();
 
+        myApplication.setIsAppsListLoading(false);
+        myApplication.setIsUserTerminateApp(false);
+        myApplication.setCurrentGroupFilter(Constants.CONST_NULL_MINUS);
 
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
 

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.customgui.CustomRoundButton;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
 
@@ -33,6 +36,7 @@ public class FragmentAppSettings extends Fragment {
 
     private View fragmentView;
     private TextView txtWorkingPath;
+    private CheckBox chkIconGroupSize;
 
     public FragmentAppSettings() {
         // Required empty public constructor
@@ -87,6 +91,30 @@ public class FragmentAppSettings extends Fragment {
             }
         });
 
+        int appsIconSize = 32;
+        float buttonCircleSize =  28.0f;
+
+        int circleCenterColor = ContextCompat.getColor(getActivity(),R.color.yellow_orange);
+        int outerCirclesStorkColor = ContextCompat.getColor(getActivity(), R.color.aureolin);
+        int textColor = ContextCompat.getColor(getActivity(), R.color.white);
+
+        chkIconGroupSize = (CheckBox) fragmentView.findViewById(R.id.chkIconGroupSize);
+
+
+        if (Prefs.getBoolean(Constants.PREF_GROUP_ICON_SIZE, false))
+            chkIconGroupSize.setChecked(true);
+        else
+            chkIconGroupSize.setChecked(false);
+
+        chkIconGroupSize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Prefs.putBoolean(Constants.PREF_GROUP_ICON_SIZE, chkIconGroupSize.isChecked());
+                chkIconGroupSize.setText(chkIconGroupSize.getText() + " (Restart float control again)");
+
+            }
+        });
+
         return fragmentView;
     }
 
@@ -107,7 +135,13 @@ public class FragmentAppSettings extends Fragment {
         }
 
     }
+    private int calcPixelIndependent(int pixelToConvert){
 
+//        float scale = (int) getResources().getDisplayMetrics().density;
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixelToConvert, getResources().getDisplayMetrics());
+        //     return (int) (pixelToConvert * scale + 0.5f);
+
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
