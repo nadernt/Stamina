@@ -224,9 +224,49 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                 txtDescription.setText(noteInfoRealmStruct.getDescription());
                 txtDescription.setSelection(txtDescription.getText().length());
 
+
+                int i = populatePathForOldRecords(dbId);
+
+                if (i > Constants.CONST_NULL_ZERO) {
+
+                    if(i>1) {
+                        btnRecordsListPlayer.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        btnRecordsListPlayer.setVisibility(View.INVISIBLE);
+                    }
+
+                    btnDeleteRecord.setVisibility(View.VISIBLE);
+
+                    String folderOfRecords = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(dbId));
+
+                    File file = new File(folderOfRecords);
+
+                    long oldFile=0;
+
+                    for (File tmpFile : file.listFiles()) {
+
+                        if (tmpFile.isFile()) {
+
+                            if(oldFile < tmpFile.lastModified()){
+
+                                oldFile = tmpFile.lastModified();
+
+                                latestRecordFileName = tmpFile.getPath();
+
+                                Log.e("Mucha",latestRecordFileName);
+                            }
+
+                        }
+                    }
+
+                }
+                else{
+                    btnDeleteRecord.setVisibility(View.INVISIBLE);
+                    btnRecordsListPlayer.setVisibility(View.INVISIBLE);
+                }
+
                 mnuItemPlayRecord.setVisible(true);
-                btnDeleteRecord.setVisibility(View.INVISIBLE);
-                btnRecordsListPlayer.setVisibility(View.INVISIBLE);
                 mnuItemSaveNote.setVisible(true);
                 recorderControlsLayout.setVisibility(View.VISIBLE);
                 currentNoteType = Constants.CONST_IS_TEXT_AND_RECORD;
@@ -276,7 +316,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                      txtDescription.setText(noteInfoRealmStruct.getDescription());
                      txtDescription.setSelection(txtDescription.getText().length());
 
-
                      if((myApplication.isRecordUnderGoing()==Constants.CONST_RECORDER_SERVICE_WORKS_FOR_NOTE)) {
                          setBackGroundOfView(btnNoStopRecord, R.drawable.buttons_recorder_bg, true);
                          toggleNoStopRecord = true;
@@ -318,6 +357,36 @@ public class ActivityAddAudioNote extends AppCompatActivity {
 
     }
 
+    private int populatePathForOldRecords(int dbId){
+
+        String folderOfRecords = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(dbId));
+
+        boolean foundAnyFile= false;
+        File file = new File(folderOfRecords);
+
+        int i=0;
+
+        if(file.exists() && file.isDirectory()) {
+            for (File tmpFile : file.listFiles()) {
+                if (tmpFile.isFile()) {
+                    i++;
+                    foundAnyFile = true;
+                }
+            }
+
+            //Folder is exist but it is empty empty.
+            if(!foundAnyFile)
+            {
+                file.delete();
+            }
+        }
+        else{
+            return i;
+        }
+        Log.e("DBG",i + " BB");
+
+        return i;
+    }
 
     private void saveNote(boolean showPrompt,boolean killAfterSave) {
         String title = txtTitle.getText().toString().trim();

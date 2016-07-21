@@ -272,7 +272,7 @@ private void populateUI(){
     recyclerView = (RecyclerView) findViewById(R.id.rvNotes);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT ) {
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
             return false;
@@ -1084,10 +1084,11 @@ if(wakeLock.isHeld()) {
     }
 
     private void deleteItem(final NoteInfoStruct item,final boolean isItFromSwipeFunction){
-        if (myApplication.getCurrentOpenedTextNoteId() == item.getId()) {
+        if (myApplication.getCurrentOpenedTextNoteId() == item.getId() || myApplication.getCurrentRecordingAudioNoteId() == item.getId()) {
             Utility.showMessage("This note is already open. Close it and try again.","Note",context);
             return;
         }
+
         if(myApplication.stackPlaylist.size()>0) {
 
             if (myApplication.stackPlaylist.get(0).getParentDbId() == item.getId() && myApplication.isPlaying()) {
@@ -1170,8 +1171,8 @@ if(wakeLock.isHeld()) {
         String folderOfRecords = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(dbId));
 
         boolean foundAnyFile= false;
+
         File file = new File(folderOfRecords);
-//        Log.e("MAMAM", file.exists() + " " + file.isDirectory() );
 
         if(file.exists() && file.isDirectory()) {
             for (File tmpFile : file.listFiles()) {
@@ -1249,9 +1250,10 @@ if(wakeLock.isHeld()) {
     }
 
     private boolean doWeHaveEnoughSpaceForShare(){
-        boolean hasEnoughSpace = ExternalStorageManager.isThereEnoughSpaceOnStorage();
-        if (hasEnoughSpace) {
 
+        boolean hasEnoughSpace = ExternalStorageManager.isThereEnoughSpaceOnStorage();
+
+        if (hasEnoughSpace) {
             return true;
         } else {
 
@@ -1276,6 +1278,7 @@ if(wakeLock.isHeld()) {
             return false;
         }
     }
+
     public void copy(File src, File dst) throws IOException {
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
