@@ -328,7 +328,7 @@ public class MyApplication extends Application{
                         .addField("phone_number", String.class)
                         .addField("call_type", Integer.class)
                         .addField("tag", Integer.class)
-                        .addField("order", Integer.class);
+                        .addField("note_type", Integer.class);
                 oldVersion++;
             }
 

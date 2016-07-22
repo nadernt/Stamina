@@ -18,6 +18,12 @@ public class Constants {
     public static final String CHATHEAD_X = "ChatHeadX";
     public static final String CHATHEAD_Y = "ChatHeadY";
 
+    public static final int CONST_NOTETYPE_TEXT = 0;
+    public static final int CONST_NOTETYPE_AUDIO = 1;
+    public static final int CONST_NOTETYPE_PHONECALL = 2;
+    public static final int CONST_NOTETYPE_TODO = 3;
+
+
 
     public static final String EXTRA_RECORD_FILENAME = "ExtraRecordFilename";
     public static final String EXTRA_NEW_RECORD = "ExetraNewRecord";

@@ -31,4 +31,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_activity_todo_parent_list">ActivityTodoParentList</string>
+    <string name="title_activity_activity_todo_child_recycler_view">ActivityTodoChildRecyclerView
+    </string>
 </resources>

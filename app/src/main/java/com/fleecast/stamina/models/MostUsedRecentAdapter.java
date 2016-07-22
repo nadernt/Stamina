@@ -56,7 +56,7 @@ public class MostUsedRecentAdapter extends BaseAdapter {
             // initialize the view holder
             viewHolder = new ViewHolder();
             viewHolder.ivIcon = (ImageView) convertView.findViewById(R.id.ivIcon);
-            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitleTodoParent);
             convertView.setTag(viewHolder);
         } else {
             // recycle the already inflated view

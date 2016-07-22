@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
 
@@ -40,7 +39,6 @@ public class RealmNoteHelper {
         realm = Realm.getDefaultInstance();
         this.context = context;
         DEBUG = false;
-
     }
 
 
@@ -53,7 +51,7 @@ public class RealmNoteHelper {
     public void addNote(int id, String title, String description, boolean has_audio,
                         Date update_time,Date create_time_stamp, Date start_time,
                         Date end_time, int call_type, String phone_number, int tag,
-                        int order) {
+                        int note_type) {
 
         if(!isExist(id)) {
             NoteInfoRealmStruct noteInfoRealmStruct = new NoteInfoRealmStruct();
@@ -70,7 +68,7 @@ public class RealmNoteHelper {
             noteInfoRealmStruct.setCallType(call_type);
             noteInfoRealmStruct.setPhoneNumber(phone_number);
             noteInfoRealmStruct.setTag(0);
-            noteInfoRealmStruct.setOrder(0);
+            noteInfoRealmStruct.setNoteType(0);
             realm.beginTransaction();
             realm.copyToRealm(noteInfoRealmStruct);
             realm.commitTransaction();
@@ -78,7 +76,7 @@ public class RealmNoteHelper {
         }
         else
         {
-            updateNotes(id,title,description,update_time,tag,order);
+            updateNotes(id,title,description,update_time,tag,note_type);
         }
 
     }
@@ -114,7 +112,7 @@ public class RealmNoteHelper {
         return realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
     }
 
-    public void updateNotes(int id, String title, String description,  Date update_time, int tag,  int order) {
+    public void updateNotes(int id, String title, String description,  Date update_time, int tag,  int note_type) {
         realm.beginTransaction();
 
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
@@ -122,7 +120,7 @@ public class RealmNoteHelper {
         noteInfoRealmStruct.setDescription(description);
         noteInfoRealmStruct.setUpdateTime(update_time);
         noteInfoRealmStruct.setTag(tag);
-        noteInfoRealmStruct.setOrder(order);
+        noteInfoRealmStruct.setNoteType(note_type);
         realm.commitTransaction();
     }
 

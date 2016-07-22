@@ -34,6 +34,7 @@ import com.fleecast.stamina.launcher.IconChooserActivity;
 import com.fleecast.stamina.launcher.LauncherDialogActivity;
 import com.fleecast.stamina.notetaking.ActivityAddAudioNote;
 import com.fleecast.stamina.notetaking.ActivityAddTextNote;
+import com.fleecast.stamina.todo.ActivityTodoParentRecyclerView;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
@@ -572,8 +573,20 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                             }
                             else if (isViewOverlapping(resize_buble_img, chatheadImg)) {
 
-                                //For auto size we will give it whatever integer.
-                                updateChatHeadSize(777);
+                                Intent intent = new Intent(ChatHeadService.this, ActivityTodoParentRecyclerView.class);
+                                //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                               /* if(myApplication.getCurrentOpenedTextNoteId()>0)
+                                    intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD,myApplication.getCurrentOpenedTextNoteId());
+                                else
+                                    intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD, true);
+*/
+                                //   updateChatHeadSize(1);
+                                startActivity(intent);
+
+                               /* //For auto size we will give it whatever integer.
+                                updateChatHeadSize(777);*/
 
                             }  else if (isViewOverlapping(hide_bubble_img, chatheadImg)) {
                                 //initValuesToZeroForNewPolicies();
@@ -970,7 +983,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
-
+        windowManager    = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             windowManager.getDefaultDisplay().getSize(szWindow);
         } else {

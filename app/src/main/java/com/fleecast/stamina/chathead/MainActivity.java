@@ -64,6 +64,7 @@ import com.fleecast.stamina.notetaking.NoteDeleteHelper;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
 import com.fleecast.stamina.notetaking.PlayerService;
 import com.fleecast.stamina.settings.ActivitySettings;
+import com.fleecast.stamina.todo.ActivityTodoParentRecyclerView;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
@@ -78,13 +79,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener , SearchView.OnQueryTextListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
     private DevicePolicyManager mManager;
     private ComponentName mComponent;
     private PowerManager.WakeLock wakeLock;
-    private FloatingActionButton fab;
-    private boolean blIsAlreadyAChatheadRequested=false;
+    //private FloatingActionButton fab;
+    private boolean blIsAlreadyAChatheadRequested = false;
     private static final String TAG = "NoteTakingList";
 
 
@@ -93,8 +94,8 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<NoteInfoStruct> noteInfoStructs;
     private String searchString = null;
     private int searchFilter = Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION;
-    private boolean sortOption;
-    private int listShowNoteTypes = 0;
+    //private boolean sortOption;
+    //private int listShowNoteTypes = 0;
     private MenuItem menuSearchOption;
     private MenuItem menuShowTextNote;
     private MenuItem menuShowAudioNote;
@@ -104,8 +105,8 @@ public class MainActivity extends AppCompatActivity
     private MainActivity context;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private NotesAdapter adapter;
-    private String titleOfEmail = "";
-    private int reportType = 0;
+    //private String titleOfEmail = "";
+    //private int reportType = 0;
     private CheckBox dontShowAgain;
 
     @Override
@@ -119,24 +120,23 @@ public class MainActivity extends AppCompatActivity
         firstRunAppInitials();
 
 
-        if (!mManager.isAdminActive(mComponent)){
+        if (!mManager.isAdminActive(mComponent)) {
             Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
             intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mComponent);
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "");
             //startActivity(intent);
             startActivityForResult(intent, Constants.START_ACTIVITY_FOR_POWER_POLICY);
-        }
-        else{
+        } else {
             populateUI();
         }
 
     }
 
-    private void firstRunAppInitials(){
+    private void firstRunAppInitials() {
 
 
-      //  if(1<2){
-        if(!Prefs.getBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, false)) {
+        //  if(1<2){
+        if (!Prefs.getBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, false)) {
 
             Prefs.putBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, true);
 
@@ -153,19 +153,19 @@ public class MainActivity extends AppCompatActivity
             Prefs.putBoolean(Constants.PREF_GROUP_ICON_SIZE, true);
 
 
-            Prefs.putBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION,false);
+            Prefs.putBoolean(Constants.PREF_SHOW_PLAYER_FULL_NOTIFICATION, false);
 
-            Prefs.putBoolean(Constants.PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES,false);
-            Prefs.putBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,true);
+            Prefs.putBoolean(Constants.PREF_AUTO_RUN_RECORDER_ON_AUDIO_NOTES, false);
+            Prefs.putBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START, true);
 
 
-            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE,true);
-            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE,true);
-            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD,true);
+            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true);
+            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true);
+            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true);
 
-            Prefs.getInt(Constants.PHONE_RECORDER_CHATHEAD_X,0);
+            Prefs.getInt(Constants.PHONE_RECORDER_CHATHEAD_X, 0);
 
-            Prefs.getInt(Constants.PHONE_RECORDER_CHATHEAD_Y,100);
+            Prefs.getInt(Constants.PHONE_RECORDER_CHATHEAD_Y, 100);
 
             Prefs.putBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING, false);
 
@@ -177,15 +177,15 @@ public class MainActivity extends AppCompatActivity
             /**
              * Phone recorder settings.
              */
-        //Voice Call
-            Prefs.putInt(Constants.RECORDER_PHONE_RECORDER_SOURCE_OPTION,4);
+            //Voice Call
+            Prefs.putInt(Constants.RECORDER_PHONE_RECORDER_SOURCE_OPTION, 4);
 
             /**
              * Audio recorder settings.
              */
-        //Mic
+            //Mic
             Prefs.putInt(Constants.RECORDER_AUDIO_RECORDER_SOURCE_OPTION, MediaRecorder.AudioSource.MIC);
-            Prefs.putInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION,Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM);
+            Prefs.putInt(Constants.RECORDER_AUDIO_RECORDER_QUALITY_OPTION, Constants.RECORDER_AUDIO_RECORDER_QUALITY_MEDIUM);
 
             // Put to internal storage the location of working directory
 
@@ -196,48 +196,16 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-
-
     }
 
-    private void myFuckUp(){
+   private void populateUI() {
 
+      /* // TODO Auto-generated method stub
+       java.util.Date now = new java.util.Date();
+       String str = "test by Nader  " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
 
-     //   startActivity(new Intent(this, ActivityAddTextNote.class));
-       /* Intent intent = new Intent(this, ActivitySettings.class);
-        startActivity(intent);*/
-        //startService(new Intent(this, ChatHeadRecordService.class));
-
-     /*   Context context = getApplicationContext();
-        ComponentName component = new ComponentName(this, PhonecallReceiver.class);
-
-
-
-        int status = context.getPackageManager().getComponentEnabledSetting(component);
-        if(status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-            Log.d("AAAAAAAAAAAAAAAAAAAAa", "receiver is enabled");
-        } else if(status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
-            Log.d("AAAAAAAAAAAAAAAAAAAAa", "receiver is disabled");
-        }
-
-//Disable
-        //context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED , PackageManager.DONT_KILL_APP);
-//Enable
-        context.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED , PackageManager.DONT_KILL_APP);
+       Log.e("DBGGG",Utility.unixTimeToReadable(now.getTime()));
 */
-    }
-
-private void populateUI(){
-
-   // setContentView(R.layout.activity_main);
-
-    //myFuckUp();
-
-    //myApplication =  (MyApplication)getApplicationContext();
-
-
-   /* Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
-    setSupportActionBar(toolbar);*/
 /*
 
     fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -251,69 +219,71 @@ private void populateUI(){
     });
 */
 
-    setContentView(R.layout.activity_main);
-    myApplication = (MyApplication) getApplicationContext();
-    myApplication.setLauncherDialogNotVisible(false);
+       Intent intent = new Intent(this, ActivityTodoParentRecyclerView.class);
+       startActivity(intent);
 
-    context = MainActivity.this;
+        setContentView(R.layout.activity_main);
+        myApplication = (MyApplication) getApplicationContext();
+        myApplication.setLauncherDialogNotVisible(false);
 
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarNoteTakingList);
-    toolbar.setTitle("Notes");
-    setSupportActionBar(toolbar);
+        context = MainActivity.this;
 
-    AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-    params.setScrollFlags(0);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarNoteTakingList);
+        toolbar.setTitle("Notes");
+        setSupportActionBar(toolbar);
 
-    Log.e(TAG, "ActivityTakenNotesList");
-    noteInfoStructs = new ArrayList<>();
-    realmNoteHelper = new RealmNoteHelper(context);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        params.setScrollFlags(0);
+
+        Log.e(TAG, "ActivityTakenNotesList");
+        noteInfoStructs = new ArrayList<>();
+        realmNoteHelper = new RealmNoteHelper(context);
 
         /*recyclerView.dele*/
-    recyclerView = (RecyclerView) findViewById(R.id.rvNotes);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView = (RecyclerView) findViewById(R.id.rvNotes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT ) {
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-            //Remove swiped item from list and notify the RecyclerView
-            deleteItem(adapter.getItemAtPosition(viewHolder.getAdapterPosition()),true);
-        }
-    };
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                //Remove swiped item from list and notify the RecyclerView
+                deleteItem(adapter.getItemAtPosition(viewHolder.getAdapterPosition()), true);
+            }
+        };
 
-    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
 
-    itemTouchHelper.attachToRecyclerView(recyclerView);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
-    mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-    //mSwipeRefreshLayout.playSoundEffect(R.raw.gestures);
-    mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            // Refresh items
-            setRecyclerView();
-        }
-    });
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                setRecyclerView();
+            }
+        });
 
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-    drawer.setDrawerListener(toggle);
-    toggle.syncState();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-    navigationView.setNavigationItemSelectedListener(this);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-    if(Prefs.getBoolean(Constants.RECORDER_PHONE_IS_RECORD,false))
-        navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls  ✔");
-    else
-        navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
+        if (Prefs.getBoolean(Constants.RECORDER_PHONE_IS_RECORD, false))
+            navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls  ✔");
+        else
+            navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
 
-}
+    }
 
     private String getContactNumberByName(String queryContactName) {
 
@@ -343,7 +313,6 @@ private void populateUI(){
             do {
 
                 str = people.getString(indexName);
-                //     Log.e("BAG" , str);
 
                 if (str.toLowerCase().contains(queryContactName.toLowerCase())) {
                     Log.e("DBG", "Hit a contact");
@@ -366,22 +335,20 @@ private void populateUI(){
     }
 
 
-    //private final String serviceName = "com.fleecast.stamina.chathead.ChatHeadRecordService";
-
     private boolean isServiceRunning() {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if(service.service.getClassName().equals(getApplication().getPackageName() + ".chathead.ChatHeadService" )) {
-               return true;
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (service.service.getClassName().equals(getApplication().getPackageName() + ".chathead.ChatHeadService")) {
+                return true;
             }
         }
 
         return false;
     }
 
-    private void startTheChatHead(){
+    private void startTheChatHead() {
 
-        if(!blIsAlreadyAChatheadRequested) {
+        if (!blIsAlreadyAChatheadRequested) {
 
             try {
 
@@ -406,7 +373,7 @@ private void populateUI(){
         }
 
 
-        if(!blIsAlreadyAChatheadRequested) {
+        if (!blIsAlreadyAChatheadRequested) {
             blIsAlreadyAChatheadRequested = true;
 
             Handler myHandler = new Handler();
@@ -427,18 +394,17 @@ private void populateUI(){
                                     Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==12345) {
-                if (resultCode == Activity.RESULT_CANCELED) {
-                    Log.i("Heyy", "Administration enable FAILED!");
-                    setContentView(R.layout.device_admin_permission_alert);
-                    TextView txtInfoText = (TextView) findViewById(R.id.txtInfoText);
-                    txtInfoText.setText("In order to use the software you should active the admin permission. Please close the application and try again!");
-                }
-                if (resultCode == Activity.RESULT_OK) {
-                    populateUI();
-                }
-        }
-        else if (requestCode == Constants.RESULT_CODE_REQUEST_LIST) {
+        if (requestCode == 12345) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("Heyy", "Administration enable FAILED!");
+                setContentView(R.layout.device_admin_permission_alert);
+                TextView txtInfoText = (TextView) findViewById(R.id.txtInfoText);
+                txtInfoText.setText("In order to use the software you should active the admin permission. Please close the application and try again!");
+            }
+            if (resultCode == Activity.RESULT_OK) {
+                populateUI();
+            }
+        } else if (requestCode == Constants.RESULT_CODE_REQUEST_LIST) {
             if (resultCode == Activity.RESULT_OK) {
                 setRecyclerView();
             }
@@ -446,7 +412,7 @@ private void populateUI(){
 
     }
 
-    Button.OnClickListener lst_StartService = new Button.OnClickListener(){
+    Button.OnClickListener lst_StartService = new Button.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -454,39 +420,9 @@ private void populateUI(){
             //startService(new Intent(MainActivity.this, ChatHeadRecordService.class));
             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
 
-             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK ,
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                     "MyWakelockTag");
             wakeLock.acquire();
-        }
-
-    };
-
-
-    Button.OnClickListener lst_ShowMsg = new Button.OnClickListener(){
-
-        @Override
-        public void onClick(View v) {
-if(wakeLock.isHeld()) {
-    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(MainActivity.this);
-    dlgAlert.setMessage("This is an alert with no consequence");
-    dlgAlert.setTitle("App Title");
-    dlgAlert.setPositiveButton("Ok",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    //dismiss the dialog
-                }
-            });
-    dlgAlert.show();
-}
-            wakeLock.release();
-
-           /* // TODO Auto-generated method stub
-            java.util.Date now = new java.util.Date();
-            String str = "test by Nader  " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-
-            Intent it = new Intent(MainActivity.this, ChatHeadRecordService.class);
-            it.putExtra(Utility.EXTRA_MSG, str);
-            startService(it);*/
         }
 
     };
@@ -494,7 +430,7 @@ if(wakeLock.isHeld()) {
     @Override
     public void onBackPressed() {
 
-        if (!mManager.isAdminActive(mComponent)){
+        if (!mManager.isAdminActive(mComponent)) {
             finish();
             return;
         }
@@ -628,7 +564,7 @@ if(wakeLock.isHeld()) {
 
                 } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
-                    if(doWeHaveRecordsInPath(item.getId())) {
+                    if (doWeHaveRecordsInPath(item.getId())) {
 
                         if (myApplication.isRecordUnderGoing() == Constants.CONST_RECORDER_SERVICE_IS_FREE) {
                             if (myApplication.isPlaying()) {
@@ -795,7 +731,7 @@ if(wakeLock.isHeld()) {
 
                         } else if (which == 1) {
 
-                            deleteItem(item,false);
+                            deleteItem(item, false);
 
                         } else if (which == 2) { //Share
 
@@ -803,10 +739,10 @@ if(wakeLock.isHeld()) {
 
                                 String shareBody = item.getDescription();
 
-                                if(item.getDescription()==null)
-                                    shareBody="No description";
-                                if(item.getDescription().trim().isEmpty())
-                                    shareBody="No description";
+                                if (item.getDescription() == null)
+                                    shareBody = "No description";
+                                if (item.getDescription().trim().isEmpty())
+                                    shareBody = "No description";
 
                                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                                 sharingIntent.setType("text/plain");
@@ -816,27 +752,27 @@ if(wakeLock.isHeld()) {
                                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                                 sharingIntent.putExtra(Constants.EXTRA_PROTOCOL_VERSION, Constants.PROTOCOL_VERSION);
                                 sharingIntent.putExtra(Constants.EXTRA_APP_ID, Constants.YOUR_APP_ID);
-                                sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION );
+                                sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                                startActivityForResult(Intent.createChooser(sharingIntent, "Share Text Note"),Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
+                                startActivityForResult(Intent.createChooser(sharingIntent, "Share Text Note"), Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
 
                             } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
-                                Log.e("DBG","A");
+                                Log.e("DBG", "A");
 
 
-                                String audioNotesFilesPath = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(item.getId())) ;
+                                String audioNotesFilesPath = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(item.getId()));
 
-                                Log.e("DBG",audioNotesFilesPath);
+                                Log.e("DBG", audioNotesFilesPath);
 
-                                File f=new File(audioNotesFilesPath);
+                                File f = new File(audioNotesFilesPath);
 
 
-                                if(f.listFiles().length==Constants.CONST_NULL_ZERO) {
+                                if (f.listFiles().length == Constants.CONST_NULL_ZERO) {
                                     Toast.makeText(context, "No file to share.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
-                                if(!doWeHaveEnoughSpaceForShare())
+                                if (!doWeHaveEnoughSpaceForShare())
                                     return;
 
 
@@ -848,7 +784,7 @@ if(wakeLock.isHeld()) {
 
 
                                 try {
-                                    copyFolderForShareToTempFolder(f,copyfolder);
+                                    copyFolderForShareToTempFolder(f, copyfolder);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -858,8 +794,7 @@ if(wakeLock.isHeld()) {
                                 ArrayList<Uri> imageUris = new ArrayList<Uri>();
 
                                 //Log.d("Files", "Size: "+ file.length);
-                                for (int i=0; i < file.length; i++)
-                                {
+                                for (int i = 0; i < file.length; i++) {
                                     imageUris.add(i, Uri.fromFile(file[i]));
                                     //imageUris.add(i, Uri.parse(file[i].getName()));
 
@@ -874,31 +809,29 @@ if(wakeLock.isHeld()) {
                                     } catch (FileNotFoundException e) {
                                         e.printStackTrace();
                                     }*/
-                                  //  Log.d("Files", "FileName:" + file[i].getName());
+                                    //  Log.d("Files", "FileName:" + file[i].getName());
                                 }
 
 
                                 Intent share = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
-                                String txtTitl  = item.getTitle();
+                                String txtTitl = item.getTitle();
 
-                                if(txtTitl==null)
+                                if (txtTitl == null)
                                     txtTitl = Constants.CONST_STRING_NO_TITLE;
 
-                                String txtDescr  =  item.getDescription();
+                                String txtDescr = item.getDescription();
 
-                                if(txtDescr==null) {
+                                if (txtDescr == null) {
                                     txtDescr = Utility.unixTimeToReadable(item.getId()) +
                                             "\n" + Constants.CONST_STRING_NO_DESCRIPTION;
-                                }
-                                else
-                                {
+                                } else {
                                     txtDescr = Utility.unixTimeToReadable(item.getId()) +
-                                            "\n" + txtDescr ;
+                                            "\n" + txtDescr;
                                 }
 
 
-                                share.putExtra(Intent.EXTRA_SUBJECT,txtTitl);
+                                share.putExtra(Intent.EXTRA_SUBJECT, txtTitl);
                                 share.putExtra(Intent.EXTRA_TITLE, txtTitl);
                                 share.putExtra(Intent.EXTRA_TEXT, txtDescr);
                                 share.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
@@ -906,13 +839,13 @@ if(wakeLock.isHeld()) {
                                 share.setType("audio/*");
                                 share.putExtra(Constants.EXTRA_PROTOCOL_VERSION, Constants.PROTOCOL_VERSION);
                                 share.putExtra(Constants.EXTRA_APP_ID, Constants.YOUR_APP_ID);
-                                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION );
+                                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                                startActivityForResult(Intent.createChooser(share, "Share Audio File"),Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
+                                startActivityForResult(Intent.createChooser(share, "Share Audio File"), Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
 
 
                             } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
-                                Log.e("DBG","‌B");
+                                Log.e("DBG", "‌B");
 
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
@@ -925,7 +858,7 @@ if(wakeLock.isHeld()) {
                                 layout.setPadding(2, 2, 2, 2);
 
                                 TextView tv = new TextView(context);
-                                tv.setText("You are sharing " + Utility.ellipsize(item.getTitle(),50)  + " phone call!");
+                                tv.setText("You are sharing " + Utility.ellipsize(item.getTitle(), 50) + " phone call!");
                                 tv.setPadding(40, 40, 40, 40);
                                 tv.setGravity(Gravity.LEFT);
                                 tv.setTextSize(20);
@@ -956,22 +889,22 @@ if(wakeLock.isHeld()) {
 
                                 alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
-                                        if(!et.getText().toString().trim().toLowerCase().contains("asd")){
+                                        if (!et.getText().toString().trim().toLowerCase().contains("asd")) {
 
-                                            Toast.makeText(context,"Wrong text!",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, "Wrong text!", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
 
-                                        if(!doWeHaveEnoughSpaceForShare())
+                                        if (!doWeHaveEnoughSpaceForShare())
                                             return;
 
                                         String phoneCallFilePath = ExternalStorageManager.getWorkingDirectory() +
                                                 Constants.CONST_PHONE_CALLS_DIRECTORY_NAME +
-                                                File.separator + String.valueOf(item.getId()) +Constants.RECORDER_AUDIO_FORMAT_AMR;
+                                                File.separator + String.valueOf(item.getId()) + Constants.RECORDER_AUDIO_FORMAT_AMR;
 
-                                        Log.e("DBG",phoneCallFilePath);
+                                        Log.e("DBG", phoneCallFilePath);
 
-                                        File f=new File(phoneCallFilePath);
+                                        File f = new File(phoneCallFilePath);
 
                                         //Uri uri = Uri.parse("file://"+f.getAbsolutePath());
 
@@ -979,7 +912,7 @@ if(wakeLock.isHeld()) {
 
                                         File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + Constants.RECORDER_AUDIO_FORMAT_AMR);
                                         try {
-                                            copy(f,tmp);
+                                            copy(f, tmp);
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -988,25 +921,23 @@ if(wakeLock.isHeld()) {
 
                                         Intent share = new Intent(Intent.ACTION_SEND);
 
-                                        String txtTitl  = item.getTitle();
+                                        String txtTitl = item.getTitle();
 
-                                        if(txtTitl==null)
+                                        if (txtTitl == null)
                                             txtTitl = Constants.CONST_STRING_NO_TITLE;
 
-                                        String txtDescr  =  item.getDescription();
+                                        String txtDescr = item.getDescription();
 
-                                        if(txtDescr==null) {
+                                        if (txtDescr == null) {
                                             txtDescr = Utility.unixTimeToReadable(item.getId()) +
                                                     "\n" + Constants.CONST_STRING_NO_DESCRIPTION;
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             txtDescr = Utility.unixTimeToReadable(item.getId()) +
-                                                    "\n" + txtDescr ;
+                                                    "\n" + txtDescr;
                                         }
 
 
-                                        share.putExtra(Intent.EXTRA_SUBJECT,txtTitl);
+                                        share.putExtra(Intent.EXTRA_SUBJECT, txtTitl);
                                         share.putExtra(Intent.EXTRA_TITLE, txtTitl);
                                         share.putExtra(Intent.EXTRA_TEXT, txtDescr);
                                         share.putExtra(Intent.EXTRA_STREAM, uri);
@@ -1014,9 +945,9 @@ if(wakeLock.isHeld()) {
                                         share.setType("audio/*");
                                         share.putExtra(Constants.EXTRA_PROTOCOL_VERSION, Constants.PROTOCOL_VERSION);
                                         share.putExtra(Constants.EXTRA_APP_ID, Constants.YOUR_APP_ID);
-                                        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION );
+                                        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                                        startActivityForResult(Intent.createChooser(share, "Share Audio File"),Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
+                                        startActivityForResult(Intent.createChooser(share, "Share Audio File"), Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
 
 
                                     }
@@ -1049,7 +980,7 @@ if(wakeLock.isHeld()) {
                             }
                         } else if (which == 4) { //Add to ignore
 
-                            String strContactName =  Utility.getContactName(context,item.getPhoneNumber().trim());
+                            String strContactName = Utility.getContactName(context, item.getPhoneNumber().trim());
 
                             if (!realmContactHelper.checkIfExistsInIgnoreList(item.getPhoneNumber().trim())) {
                                 realmContactHelper.addIgnoreList(
@@ -1057,9 +988,7 @@ if(wakeLock.isHeld()) {
                                         strContactName);
 
                                 Toast.makeText(context, "Number added to ignore list.", Toast.LENGTH_LONG).show();
-                            }
-                            else
-                            {
+                            } else {
                                 realmContactHelper.deleteContactFromIgnoreList(
                                         item.getPhoneNumber().trim()
                                 );
@@ -1083,18 +1012,18 @@ if(wakeLock.isHeld()) {
         recyclerView.setAdapter(adapter);
     }
 
-    private void deleteItem(final NoteInfoStruct item,final boolean isItFromSwipeFunction){
+    private void deleteItem(final NoteInfoStruct item, final boolean isItFromSwipeFunction) {
         if (myApplication.getCurrentOpenedTextNoteId() == item.getId() || myApplication.getCurrentRecordingAudioNoteId() == item.getId()) {
-            Utility.showMessage("This note is already open. Close it and try again.","Note",context);
+            Utility.showMessage("This note is already open. Close it and try again.", "Note", context);
             return;
         }
 
-        if(myApplication.stackPlaylist.size()>0) {
+        if (myApplication.stackPlaylist.size() > 0) {
 
             if (myApplication.stackPlaylist.get(0).getParentDbId() == item.getId() && myApplication.isPlaying()) {
                 // Check if player is in pause mode stop it
-                if(myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PAUSED ||
-                        myApplication.getPlayerServiceCurrentState()==Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+                if (myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED ||
+                        myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
 
                     Intent tmpIntent = new Intent(context, PlayerService.class);
                     tmpIntent.setAction(Constants.ACTION_STOP);
@@ -1140,8 +1069,8 @@ if(wakeLock.isHeld()) {
                 }
 
                 //setRecyclerView();
-                for(int j=0; i< noteInfoStructs.size();j++){
-                    if(noteInfoStructs.get(j).getId() == item.getId()) {
+                for (int j = 0; i < noteInfoStructs.size(); j++) {
+                    if (noteInfoStructs.get(j).getId() == item.getId()) {
                         noteInfoStructs.remove(j);
                         adapter.removeItem(j);
                         adapter.notifyDataSetChanged();
@@ -1150,14 +1079,13 @@ if(wakeLock.isHeld()) {
                 }
 
 
-
             }
         });
 
 
         adb.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if(isItFromSwipeFunction)
+                if (isItFromSwipeFunction)
                     adapter.notifyDataSetChanged();
                 return;
             }
@@ -1166,15 +1094,15 @@ if(wakeLock.isHeld()) {
 
     }
 
-    private boolean doWeHaveRecordsInPath(int dbId){
+    private boolean doWeHaveRecordsInPath(int dbId) {
 
         String folderOfRecords = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(dbId));
 
-        boolean foundAnyFile= false;
+        boolean foundAnyFile = false;
 
         File file = new File(folderOfRecords);
 
-        if(file.exists() && file.isDirectory()) {
+        if (file.exists() && file.isDirectory()) {
             for (File tmpFile : file.listFiles()) {
                 if (tmpFile.isFile()) {
                     foundAnyFile = true;
@@ -1183,12 +1111,10 @@ if(wakeLock.isHeld()) {
             }
 
             //Folder is exist but it is empty empty.
-            if(!foundAnyFile)
-            {
+            if (!foundAnyFile) {
                 file.delete();
             }
-        }
-        else{
+        } else {
             return foundAnyFile;
         }
 
@@ -1210,7 +1136,7 @@ if(wakeLock.isHeld()) {
     }
 
     // If targetLocation does not exist, it will be created.
-    private void copyFolderForShareToTempFolder(File sourceLocation , File targetLocation)
+    private void copyFolderForShareToTempFolder(File sourceLocation, File targetLocation)
             throws IOException {
 
         if (sourceLocation.isDirectory()) {
@@ -1219,13 +1145,13 @@ if(wakeLock.isHeld()) {
             }
 
             String[] children = sourceLocation.list();
-           // int timeStampForShare = (int) (System.currentTimeMillis() / 1000);
+            // int timeStampForShare = (int) (System.currentTimeMillis() / 1000);
 
-            for (int i=0; i<children.length; i++) {
+            for (int i = 0; i < children.length; i++) {
                 copyFolderForShareToTempFolder(new File(sourceLocation, children[i]),
                         new File(targetLocation, Utility.getFilePostFixId(children[i]) +
                                 Constants.RECORDER_AUDIO_FORMAT_AAC));
-               // timeStampForShare++;
+                // timeStampForShare++;
             }
         } else {
 
@@ -1249,7 +1175,7 @@ if(wakeLock.isHeld()) {
         }
     }
 
-    private boolean doWeHaveEnoughSpaceForShare(){
+    private boolean doWeHaveEnoughSpaceForShare() {
 
         boolean hasEnoughSpace = ExternalStorageManager.isThereEnoughSpaceOnStorage();
 
@@ -1293,82 +1219,82 @@ if(wakeLock.isHeld()) {
         out.close();
     }
 
-       @Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-           int id = item.getItemId();
+        int id = item.getItemId();
 
-           //noinspection SimplifiableIfStatement
-           if (id == R.id.action_sort_options) {
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_sort_options) {
 
-                if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION, Constants.CONST_NOTELIST_ACCEDING)) {
+            if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION, Constants.CONST_NOTELIST_ACCEDING)) {
                 Prefs.putBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION, Constants.CONST_NOTELIST_DESCENDING);
                 menuSearchOption.setTitle("Sort older first");
-                } else {
+            } else {
                 Prefs.putBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION, Constants.CONST_NOTELIST_ACCEDING);
-                    menuSearchOption.setTitle("Sort newer first");
+                menuSearchOption.setTitle("Sort newer first");
             }
-               setRecyclerView();
-               return true;
-           } else if (id == R.id.action_show_text_notes) {
-               boolean bl = !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true);
-               Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, bl);
-               menuShowTextNote.setChecked(bl);
-               setRecyclerView();
-               return true;
-           } else if (id == R.id.action_show_audio_notes) {
-               boolean bl = !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true);
-               Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, bl);
-               menuShowAudioNote.setChecked(bl);
-               setRecyclerView();
-               return true;
-           } else if (id == R.id.action_show_phone_records) {
-               boolean bl = !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true);
-               Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, bl);
-               menuShowPhoneRecord.setChecked(bl);
-               setRecyclerView();
-               return true;
-           } else if (id == R.id.action_add_note_search_filter) {
-               AlertDialog myDialog;
+            setRecyclerView();
+            return true;
+        } else if (id == R.id.action_show_text_notes) {
+            boolean bl = !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true);
+            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, bl);
+            menuShowTextNote.setChecked(bl);
+            setRecyclerView();
+            return true;
+        } else if (id == R.id.action_show_audio_notes) {
+            boolean bl = !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true);
+            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, bl);
+            menuShowAudioNote.setChecked(bl);
+            setRecyclerView();
+            return true;
+        } else if (id == R.id.action_show_phone_records) {
+            boolean bl = !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true);
+            Prefs.putBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, bl);
+            menuShowPhoneRecord.setChecked(bl);
+            setRecyclerView();
+            return true;
+        } else if (id == R.id.action_add_note_search_filter) {
+            AlertDialog myDialog;
 
-               String[] items = {"Title & Descriptions", "Contacts"};
+            String[] items = {"Title & Descriptions", "Contacts"};
 
-               if (searchFilter == Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION) {
-                   items[0] = "✔ " + items[0];
-                   items[1] = "     " + items[1];
-               } else {
-                   items[1] = "✔ " + items[1];
-                   items[0] = "     " + items[0];
-               }
+            if (searchFilter == Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION) {
+                items[0] = "✔ " + items[0];
+                items[1] = "     " + items[1];
+            } else {
+                items[1] = "✔ " + items[1];
+                items[0] = "     " + items[0];
+            }
 
-               AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-               builder.setTitle("Search Filters:");
-               //builder.setIcon(R.drawable.audio_wave);
+            builder.setTitle("Search Filters:");
+            //builder.setIcon(R.drawable.audio_wave);
 
-               builder.setItems(items, new DialogInterface.OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialog, int which) {
-                       if (which == 0) {
-                           Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION);
-                           searchFilter = Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION;
-                           menuSearchFilter.setIcon(R.drawable.ic_action_news);
-                       } else if (which == 1) {
-                           Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_CONTACTS);
-                           searchFilter = Constants.CONST_SEARCH_NOTE_CONTACTS;
-                           menuSearchFilter.setIcon(R.drawable.ic_action_user);
-                       }
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION);
+                        searchFilter = Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION;
+                        menuSearchFilter.setIcon(R.drawable.ic_action_news);
+                    } else if (which == 1) {
+                        Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_CONTACTS);
+                        searchFilter = Constants.CONST_SEARCH_NOTE_CONTACTS;
+                        menuSearchFilter.setIcon(R.drawable.ic_action_user);
+                    }
 
-                   }
-               });
+                }
+            });
 
 
-               builder.setCancelable(true);
-               myDialog = builder.create();
-               myDialog.show();
-               return true;
-           }
+            builder.setCancelable(true);
+            myDialog = builder.create();
+            myDialog.show();
+            return true;
+        }
 
-           return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -1423,56 +1349,53 @@ if(wakeLock.isHeld()) {
 
         } else if (id == R.id.nav_phone_record) {
 
-            if(!Prefs.getBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING,false)) {
-            String msg = "In some countries, even if both parties know about the recording the call " +
-                    "conversation, that would still be violating the law and privacy. Record the phone " +
-                    "calls on your own responsibility. Please for more details about the call recording " +
-                    "refer to your local or national regulations and law.";
-            AlertDialog.Builder adb = new AlertDialog.Builder(this);
-            LayoutInflater adbInflater = LayoutInflater.from(this);
-            View eulaLayout = adbInflater.inflate(R.layout.alertdialog_phone_recording, null);
+            if (!Prefs.getBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING, false)) {
+                String msg = "In some countries, even if both parties know about the recording the call " +
+                        "conversation, that would still be violating the law and privacy. Record the phone " +
+                        "calls on your own responsibility. Please for more details about the call recording " +
+                        "refer to your local or national regulations and law.";
+                AlertDialog.Builder adb = new AlertDialog.Builder(this);
+                LayoutInflater adbInflater = LayoutInflater.from(this);
+                View eulaLayout = adbInflater.inflate(R.layout.alertdialog_phone_recording, null);
 
-            dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.chkDontAskPhonRecordingMessage);
-            adb.setView(eulaLayout);
-            adb.setTitle("Important Notice");
-            adb.setMessage(msg);
+                dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.chkDontAskPhonRecordingMessage);
+                adb.setView(eulaLayout);
+                adb.setTitle("Important Notice");
+                adb.setMessage(msg);
 
-            adb.setPositiveButton("I Agree", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
+                adb.setPositiveButton("I Agree", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
 
-                    if (dontShowAgain.isChecked()) {
-                        Prefs.putBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING, true);
-                    } else {
+                        if (dontShowAgain.isChecked()) {
+                            Prefs.putBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING, true);
+                        } else {
 
-                        Prefs.putBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING, false);
+                            Prefs.putBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING, false);
+                        }
+                        phoneCallEnableDisable(item);
+                        return;
                     }
-                    phoneCallEnableDisable(item);
-                    return;
-                }
-            });
+                });
 
-            adb.setNegativeButton("I Don't Agree", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
+                adb.setNegativeButton("I Don't Agree", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-                    return;
-                }
-            });
-            adb.show();
-        }
-        else {
+                        return;
+                    }
+                });
+                adb.show();
+            } else {
 
                 phoneCallEnableDisable(item);
 
             }
 
 
-
         } else if (id == R.id.nav_backup_report) {
 
 
-        }
-     else if (id == R.id.nav_emptytrash) {
+        } else if (id == R.id.nav_emptytrash) {
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
@@ -1492,7 +1415,7 @@ if(wakeLock.isHeld()) {
 
             final EditText et = new EditText(context);
             String etStr = et.getText().toString();
-            
+
             TextView tv1 = new TextView(context);
             tv1.setPadding(20, 10, 20, 10);
 
@@ -1517,9 +1440,9 @@ if(wakeLock.isHeld()) {
 
             alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    if(!et.getText().toString().trim().toLowerCase().contains("asd")){
+                    if (!et.getText().toString().trim().toLowerCase().contains("asd")) {
 
-                        Toast.makeText(context,"Wrong text!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Wrong text!", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -1531,7 +1454,7 @@ if(wakeLock.isHeld()) {
 
                     removeDirectory(tempDir);
 
-                    Toast.makeText(context,"Trash is empty",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Trash is empty", Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -1546,7 +1469,6 @@ if(wakeLock.isHeld()) {
                 // not display the 'Force Close' message
                 e.printStackTrace();
             }
-
 
 
         } else if (id == R.id.nav_report_bug) {
@@ -1569,7 +1491,7 @@ if(wakeLock.isHeld()) {
                     Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
                     intent.putExtra(Intent.EXTRA_SUBJECT,
                             "Bug Report");
-                    intent.putExtra(Intent.EXTRA_TEXT   , "Section of app you got error or problem (e.g Recorder): " + "\n\n" +
+                    intent.putExtra(Intent.EXTRA_TEXT, "Section of app you got error or problem (e.g Recorder): " + "\n\n" +
                             "Error or problem detail: ");
                     startActivity(intent);
 
@@ -1584,7 +1506,7 @@ if(wakeLock.isHeld()) {
                     Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
                     intent.putExtra(Intent.EXTRA_SUBJECT,
                             "Suggestion");
-                    intent.putExtra(Intent.EXTRA_TEXT,"Section of app: " + "\n\n" +
+                    intent.putExtra(Intent.EXTRA_TEXT, "Section of app: " + "\n\n" +
                             "Or whatever is your idea: ");
                     startActivity(intent);
                 }
@@ -1603,10 +1525,10 @@ if(wakeLock.isHeld()) {
             startActivity(i);
         } else if (id == R.id.nav_about) {
 
-        Intent intent = new Intent(context,ActivityAbout.class);
-        startActivity(intent);
+            Intent intent = new Intent(context, ActivityAbout.class);
+            startActivity(intent);
 
-        }else if (id == R.id.nav_settings) {
+        } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, ActivitySettings.class);
             startActivity(intent);
 
@@ -1619,22 +1541,22 @@ if(wakeLock.isHeld()) {
         return true;
     }
 
-private void phoneCallEnableDisable (MenuItem item) {
-    ComponentName component = new ComponentName(this, PhonecallReceiver.class);
+    private void phoneCallEnableDisable(MenuItem item) {
+        ComponentName component = new ComponentName(this, PhonecallReceiver.class);
 
-    //Disable call recording BroadcastReceiver (class PhonecallReceiver)
-    if (Prefs.getBoolean(Constants.RECORDER_PHONE_IS_RECORD, false)) {
-        //Disable
-        this.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-        Prefs.putBoolean(Constants.RECORDER_PHONE_IS_RECORD, false);
-        item.setTitle("Record Calls   ");
-        Toast.makeText(this, "Phone recording disabled", Toast.LENGTH_LONG).show();
-    } else { //Enable call recording BroadcastReceiver (class PhonecallReceiver)
-        //Enable
-        this.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
-        Prefs.putBoolean(Constants.RECORDER_PHONE_IS_RECORD, true);
-        item.setTitle("Record Calls  ✔");
-        Toast.makeText(this, "Phone recording enabled", Toast.LENGTH_LONG).show();
+        //Disable call recording BroadcastReceiver (class PhonecallReceiver)
+        if (Prefs.getBoolean(Constants.RECORDER_PHONE_IS_RECORD, false)) {
+            //Disable
+            this.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+            Prefs.putBoolean(Constants.RECORDER_PHONE_IS_RECORD, false);
+            item.setTitle("Record Calls   ");
+            Toast.makeText(this, "Phone recording disabled", Toast.LENGTH_LONG).show();
+        } else { //Enable call recording BroadcastReceiver (class PhonecallReceiver)
+            //Enable
+            this.getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+            Prefs.putBoolean(Constants.RECORDER_PHONE_IS_RECORD, true);
+            item.setTitle("Record Calls  ✔");
+            Toast.makeText(this, "Phone recording enabled", Toast.LENGTH_LONG).show();
+        }
     }
-}
 }

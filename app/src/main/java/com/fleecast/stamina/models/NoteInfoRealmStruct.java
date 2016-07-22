@@ -22,7 +22,7 @@ public class NoteInfoRealmStruct extends RealmObject {
     private int call_type;
     private int tag;
     private String phone_number;
-    private int order;
+    private int note_type;
 
     public int getCallType() {
         return call_type;
@@ -32,12 +32,12 @@ public class NoteInfoRealmStruct extends RealmObject {
         this.call_type = call_type;
     }
 
-    public int getOrder() {
-        return order;
+    public int getNoteType() {
+        return note_type;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setNoteType(int note_type) {
+        this.note_type = note_type;
     }
 
     public String getPhoneNumber() {

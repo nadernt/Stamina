@@ -1,4 +1,4 @@
-package com.fleecast.stamina.models;
+package com.fleecast.stamina.todo;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.models.NoteInfoStruct;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
+import java.util.ArrayList;
+
+public class TodoChildAdapter extends RecyclerView.Adapter<TodoChildAdapter.ViewHolder> {
 
 
     private final OnItemClickListener clickListener;
@@ -23,7 +25,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private ArrayList<NoteInfoStruct> noteInfoStructs;
 
 
-    public NotesAdapter(Context context, ArrayList<NoteInfoStruct> noteInfoStructs, OnItemClickListener listener, OnItemLongClickListener longClickListener) {
+    public TodoChildAdapter(Context context, ArrayList<NoteInfoStruct> noteInfoStructs, OnItemClickListener listener, OnItemLongClickListener longClickListener) {
         this.noteInfoStructs = new ArrayList(noteInfoStructs);
         this.clickListener = listener;
         this.longClickListener = longClickListener;
@@ -32,50 +34,20 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
     @Override
-    public NotesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, null);
+    public TodoChildAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_item_child, null);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
 
 
     @Override
-    public void onBindViewHolder(NotesAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(TodoChildAdapter.ViewHolder holder, int position) {
         holder.click(noteInfoStructs.get(position), clickListener);
         holder.longClick(noteInfoStructs.get(position), longClickListener);
         holder.tvId.setText(String.valueOf(noteInfoStructs.get(position).getId()));
         holder.title.setText(Utility.ellipsize(noteInfoStructs.get(position).getTitle(),50));
-
-        holder.description.setText(Utility.ellipsize(noteInfoStructs.get(position).getDescription(),150));
         holder.create_time.setText(Utility.unixTimeToReadable(noteInfoStructs.get(position).getCreateTimeStamp().getTime() / 1000L));
-
-       // Log.e("DBG",noteInfoStructs.get(position).getHasAudio() + "");
-        if(noteInfoStructs.get(position).getHasAudio()) {
-
-            String contactNmae = Utility.ellipsize(Utility.getContactName(context,noteInfoStructs.get(position).getPhoneNumber()),20);
-
-            if(noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_OUTGOING) {
-                holder.audioType.setBackgroundResource(R.drawable.outcoming_call);
-                holder.phone_number.setVisibility(View.VISIBLE);
-                holder.phone_number.setText(contactNmae);
-            }
-            else if(noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_INCOMING) {
-                holder.audioType.setBackgroundResource(R.drawable.incoming_calls);
-                holder.phone_number.setVisibility(View.VISIBLE);
-                holder.phone_number.setText(contactNmae);
-            }
-            else {
-                holder.audioType.setBackgroundResource(R.drawable.audio_wave);
-                holder.phone_number.setVisibility(View.INVISIBLE);
-            }
-        }
-        else
-        {
-            holder.audioType.setBackgroundResource(R.drawable.text);
-            holder.phone_number.setVisibility(View.INVISIBLE);
-        }
-
-
 
     }
 
@@ -87,17 +59,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvId, title, description, create_time,phone_number;
-        ImageView audioType;
+        TextView tvId, title, create_time;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvId = (TextView) itemView.findViewById(R.id.tvIdTodoParent);
-            title = (TextView) itemView.findViewById(R.id.tvTitleTodoParent);
-            description = (TextView) itemView.findViewById(R.id.tvDescription);
-            create_time = (TextView) itemView.findViewById(R.id.tvCreateTime);
-            phone_number= (TextView) itemView.findViewById(R.id.tvPhoneNumber);
-            audioType = (ImageView) itemView.findViewById(R.id.audioType);
+            tvId = (TextView) itemView.findViewById(R.id.tvIdTodoChild);
+            title = (TextView) itemView.findViewById(R.id.tvTitleTodoChild);
+            create_time = (TextView) itemView.findViewById(R.id.tvCreateTimeTodoChild);
         }
 
 

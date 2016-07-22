@@ -46,18 +46,18 @@
         <activity
             android:name=".launcher.LauncherDialogActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleInstance"
             android:hardwareAccelerated="true"
+            android:launchMode="singleInstance"
             android:persistent="true"
             android:windowSoftInputMode="adjustPan">
-            <!--       //android:stateNotNeeded="true"// -->
+
+            <!-- //android:stateNotNeeded="true"// -->
         </activity>
         <activity
             android:name=".notetaking.ActivityAddTextNote"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".launcher.AddEditGroupItem"
             android:windowSoftInputMode="adjustPan" />
@@ -102,10 +102,9 @@
             android:label="@string/title_activity_add_note_to_audio"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".notetaking.ActivityViewTextNote" />
-        <activity android:name=".chathead.ActivityAbout"></activity>
+        <activity android:name=".chathead.ActivityAbout" />
 
-        <service android:name=".chathead.ChatHeadService"
-            />
+        <service android:name=".chathead.ChatHeadService" />
         <service android:name=".notetaking.ChatHeadRecordService" />
         <service android:name=".notetaking.RecorderNoteService">
             <intent-filter>
@@ -148,6 +147,14 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".todo.ActivityTodoParentRecyclerView"
+            android:label="@string/title_activity_activity_todo_parent_list"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".todo.ActivityTodoChildRecyclerView"
+            android:label="@string/title_activity_activity_todo_child_recycler_view"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
