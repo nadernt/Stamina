@@ -53,6 +53,7 @@ public class ActivityTodoParentRecyclerView extends AppCompatActivity {
         this.context = ActivityTodoParentRecyclerView.this;
 
         todoParentRealmStructs = new ArrayList<>();
+
         realmToDoHelper = new RealmToDoHelper(context);
 
         recyclerView = (RecyclerView) findViewById(R.id.rvToDoParent);
@@ -92,7 +93,6 @@ public class ActivityTodoParentRecyclerView extends AppCompatActivity {
 
 
         final EditText et = new EditText(context);
-        String etStr = et.getText().toString();
 
         LinearLayout.LayoutParams tv1Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tv1Params.bottomMargin = 5;
@@ -112,10 +112,13 @@ public class ActivityTodoParentRecyclerView extends AppCompatActivity {
 
         alertDialogBuilder.setPositiveButton("save", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                dbId = (int) (System.currentTimeMillis() / 1000);
-                Date now = new Date();
-                realmToDoHelper.addTodoParent(dbId,et.getText().toString().trim(),false,null);
-                setRecyclerView();
+                if (!et.getText().toString().trim().isEmpty()){
+                    dbId = (int) (System.currentTimeMillis());
+                    realmToDoHelper.addTodoParent(dbId, et.getText().toString().trim(), false, null);
+                    setRecyclerView();
+                }else{
+                    Utility.showMessage("You should add a title for Todo!","Note",context);
+                }
             }
         });
 
@@ -143,7 +146,38 @@ public class ActivityTodoParentRecyclerView extends AppCompatActivity {
         }, new TodoParentAdapter.OnItemLongClickListener() {
             @Override
             public void onLongClick(TodoParentRealmStruct todoParentRealmStruct) {
+                AlertDialog myDialog;
 
+                String[] items = {"Edit","Delete","Share"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Options");
+                builder.setIcon(R.drawable.list);
+
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (which==0){
+
+                            Intent intent = new Intent(context,ActivityTodoChildRecyclerView.class);
+                            startActivityForResult(intent,123);
+
+                        }
+                        else if(which==1){
+
+                        }
+                        else if(which==2){
+
+                        }
+                    }
+                });
+
+
+                builder.setCancelable(true);
+                myDialog = builder.create();
+                myDialog.show();
             }
         });
 

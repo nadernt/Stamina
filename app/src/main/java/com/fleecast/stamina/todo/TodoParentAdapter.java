@@ -35,7 +35,7 @@ public class TodoParentAdapter extends RecyclerView.Adapter<TodoParentAdapter.Vi
 
     @Override
     public TodoParentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_item_parent, null,true);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_item_parent, null);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
@@ -112,6 +112,4 @@ public class TodoParentAdapter extends RecyclerView.Adapter<TodoParentAdapter.Vi
     public interface OnItemLongClickListener {
         void onLongClick(TodoParentRealmStruct todoParentRealmStruct);
     }
-
-
-} 
+}

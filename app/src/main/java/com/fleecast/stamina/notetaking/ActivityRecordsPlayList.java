@@ -51,8 +51,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -88,7 +86,7 @@ public class ActivityRecordsPlayList extends Activity {
         myApplication =  (MyApplication)getApplicationContext();
 
 
-        txtTotalTime = (TextView) findViewById(R.id.txtTotalTime1);
+        txtTotalTime = (TextView) findViewById(R.id.txtTotalTime);
 
         btnPlay = (ImageButton) findViewById(R.id.btnPlay); // Start
         btnStop = (ImageButton) findViewById(R.id.btnStop); // Stop
@@ -103,7 +101,7 @@ public class ActivityRecordsPlayList extends Activity {
         detailsOfAudioNote = (RelativeLayout) findViewById(R.id.detailsOfAudioNote);
         btnPlay.setImageResource(R.drawable.ic_action_playback_play);
 
-        seekBar = (SeekBar) findViewById(R.id.seekBar2);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
 
         Intent intent = getIntent();
 
@@ -429,12 +427,10 @@ public class ActivityRecordsPlayList extends Activity {
             intent.setAction(actionCommand);
         }else
         {
-            if(actionCommand == Constants.EXTRA_SEEK_TO )
-                intent.putExtra(Constants.EXTRA_SEEK_TO,seekTo);
-
             if(actionCommand == Constants.EXTRA_UPDATE_SEEKBAR)
                 intent.putExtra(Constants.EXTRA_UPDATE_SEEKBAR,true);
-
+            else if(actionCommand == Constants.EXTRA_SEEK_TO )
+                intent.putExtra(Constants.EXTRA_SEEK_TO,seekTo);
         }
         startService(intent);
 
@@ -712,7 +708,7 @@ public class ActivityRecordsPlayList extends Activity {
 
                                 File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + Constants.RECORDER_AUDIO_FORMAT_AAC);
                                 try {
-                                    copy(f,tmp);
+                                    ExternalStorageManager.copy(f,tmp);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -780,19 +776,7 @@ public class ActivityRecordsPlayList extends Activity {
             }, 200);
         }
 
-     public void copy(File src, File dst) throws IOException {
-            InputStream in = new FileInputStream(src);
-            OutputStream out = new FileOutputStream(dst);
 
-            // Transfer bytes from in to out
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        }
 
     private void deleteFileAndNote(boolean askQuestion, final int itemOrderInStack,final String mFileDbUniqueToken){
 
@@ -1068,6 +1052,11 @@ public class ActivityRecordsPlayList extends Activity {
 
             getListView().setItemChecked(index, true);
 
+         /*   Intent intent1 = new Intent(getActivity(), PlayerService.class);
+            intent1.setAction(Constants.ACTION_STOP);
+            getActivity().startService(intent1);*/
+            //sendCommandToPlayerService(Constants.ACTION_STOP,Constants.ACTION_NULL);
+            //stop();
             myApplication.setIndexSomethingIsPlaying(index);
             Intent intent = new Intent(getActivity(), PlayerService.class);
             intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);

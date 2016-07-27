@@ -1,5 +1,6 @@
 package com.fleecast.stamina.utility;
 
+import android.content.Context;
 import android.content.IntentFilter;
 
 /**
@@ -52,6 +53,8 @@ public class Constants {
     public static final String ACTION_NEXT =  "com.fleecast.stamina.action.SKIP";
     public static final String ACTION_STOP =  "com.fleecast.stamina.action.STOP";
     public static final String ACTION_REWIND =  "com.fleecast.stamina.action.REWIND";
+    public static final String ACTION_SKIP =  "com.fleecast.stamina.action.SKIP";
+    public static final String ACTION_TOGGLE_PLAYBACK = "com.fleecast.stamina.action.SKIP.TOGGLE_PLAYBACK";
     public static final String ACTION_STOP_RECORD =  "com.fleecast.stamina.action.STOP_RECORD";
 
     public static final String EXTRA_SEEK_TO = "ExtraSeekTo";

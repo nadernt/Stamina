@@ -84,7 +84,7 @@ public class AppLauncherGridViewAdapter extends BaseAdapter implements Filterabl
             // initialize the view holder
             viewHolder = new ViewHolder();
             viewHolder.ivIcon = (ImageView) convertView.findViewById(R.id.ivIcon);
-            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitleTodoParent);
+            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
             convertView.setTag(viewHolder);
         } else {
             // recycle the already inflated view

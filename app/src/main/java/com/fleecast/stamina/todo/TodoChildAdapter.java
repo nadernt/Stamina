@@ -21,12 +21,10 @@ public class TodoChildAdapter extends RecyclerView.Adapter<TodoChildAdapter.View
     private final OnItemClickListener clickListener;
     private final OnItemLongClickListener longClickListener;
     private final Context context;
+    private ArrayList<TodoChildRealmStruct> todoChildRealmStructs;
 
-    private ArrayList<NoteInfoStruct> noteInfoStructs;
-
-
-    public TodoChildAdapter(Context context, ArrayList<NoteInfoStruct> noteInfoStructs, OnItemClickListener listener, OnItemLongClickListener longClickListener) {
-        this.noteInfoStructs = new ArrayList(noteInfoStructs);
+    public TodoChildAdapter(Context context, ArrayList<TodoChildRealmStruct> todoChildRealmStructs, OnItemClickListener listener, OnItemLongClickListener longClickListener) {
+        this.todoChildRealmStructs = new ArrayList(todoChildRealmStructs);
         this.clickListener = listener;
         this.longClickListener = longClickListener;
         this.context = context;
@@ -43,18 +41,18 @@ public class TodoChildAdapter extends RecyclerView.Adapter<TodoChildAdapter.View
 
     @Override
     public void onBindViewHolder(TodoChildAdapter.ViewHolder holder, int position) {
-        holder.click(noteInfoStructs.get(position), clickListener);
-        holder.longClick(noteInfoStructs.get(position), longClickListener);
-        holder.tvId.setText(String.valueOf(noteInfoStructs.get(position).getId()));
-        holder.title.setText(Utility.ellipsize(noteInfoStructs.get(position).getTitle(),50));
-        holder.create_time.setText(Utility.unixTimeToReadable(noteInfoStructs.get(position).getCreateTimeStamp().getTime() / 1000L));
+        holder.click(todoChildRealmStructs.get(position), clickListener);
+        holder.longClick(todoChildRealmStructs.get(position), longClickListener);
+        holder.tvId.setText(String.valueOf(todoChildRealmStructs.get(position).getId()));
+        holder.title.setText(Utility.ellipsize(todoChildRealmStructs.get(position).getTitle(),50));
+        holder.create_time.setText(Utility.unixTimeToReadable(todoChildRealmStructs.get(position).getCreateTimeStamp().getTime() / 1000L));
 
     }
 
 
     @Override
     public int getItemCount() {
-        return noteInfoStructs.size();
+        return todoChildRealmStructs.size();
     }
 
 
@@ -69,20 +67,20 @@ public class TodoChildAdapter extends RecyclerView.Adapter<TodoChildAdapter.View
         }
 
 
-        public void click(final NoteInfoStruct noteInfoStruct, final OnItemClickListener listener) {
+        public void click(final TodoChildRealmStruct todoChildRealmStruct, final OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(noteInfoStruct);
+                    listener.onClick(todoChildRealmStruct);
                 }
             });
         }
 
-        public void longClick(final NoteInfoStruct noteInfoStruct, final OnItemLongClickListener listener) {
+        public void longClick(final TodoChildRealmStruct todoChildRealmStruct, final OnItemLongClickListener listener) {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.onLongClick(noteInfoStruct);
+                    listener.onLongClick(todoChildRealmStruct);
                     return false;
                 }
             });
@@ -90,21 +88,19 @@ public class TodoChildAdapter extends RecyclerView.Adapter<TodoChildAdapter.View
 
     }
 
-    public NoteInfoStruct getItemAtPosition(int i) {
-        return noteInfoStructs.get(i);
+    public TodoChildRealmStruct getItemAtPosition(int i) {
+        return todoChildRealmStructs.get(i);
     }
 
     public void removeItem(int i) {
-        noteInfoStructs.remove(i);
+        todoChildRealmStructs.remove(i);
         this.notifyItemRemoved(i);
     }
 
     public interface OnItemClickListener {
-        void onClick(NoteInfoStruct noteInfoStruct);
+        void onClick(TodoChildRealmStruct todoChildRealmStruct);
     }
     public interface OnItemLongClickListener {
-        void onLongClick(NoteInfoStruct noteInfoStruct);
+        void onLongClick(TodoChildRealmStruct todoChildRealmStruct);
     }
-
-
-} 
+}

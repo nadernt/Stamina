@@ -30,19 +30,19 @@
         android:layout_toEndOf="@+id/btnPlayPortrait" />
 
     <SeekBar
-        android:id="@+id/seekBar1"
+        android:id="@+id/seekBarLegacy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtTotalTime"
-        android:layout_alignRight="@+id/txtTotalTime"
-        android:layout_alignEnd="@+id/txtTotalTime" />
+        android:layout_below="@+id/txtTotalTimeLegacy"
+        android:layout_alignRight="@+id/txtTotalTimeLegacy"
+        android:layout_alignEnd="@+id/txtTotalTimeLegacy" />
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Playing"
-        android:id="@+id/txtTotalTime"
+        android:id="@+id/txtTotalTimeLegacy"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -66,7 +66,7 @@
         android:text="Stop"
         android:src="@drawable/ic_action_playback_next"
         android:background="@color/alien_green"
-        android:layout_below="@+id/seekBar1"
+        android:layout_below="@+id/seekBarLegacy"
         android:layout_toRightOf="@+id/btnStopPortrait"
         android:layout_toEndOf="@+id/btnStopPortrait"
         android:layout_margin="10dp"
@@ -76,7 +76,7 @@
         android:layout_width="10dp"
         android:layout_height="30dp"
         android:id="@+id/space2"
-        android:layout_below="@+id/seekBar1"
+        android:layout_below="@+id/seekBarLegacy"
         android:layout_centerHorizontal="true" />
 
     <ScrollView

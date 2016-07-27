@@ -49,6 +49,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayer;
 import com.fleecast.stamina.models.NoteInfoStruct;
 import com.fleecast.stamina.models.NotesAdapter;
 import com.fleecast.stamina.models.RealmContactHelper;
@@ -219,9 +220,9 @@ public class MainActivity extends AppCompatActivity
     });
 */
 
-       Intent intent = new Intent(this, ActivityTodoParentRecyclerView.class);
+      /* Intent intent = new Intent(this, ActivityTodoParentRecyclerView.class);
        startActivity(intent);
-
+*/
         setContentView(R.layout.activity_main);
         myApplication = (MyApplication) getApplicationContext();
         myApplication.setLauncherDialogNotVisible(false);
@@ -412,7 +413,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    Button.OnClickListener lst_StartService = new Button.OnClickListener() {
+    /*Button.OnClickListener lst_StartService = new Button.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -425,7 +426,7 @@ public class MainActivity extends AppCompatActivity
             wakeLock.acquire();
         }
 
-    };
+    };*/
 
     @Override
     public void onBackPressed() {
@@ -567,7 +568,13 @@ public class MainActivity extends AppCompatActivity
                     if (doWeHaveRecordsInPath(item.getId())) {
 
                         if (myApplication.isRecordUnderGoing() == Constants.CONST_RECORDER_SERVICE_IS_FREE) {
-                            if (myApplication.isPlaying()) {
+
+                            myApplication.setIndexSomethingIsPlaying(0);
+                            Intent intent = new Intent(context, ActivityLegacyPlayer.class);
+                            intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, item.getId());
+                            startActivity(intent);
+
+                            /* if (myApplication.isPlaying()) {
                                 Intent intent = new Intent(context, PlayerService.class);
                                 intent.setAction(Constants.ACTION_STOP);
                                 startService(intent);
@@ -576,7 +583,9 @@ public class MainActivity extends AppCompatActivity
 
                             Intent intent = new Intent(context, ActivityRecordsPlayList.class);
                             intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(item.getId()));
-                            startActivity(intent);
+                            startActivity(intent);*/
+
+
                         }
                     }
                 } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
@@ -744,6 +753,7 @@ public class MainActivity extends AppCompatActivity
                                 if (item.getDescription().trim().isEmpty())
                                     shareBody = "No description";
 
+                                shareBody =  item.getTitle() + ":\n" + shareBody;
                                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                                 sharingIntent.setType("text/plain");
                                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, item.getTitle());

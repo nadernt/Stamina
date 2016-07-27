@@ -18,6 +18,20 @@ public class TodoChildRealmStruct extends RealmObject {
     private boolean has_done;
     private int order;
 
+    public TodoChildRealmStruct() {
+
+    }
+
+    public TodoChildRealmStruct(int id, int parent_id, String title, Date create_time_stamp, boolean has_done, int order) {
+
+        this.id = id;
+        this.parent_id = parent_id;
+        this.title = title;
+        this.create_time_stamp = create_time_stamp;
+        this.has_done = has_done;
+        this.order = order;
+    }
+
     public int getId() {
         return id;
     }

@@ -8,7 +8,7 @@
         android:id="@+id/tool_bar_audio_note"
         layout="@layout/tool_bar_audio_note_add_edit"></include>
     <ScrollView
-        android:id="@+id/scrollViewAddAudioNoteText"
+        android:id="@+id/scrollViewAddAudioNoteTextLegacy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar_audio_note">

@@ -11,7 +11,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.RemoteException;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -25,6 +28,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.chathead.MainActivity;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
@@ -91,6 +95,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private void buildNotification( NotificationCompat.Action action ) {
         NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
         style.setMediaSession( mMediaSession.getSessionToken() );
+
         //new NotificationCompat.BigTextStyle().bigText(aVeryLongString)
         //style.setShowCancelButton(true);
 
@@ -144,6 +149,17 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         startForeground(idNotification, mBuilder.build());
     }
 
+
+    private Notification createNotificationCompat(PendingIntent intent) {
+        return  new NotificationCompat.Builder(this)
+                .setContentTitle(getText(R.string.app_name))
+                .setContentText(getText(R.string.notificationText))
+                .setSmallIcon(R.drawable.ic_sun)
+                .setContentIntent(intent)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+                .build();
+    }
+
     public static Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap = null;
 
@@ -182,7 +198,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             else if (action.equals(Constants.ACTION_NEXT)) nextRequest();
             else if (action.equals(Constants.ACTION_STOP)) stopRequest(true);
             else if (action.equals(Constants.ACTION_REWIND)) rewindRequest();
-
         }
 
 
@@ -312,9 +327,30 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     private void playRequest() {
-        if( mMediaSessionManager == null ) {
+      //  if( mMediaSessionManager == null ) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
+            // your code using RemoteControlClient API here - is between 14-20
+            mPlayer = new MediaPlayer();
+
+            mAudioFocusHelper = new AudioFocusHelper(getApplicationContext(), this);
+
+           /* PendingIntent pendingIntent = createPendingIntent();
+
+            Notification notification = createNotificationCompat(pendingIntent);
+            //}
+
+            startForeground(55, notification);*/
+            Log.e("HHHHHHHHHHHHH", "" + myApplication.getIndexSomethingIsPlaying());
+
+
+        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             initMediaSessions();
         }
+
+
+
+       // }
 
         try {
             if (mPlayer == null || !areEventsInitiated) {
@@ -329,12 +365,13 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
             if (reinitForNewItemOrResume) {
 
-                    mPlayer.reset();
+                mPlayer.reset();
 /*
                     Log.e("HHHHHHHHHHHHH", "" + myApplication.getIndexSomethingIsPlaying());
 */
-                    mPlayer.setDataSource(myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getFileName());
-                    mPlayer.prepareAsync();
+                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mPlayer.setDataSource(getApplicationContext(), Uri.parse(myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getFileName()));
+                mPlayer.prepareAsync();
             } else {
                 mPlayer.start();
                 sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_PLAYING);
@@ -343,7 +380,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             }
             mController.getTransportControls().play();
 
-            tryToGetAudioFocus();
+          //  tryToGetAudioFocus();
         }
         catch(Exception e){
             Toast.makeText(this,"Error in media format!\n" + e.getMessage(),Toast.LENGTH_LONG).show();
@@ -379,9 +416,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 
 
         //if (Prefs.getBoolean(Constants.PREF_ON_FINISH_PLAYLIST_CLOSE_PLAYER_REMOTE,false) || stopAndKillTheService)
-            // If yes close the remote control after finish the play list.
+        // If yes close the remote control after finish the play list.
         if (stopAndKillTheService)
-                killServiceRequest();
+            killServiceRequest();
         else
             mController.getTransportControls().play();
 
@@ -426,8 +463,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             mPlayer = new MediaPlayer();
             mAudioFocusHelper = new AudioFocusHelper(getApplicationContext(), this);
 
-            mMediaSession = new MediaSessionCompat(getApplicationContext(), "stamina player session");
-            mMediaSessionManager = (MediaSessionManager) mContext.getSystemService(Context.MEDIA_SESSION_SERVICE);
+            mMediaSession = new MediaSessionCompat(getApplicationContext(), "stamina player session1");
+            //mMediaSessionManager = (MediaSessionManager) mContext.getSystemService(Context.MEDIA_SESSION_SERVICE);
             mController =new MediaControllerCompat(getApplicationContext(), mMediaSession.getSessionToken());
             mMediaSession.setActive(true);
             mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);

@@ -92,8 +92,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvId = (TextView) itemView.findViewById(R.id.tvIdTodoParent);
-            title = (TextView) itemView.findViewById(R.id.tvTitleTodoParent);
+            tvId = (TextView) itemView.findViewById(R.id.tvId);
+            title = (TextView) itemView.findViewById(R.id.tvTitle);
             description = (TextView) itemView.findViewById(R.id.tvDescription);
             create_time = (TextView) itemView.findViewById(R.id.tvCreateTime);
             phone_number= (TextView) itemView.findViewById(R.id.tvPhoneNumber);

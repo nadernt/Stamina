@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.util.Log;
+
 import com.fleecast.stamina.models.MostUsedAndRecentAppsStruct;
 import com.fleecast.stamina.models.AudioNoteInfoStruct;
 import com.fleecast.stamina.models.TempNoteInfoStruct;

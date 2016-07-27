@@ -50,14 +50,14 @@
             android:launchMode="singleInstance"
             android:persistent="true"
             android:windowSoftInputMode="adjustPan">
-
-            <!-- //android:stateNotNeeded="true"// -->
+            <!--       //android:stateNotNeeded="true"// -->
         </activity>
         <activity
             android:name=".notetaking.ActivityAddTextNote"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".launcher.AddEditGroupItem"
             android:windowSoftInputMode="adjustPan" />
@@ -103,6 +103,16 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".notetaking.ActivityViewTextNote" />
         <activity android:name=".chathead.ActivityAbout" />
+        <activity
+            android:name=".legacyplayer.ActivityLegacyPlayer"
+            android:launchMode="singleTask"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service android:name=".chathead.ChatHeadService" />
         <service android:name=".notetaking.ChatHeadRecordService" />
@@ -124,7 +134,26 @@
                 <action android:name="com.fleecast.stamina.action.STOP" />
             </intent-filter>
         </service>
+        <service
+            android:name=".legacyplayer.MusicService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.fleecast.stamina.action.SKIP.TOGGLE_PLAYBACK" />
+                <action android:name="com.fleecast.stamina.action.SHOW_PLAYER" />
+                <action android:name="com.fleecast.stamina.action.CLOSE" />
+                <action android:name="com.fleecast.stamina.action.PLAY" />
+                <action android:name="com.fleecast.stamina.action.PAUSE" />
+                <action android:name="com.fleecast.stamina.action.SKIP" />
+                <action android:name="com.fleecast.stamina.action.REWIND" />
+                <action android:name="com.fleecast.stamina.action.STOP" />
+            </intent-filter>
+        </service>
 
+        <receiver android:name=".notetaking.RemoteControlReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".chathead.DeviceAdminSampleReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -154,7 +183,17 @@
         <activity
             android:name=".todo.ActivityTodoChildRecyclerView"
             android:label="@string/title_activity_activity_todo_child_recycler_view"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+
+        <receiver android:name=".legacyplayer.MusicIntentReceiver">
+            <intent-filter>
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

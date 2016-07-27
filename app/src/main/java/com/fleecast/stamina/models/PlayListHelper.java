@@ -123,6 +123,7 @@ Log.e("GGGG", dbId + " filename: " + fileName);
         for (int i = 0; i < listOfFiles.length; i++) {
 
             boolean hasHitInDatabase = false;
+
             int dbId = getDbIdFromFileName(listOfFiles[i].getName());
 
             if (audioNoteInfoStruct.size() > 0) {
@@ -171,7 +172,9 @@ Log.e("GGGG", dbId + " filename: " + fileName);
 
         return htmlArrayForList;
     }
- 
+
+
+
 
     private String getHexStringFromInt(int resourceColorId){
         //ContextCompat.getColor(mContext, R.color.color_name)

@@ -70,7 +70,7 @@ public class ActivityPlayerPortrait extends Activity {
         this.getWindow().setLayout(width,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        txtTotalTime = (TextView) findViewById(R.id.txtTotalTime);
+        txtTotalTime = (TextView) findViewById(R.id.txtTotalTimeLegacy);
 
         btnPlayPortrait = (ImageButton) findViewById(R.id.btnPlayPortrait); // Start
         btnStopPortrait = (ImageButton) findViewById(R.id.btnStopPortrait); // Stop
@@ -84,7 +84,7 @@ public class ActivityPlayerPortrait extends Activity {
 
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
 
-        seekBar = (SeekBar) findViewById(R.id.seekBar1);
+        seekBar = (SeekBar) findViewById(R.id.seekBarLegacy);
 
 
         // Handle Intents & action
