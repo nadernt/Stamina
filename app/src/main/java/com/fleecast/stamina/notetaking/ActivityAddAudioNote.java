@@ -35,6 +35,9 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
+import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayer;
+import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayerPhone;
+import com.fleecast.stamina.legacyplayer.PlayerServiceLegacy;
 import com.fleecast.stamina.models.NoteInfoRealmStruct;
 import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.models.TempNoteInfoStruct;
@@ -614,17 +617,37 @@ public class ActivityAddAudioNote extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(myApplication.isRecordUnderGoing()==Constants.CONST_RECORDER_SERVICE_IS_FREE) {
-                    if(myApplication.isPlaying())
-                    {
-                        Intent intent = new Intent(ActivityAddAudioNote.this,PlayerService.class);
-                        intent.setAction(Constants.ACTION_STOP);
-                        startService(intent);
-                    }
-                    myApplication.setPlaylistHasLoaded(false);
 
-                    Intent intent = new Intent(ActivityAddAudioNote.this, ActivityRecordsPlayList.class);
-                    intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(dbId));
-                    startActivity(intent);
+                    if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                            && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
+                        // your code using RemoteControlClient API here - is between 14-20
+
+                        if (myApplication.isPlaying() || myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED) {
+                            Intent intent = new Intent(ActivityAddAudioNote.this, PlayerServiceLegacy.class);
+                            intent.setAction(Constants.ACTION_STOP_LEGACY);
+                            startService(intent);
+                        }
+
+                        myApplication.setIndexSomethingIsPlaying(0);
+
+                        Intent intent = new Intent(ActivityAddAudioNote.this, ActivityLegacyPlayer.class);
+                        intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, dbId);
+                        startActivity(intent);
+
+                    } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                        if (myApplication.isPlaying()) {
+                            Intent intent = new Intent(ActivityAddAudioNote.this, PlayerService.class);
+                            intent.setAction(Constants.ACTION_STOP);
+                            startService(intent);
+                        }
+                        myApplication.setPlaylistHasLoaded(false);
+
+                        Intent intent = new Intent(ActivityAddAudioNote.this, ActivityRecordsPlayList.class);
+                        intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(dbId));
+                        startActivity(intent);
+
+                    }
 
                 }
             }
@@ -856,16 +879,42 @@ public class ActivityAddAudioNote extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     private void playLatestRecord() {
-        if(myApplication.isPlaying())
-        {
-            Intent intent = new Intent(ActivityAddAudioNote.this,PlayerService.class);
-            intent.setAction(Constants.ACTION_STOP);
-            startService(intent);
+
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
+            // your code using RemoteControlClient API here - is between 14-20
+
+            if (myApplication.isPlaying() || myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED) {
+                Intent intent = new Intent(ActivityAddAudioNote.this, PlayerServiceLegacy.class);
+                intent.setAction(Constants.ACTION_STOP_LEGACY);
+                startService(intent);
+            }
+
+            Intent intent = new Intent(ActivityAddAudioNote.this, ActivityLegacyPlayerPhone.class);
+            intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, dbId);
+
+            intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, "");
+            intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, "");
+
+
+            intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, latestRecordFileName);
+            startActivity(intent);
+
+        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+           if(myApplication.isPlaying())
+            {
+                Intent intent = new Intent(ActivityAddAudioNote.this,PlayerService.class);
+                intent.setAction(Constants.ACTION_STOP);
+                startService(intent);
+            }
+            Intent intent = new Intent(this,ActivityPlayerPhone.class);
+            intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, dbId);
+            intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, latestRecordFileName);
+            startActivity(intent);
+
         }
-        Intent intent = new Intent(this,ActivityPlayerPortrait.class);
-        intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, dbId);
-        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, latestRecordFileName);
-        startActivity(intent);
+
     }
 
     public void startTimer()

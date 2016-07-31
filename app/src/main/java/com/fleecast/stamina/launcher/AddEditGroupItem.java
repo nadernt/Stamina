@@ -60,6 +60,8 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        AppLauncherFragment.returnFromFragmentForResult = false;
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         setContentView(R.layout.activity_add_edit_group_item);
@@ -227,13 +229,8 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
+        AppLauncherFragment.returnFromFragmentForResult= true;
         super.onBackPressed();
-        Intent intent2 = new Intent(this,AddEditGroupItem.class);
-
-        setResult(Constants.REQUEST_ADD_EDIT_GROUP_ACTIVITY, intent2);
-
-        this.finish();
-
     }
 
     @Override

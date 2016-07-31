@@ -188,7 +188,7 @@ public class AddNoteToAudio extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
 
         if(weTypedSomethingNew){
             AlertDialog.Builder adb = new AlertDialog.Builder(this);

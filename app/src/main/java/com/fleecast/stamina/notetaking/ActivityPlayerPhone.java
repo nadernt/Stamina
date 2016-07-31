@@ -29,7 +29,7 @@ import com.fleecast.stamina.models.PlayListHelper;
 import com.fleecast.stamina.utility.Constants;
 
 
-public class ActivityPlayerPortrait extends Activity {
+public class ActivityPlayerPhone extends Activity {
 
     private MyApplication myApplication;
     private Handler handler = new Handler();
@@ -45,7 +45,7 @@ public class ActivityPlayerPortrait extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player_portrait);
+        setContentView(R.layout.activity_player_phone);
 
         myApplication = (MyApplication) getApplicationContext();
 
@@ -70,7 +70,7 @@ public class ActivityPlayerPortrait extends Activity {
         this.getWindow().setLayout(width,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        txtTotalTime = (TextView) findViewById(R.id.txtTotalTimeLegacy);
+        txtTotalTime = (TextView) findViewById(R.id.txtTotalTime);
 
         btnPlayPortrait = (ImageButton) findViewById(R.id.btnPlayPortrait); // Start
         btnStopPortrait = (ImageButton) findViewById(R.id.btnStopPortrait); // Stop
@@ -84,7 +84,7 @@ public class ActivityPlayerPortrait extends Activity {
 
         btnPlayPortrait.setImageResource(R.drawable.ic_action_playback_play);
 
-        seekBar = (SeekBar) findViewById(R.id.seekBarLegacy);
+        seekBar = (SeekBar) findViewById(R.id.seekBar1);
 
 
         // Handle Intents & action
@@ -182,7 +182,7 @@ public class ActivityPlayerPortrait extends Activity {
             playListHelper.loadJustSingleFileForPlay(fileName, dbId);
             Intent intent = new Intent(this, PlayerService.class);
             intent.putExtra(Constants.EXTRA_PLAY_NEW_SESSION, true);
-            // We inform the notification in the service to create the returning intent for the ActivityPlayerPortrait
+            // We inform the notification in the service to create the returning intent for the ActivityPlayerPhone
             intent.putExtra(Constants.EXTRA_PLAY_REQUEST_ISـFROM_PORTRATE_PLAYER, true);
 
             startService(intent);
@@ -233,10 +233,7 @@ public class ActivityPlayerPortrait extends Activity {
 
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-    }
+
 
     private void play() {
         myApplication.setIsPlaying(true);
@@ -427,7 +424,7 @@ public class ActivityPlayerPortrait extends Activity {
                 switch (statusCode) {
 
                     case Constants.PLAYER_SERVICE_STATUS_ERROR:
-                        Toast.makeText(ActivityPlayerPortrait.this, "Error playing the media file!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityPlayerPhone.this, "Error playing the media file!", Toast.LENGTH_SHORT).show();
                         break;
                     case Constants.PLAYER_SERVICE_STATUS_PLAYING:
                         play();

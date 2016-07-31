@@ -54,7 +54,9 @@ public class MusicRetriever {
         myApplication = (MyApplication)context.getApplicationContext();
     }
 
+    public void prepare() {
 
+    }
 
     public ContentResolver getContentResolver() {
         return mContentResolver;

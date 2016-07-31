@@ -144,10 +144,11 @@
             android:layout_gravity="center"
             android:scaleType="fitStart"
             android:background="@color/bleu_de_france"
-            android:src="@drawable/ic_action_mic"
             android:visibility="visible"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_player_decorate"
+            android:padding="10dp" />
 
         <TextView
             android:layout_width="wrap_content"

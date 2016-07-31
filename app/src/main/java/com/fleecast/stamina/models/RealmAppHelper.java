@@ -259,7 +259,9 @@ public class RealmAppHelper {
         List<MostUsedAndRecentAppsStruct> mostUsedAppsStruct = new ArrayList<>();
         RealmResults<AppDbRealmStruct> query = realm.where(AppDbRealmStruct.class).findAllSorted("last_use_time_stamp", Sort.DESCENDING);
         for (int i = 0; i < query.size(); i++) {
-            mostUsedAppsStruct.add(new MostUsedAndRecentAppsStruct(query.get(i).getTitle(), query.get(i).getAppPackageName(), query.get(i).getAppGroup(), query.get(i).getUseRank()));
+
+            if(query.get(i).getUseRank()>Constants.CONST_NULL_ZERO) // we do this because drag & drop add zero to this field and makes mistake.
+                mostUsedAppsStruct.add(new MostUsedAndRecentAppsStruct(query.get(i).getTitle(), query.get(i).getAppPackageName(), query.get(i).getAppGroup(), query.get(i).getUseRank()));
             //Log.e("Most Used Packages", query.get(i).getAppPackageName());
         }
         return mostUsedAppsStruct;

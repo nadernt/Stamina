@@ -14,7 +14,7 @@
         android:layout_alignParentStart="true" />
 
     <RelativeLayout
-        android:id="@+id/detailsOfAudioNoteLegacy"
+        android:id="@+id/detailsOfAudioNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?android:attr/detailsElementBackground"
@@ -25,11 +25,12 @@
         <ImageView
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:id="@+id/imgNoNotePlaceHolderLegacy"
+            android:id="@+id/imgNoNotePlaceHolder"
             android:layout_gravity="center"
             android:scaleType="fitStart"
             android:background="@color/bleu_de_france"
-            android:src="@drawable/ic_action_mic"
+            android:src="@drawable/ic_player_decorate"
+            android:padding="10dp" 
             android:visibility="visible"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
@@ -38,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/txtTitlePlayerLegacy"
+            android:id="@+id/txtTitlePlayer"
             android:layout_gravity="center_horizontal|top"
             android:textColor="#000000"
             android:textSize="16dp"
@@ -47,23 +48,23 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/imgHideDetailsLegacy"
-            android:layout_toLeftOf="@+id/imgHideDetailsLegacy" />
+            android:layout_toStartOf="@+id/imgHideDetails"
+            android:layout_toLeftOf="@+id/imgHideDetails" />
 
         <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:id="@+id/scrollViewAddAudioNoteTextLegacy"
+            android:id="@+id/scrollViewAddAudioNoteText"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_below="@+id/txtTitlePlayerLegacy">
+            android:layout_below="@+id/txtTitlePlayer">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/txtDetailsPlayerLegacy"
+                android:id="@+id/txtDetailsPlayer"
                 android:textColor="#000000"
                 android:textSize="14dp"
                 android:padding="5dp" />
@@ -72,7 +73,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imgHideDetailsLegacy"
+            android:id="@+id/imgHideDetails"
             android:src="@drawable/ic_action_undo"
             android:background="@color/accent_material_light"
             android:layout_alignParentTop="true"
@@ -92,45 +93,45 @@
         android:layout_toEndOf="@+id/titlesFragmentListViwe">
 
         <ImageButton
-            android:id="@+id/btnPlayLegacy"
+            android:id="@+id/btnPlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Play"
             android:src="@drawable/ic_action_playback_play"
             android:background="@color/amber"
-            android:layout_below="@+id/seekBarLegacy"
-            android:layout_toLeftOf="@+id/btnPauseLegacy"
-            android:layout_toStartOf="@+id/btnPauseLegacy"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toLeftOf="@+id/space"
+            android:layout_toStartOf="@+id/space"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:contentDescription="" />
 
         <ImageButton
-            android:id="@+id/btnRewindTrackLegacy"
+            android:id="@+id/btnRewindTrack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop"
             android:src="@drawable/ic_action_playback_prev"
             android:background="@color/alien_green"
-            android:layout_below="@+id/seekBarLegacy"
-            android:layout_toLeftOf="@+id/btnPlayLegacy"
-            android:layout_toStartOf="@+id/btnPlayLegacy"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toLeftOf="@+id/btnPlay"
+            android:layout_toStartOf="@+id/btnPlay"
             android:layout_margin="10dp" />
 
         <SeekBar
-            android:id="@+id/seekBarLegacy"
+            android:id="@+id/seekBar2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtTotalTimeLegacy"
-            android:layout_alignRight="@+id/txtTotalTimeLegacy"
-            android:layout_alignEnd="@+id/txtTotalTimeLegacy" />
+            android:layout_below="@+id/txtTotalTime1"
+            android:layout_alignRight="@+id/txtTotalTime1"
+            android:layout_alignEnd="@+id/txtTotalTime1" />
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Playing"
-            android:id="@+id/txtTotalTimeLegacy"
+            android:id="@+id/txtTotalTime1"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -138,35 +139,35 @@
             android:layout_marginTop="8dp" />
 
         <ImageButton
-            android:id="@+id/btnNextTrackLegacy"
+            android:id="@+id/btnNextTrack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop"
             android:src="@drawable/ic_action_playback_next"
             android:background="@color/alien_green"
-            android:layout_below="@+id/seekBarLegacy"
-            android:layout_toRightOf="@+id/btnStopLegacy"
-            android:layout_toEndOf="@+id/btnStopLegacy"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toRightOf="@+id/btnStop"
+            android:layout_toEndOf="@+id/btnStop"
             android:layout_margin="10dp" />
 
         <ImageButton
-            android:id="@+id/btnStopLegacy"
+            android:id="@+id/btnStop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop"
             android:src="@drawable/ic_action_playback_stop"
             android:background="@color/american_rose"
-            android:layout_below="@+id/seekBarLegacy"
-            android:layout_toRightOf="@+id/btnPauseLegacy"
-            android:layout_toEndOf="@+id/btnPauseLegacy"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toRightOf="@+id/space"
+            android:layout_toEndOf="@+id/space"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp" />
 
         <Space
             android:layout_width="10dp"
             android:layout_height="30dp"
-            android:id="@+id/btnPauseLegacy"
-            android:layout_below="@+id/seekBarLegacy"
+            android:id="@+id/space"
+            android:layout_below="@+id/seekBar2"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
@@ -174,27 +175,27 @@
             android:layout_marginBottom="10dp" />
 
         <ImageButton
-            android:id="@+id/btnNextNoteLegacy"
+            android:id="@+id/btnNextNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop"
             android:src="@drawable/ic_action_arrow_bottom"
             android:background="@color/accent_material_light"
-            android:layout_below="@+id/seekBarLegacy"
-            android:layout_toRightOf="@+id/btnNextTrackLegacy"
-            android:layout_toEndOf="@+id/btnNextTrackLegacy"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toRightOf="@+id/btnNextTrack"
+            android:layout_toEndOf="@+id/btnNextTrack"
             android:layout_marginTop="10dp" />
 
         <ImageButton
-            android:id="@+id/btnRewindNoteLegacy"
+            android:id="@+id/btnRewindNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Stop"
             android:src="@drawable/ic_action_arrow_top"
             android:background="@color/accent_material_light"
-            android:layout_below="@+id/seekBarLegacy"
-            android:layout_toLeftOf="@+id/btnRewindTrackLegacy"
-            android:layout_toStartOf="@+id/btnRewindTrackLegacy"
+            android:layout_below="@+id/seekBar2"
+            android:layout_toLeftOf="@+id/btnRewindTrack"
+            android:layout_toStartOf="@+id/btnRewindTrack"
             android:layout_marginTop="10dp" />
     </RelativeLayout>
 </RelativeLayout>

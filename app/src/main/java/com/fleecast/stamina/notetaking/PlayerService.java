@@ -11,10 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
 import android.os.RemoteException;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.media.session.MediaControllerCompat;
@@ -28,7 +25,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
-import com.fleecast.stamina.chathead.MainActivity;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
@@ -49,7 +45,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private NotificationCompat.Builder mBuilder;
     AudioFocusHelper mAudioFocusHelper = null;
     private int lastStateBeforeLoseAudioFocuse =-1;
-    private boolean playRequestIsFromPortraitePlayer=false;
+    private boolean playRequestIsFromPhonePlayer =false;
 
     // do we have audio focus?
     enum AudioFocus {
@@ -83,8 +79,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private PendingIntent createPendingIntent() {
         Intent intent;
 
-        if(playRequestIsFromPortraitePlayer)
-            intent = new Intent(this, ActivityPlayerPortrait.class);
+        if(playRequestIsFromPhonePlayer)
+            intent = new Intent(this, ActivityPlayerPhone.class);
         else
             intent = new Intent(this, ActivityRecordsPlayList.class);
 
@@ -95,7 +91,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     private void buildNotification( NotificationCompat.Action action ) {
         NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
         style.setMediaSession( mMediaSession.getSessionToken() );
-
         //new NotificationCompat.BigTextStyle().bigText(aVeryLongString)
         //style.setShowCancelButton(true);
 
@@ -149,17 +144,6 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         startForeground(idNotification, mBuilder.build());
     }
 
-
-    private Notification createNotificationCompat(PendingIntent intent) {
-        return  new NotificationCompat.Builder(this)
-                .setContentTitle(getText(R.string.app_name))
-                .setContentText(getText(R.string.notificationText))
-                .setSmallIcon(R.drawable.ic_sun)
-                .setContentIntent(intent)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                .build();
-    }
-
     public static Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap = null;
 
@@ -198,6 +182,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             else if (action.equals(Constants.ACTION_NEXT)) nextRequest();
             else if (action.equals(Constants.ACTION_STOP)) stopRequest(true);
             else if (action.equals(Constants.ACTION_REWIND)) rewindRequest();
+
         }
 
 
@@ -206,9 +191,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             else if (intent.hasExtra(Constants.EXTRA_UPDATE_SEEKBAR)) updateSeekBarRequest();
             else if (intent.hasExtra(Constants.EXTRA_PLAY_NEW_SESSION)) {
                 if(intent.hasExtra(Constants.EXTRA_PLAY_REQUEST_ISـFROM_PORTRATE_PLAYER))
-                    playRequestIsFromPortraitePlayer = true;
+                    playRequestIsFromPhonePlayer = true;
                 else
-                    playRequestIsFromPortraitePlayer = false;
+                    playRequestIsFromPhonePlayer = false;
                 preparePlaylist();
             }
 
@@ -293,12 +278,10 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
         reinitForNewItemOrResume =true;
 
         if (myApplication.getIndexSomethingIsPlaying()== myApplication.stackPlaylist.size()-1) {
-            Log.e("DDDDDDDd","SOmraya");
             stopRequest(true);
         }
         else
         {
-            Log.e("DDDDDDDd","Momra");
             myApplication.setIndexSomethingIsPlaying(myApplication.getIndexSomethingIsPlaying()+1);
             playRequest();
         }
@@ -327,30 +310,9 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
     }
 
     private void playRequest() {
-      //  if( mMediaSessionManager == null ) {
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
-            // your code using RemoteControlClient API here - is between 14-20
-            mPlayer = new MediaPlayer();
-
-            mAudioFocusHelper = new AudioFocusHelper(getApplicationContext(), this);
-
-           /* PendingIntent pendingIntent = createPendingIntent();
-
-            Notification notification = createNotificationCompat(pendingIntent);
-            //}
-
-            startForeground(55, notification);*/
-            Log.e("HHHHHHHHHHHHH", "" + myApplication.getIndexSomethingIsPlaying());
-
-
-        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if( mMediaSessionManager == null ) {
             initMediaSessions();
         }
-
-
-
-       // }
 
         try {
             if (mPlayer == null || !areEventsInitiated) {
@@ -369,8 +331,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
 /*
                     Log.e("HHHHHHHHHHHHH", "" + myApplication.getIndexSomethingIsPlaying());
 */
-                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mPlayer.setDataSource(getApplicationContext(), Uri.parse(myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getFileName()));
+                mPlayer.setDataSource(myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getFileName());
                 mPlayer.prepareAsync();
             } else {
                 mPlayer.start();
@@ -380,7 +341,7 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             }
             mController.getTransportControls().play();
 
-          //  tryToGetAudioFocus();
+            tryToGetAudioFocus();
         }
         catch(Exception e){
             Toast.makeText(this,"Error in media format!\n" + e.getMessage(),Toast.LENGTH_LONG).show();
@@ -463,8 +424,8 @@ public class PlayerService extends Service implements MediaPlayer.OnPreparedList
             mPlayer = new MediaPlayer();
             mAudioFocusHelper = new AudioFocusHelper(getApplicationContext(), this);
 
-            mMediaSession = new MediaSessionCompat(getApplicationContext(), "stamina player session1");
-            //mMediaSessionManager = (MediaSessionManager) mContext.getSystemService(Context.MEDIA_SESSION_SERVICE);
+            mMediaSession = new MediaSessionCompat(getApplicationContext(), "stamina player session");
+            mMediaSessionManager = (MediaSessionManager) mContext.getSystemService(Context.MEDIA_SESSION_SERVICE);
             mController =new MediaControllerCompat(getApplicationContext(), mMediaSession.getSessionToken());
             mMediaSession.setActive(true);
             mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);

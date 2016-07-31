@@ -16,8 +16,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
@@ -86,9 +88,6 @@ public class ActivityAddTextNote extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayUseLogoEnabled(false);
-
-
-
 
         txtTitle = (EditText) findViewById(R.id.inputTextNoteTitle);
         txtDescription = (EditText) findViewById(R.id.inputTextNoteDescription);

@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,7 +56,6 @@ import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.models.PlayListHelper;
 import com.fleecast.stamina.models.RealmAudioNoteHelper;
 import com.fleecast.stamina.notetaking.AddNoteToAudio;
-import com.fleecast.stamina.notetaking.PlayerService;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Utility;
@@ -69,7 +67,7 @@ import java.io.IOException;
 /**
  * Main activity: shows media player buttons. This activity shows the media player buttons and
  * lets the user click them. No media handling is done here -- everything is done by passing
- * Intents to our {@link MusicService}.
+ * Intents to our {@link PlayerServiceLegacy}.
  */
 public class ActivityLegacyPlayer extends Activity implements OnClickListener {
 
@@ -116,7 +114,46 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
         LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
                 new IntentFilter(Constants.INTENTFILTER_PLAYER_SERVICE)
         );
+        if (myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+            myApplication.setIsPlaying(true);
+        } else {
+            myApplication.setIsPlaying(false);
+        }
+
+        parentDbId =  myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getParentDbId();
+
+        playListHelper = new PlayListHelper(this, String.valueOf(parentDbId));
+
+        ArrayAdapter<Spanned> adapter = new ArrayAdapter<Spanned>(mContext,
+                R.layout.listview_player, playListHelper.loadAudioListForListViewAdapter());
+
+
+        listView.setAdapter(adapter);
+
+        highLightList();
+
+        //We set here to be sure there is not any mistake from any control before and thread start correctly.
+        oldMediaSeekPosition = 0;
+        seekBar.setMax(myApplication.getMediaDuration());
+        startPlayProgressUpdater();
     }
+
+    public void highLightList() {
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                highlightSelectedPlayItem(myApplication.getIndexSomethingIsPlaying());
+
+                highlightSelectedNoteItem(notePointer);
+
+
+            }
+        }, 200);
+    }
+
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -211,24 +248,39 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
 
     private void updateUI() {
         Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.hasExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID)) {
 
-                parentDbId = intent.getIntExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, Constants.CONST_NULL_ZERO);
+                if (intent.hasExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID)) {
+                    myApplication.setCurrentMediaPosition(0);
+                    parentDbId = intent.getIntExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, Constants.CONST_NULL_ZERO);
 
-                playListHelper = new PlayListHelper(this, String.valueOf(parentDbId));
+                } else {
+                    if (getIntent().getAction().equals(Constants.ACTION_SHOW_PLAYER_NO_NEW)) {
 
-                ArrayAdapter<Spanned> adapter = new ArrayAdapter<Spanned>(mContext,
-                        R.layout.listview_player, playListHelper.loadAudioListForListViewAdapter());
+                        if (myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
+                            myApplication.setIsPlaying(true);
+                        } else {
+                            myApplication.setIsPlaying(false);
+                        }
 
-                adapter.notifyDataSetChanged();
-
-                listView.setAdapter(adapter);
+                        parentDbId =  myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getParentDbId();
 
 
-            }
+                        //We set here to be sure there is not any mistake from any control before and thread start correctly.
+                        oldMediaSeekPosition = 0;
+                        seekBar.setMax(myApplication.getMediaDuration());
+                        startPlayProgressUpdater();
+                    }
 
-        }
+                }
+        playListHelper = new PlayListHelper(this, String.valueOf(parentDbId));
+
+        ArrayAdapter<Spanned> adapter = new ArrayAdapter<Spanned>(mContext,
+                R.layout.listview_player, playListHelper.loadAudioListForListViewAdapter());
+
+
+        listView.setAdapter(adapter);
+
+        highLightList();
 
         detailsOfAudioNote.setVisibility(View.GONE);
 
@@ -236,17 +288,48 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
+                if(detailsOfAudioNote.getVisibility()==View.VISIBLE) {
+
+                return;
+                }
+
                 Spannable itemValue = (Spannable) listView.getItemAtPosition(position);
 
                 Toast.makeText(getApplicationContext(),
                         itemValue, Toast.LENGTH_LONG)
                         .show();
 
+                if (myApplication.isPlaying() || myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED) {
+                    Intent intent = new Intent(mContext, PlayerServiceLegacy.class);
+                    intent.setAction(Constants.ACTION_STOP_LEGACY);
+                    startService(intent);
+                    final int pos = position;
+
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            myApplication.setIndexSomethingIsPlaying(pos);
+
+                            Intent serviceIntent = new Intent(mContext, PlayerServiceLegacy.class);
+                            serviceIntent.setAction(Constants.ACTION_PLAY_LEGACY);
+                            startService(serviceIntent);
+
+                        }
+                    }, 100);
+
+
+
+                }else{
+
                 myApplication.setIndexSomethingIsPlaying(position);
 
-                Intent serviceIntent = new Intent(mContext, MusicService.class);
-                serviceIntent.setAction(Constants.ACTION_PLAY);
+                Intent serviceIntent = new Intent(mContext, PlayerServiceLegacy.class);
+                serviceIntent.setAction(Constants.ACTION_PLAY_LEGACY);
                 startService(serviceIntent);
+                }
 
 
             }
@@ -262,7 +345,7 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
                     return false;
 
                 final int chosenItemIndex = position;
-                String[] items = {"Add/Edit note","Delete note","Delete note and audio","Share"};
+                String[] items = {"View note","Add/Edit note","Delete note","Delete note and audio","Share"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setTitle("Options");
@@ -273,10 +356,17 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which==0){
+
+                            notePointer=chosenItemIndex;
+                            highlightSelectedNoteItem(chosenItemIndex);
+                            fadeWidgets();
+                            fillTextNotesForUser();
+                        }
+                        else if (which==1){
                             tmpCurrentPlayingFile = myApplication.getIndexSomethingIsPlaying();
                             runAddAudioNoteActivity(parentDbId,myApplication.stackPlaylist.get(chosenItemIndex).getId());
                         }
-                        else if(which==1){
+                        else if(which==2){
 
                             RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
 
@@ -291,10 +381,10 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
                             listView.setAdapter(adapter);
 
                         }
-                        else if (which==2){
+                        else if (which==3){
                             deleteFileAndNote(true,chosenItemIndex,String.valueOf(parentDbId));
                         }
-                        else if(which==3){
+                        else if(which==4){
 
                             File f=new File(myApplication.stackPlaylist.get(chosenItemIndex).getFileName().toString());
 
@@ -379,22 +469,26 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
     }
 
     public void onClick(View target) {
-        // Send the correct intent to the MusicService, according to the button that was clicked
-        Intent serviceIntent = new Intent(this, MusicService.class);
+        // Send the correct intent to the PlayerServiceLegacy, according to the button that was clicked
+        Intent serviceIntent = new Intent(this, PlayerServiceLegacy.class);
         if (target == mPlayButton) {
-            serviceIntent.setAction(Constants.ACTION_PLAY);
+            serviceIntent.setAction(Constants.ACTION_PLAY_LEGACY);
             startService(serviceIntent);
         } else if (target == mPauseButton) {
-            serviceIntent.setAction(Constants.ACTION_PAUSE);
+            serviceIntent.setAction(Constants.ACTION_PAUSE_LEGACY);
             startService(serviceIntent);
         } else if (target == mSkipButton) {
-            serviceIntent.setAction(Constants.ACTION_SKIP);
+            serviceIntent.setAction(Constants.ACTION_SKIP_LEGACY);
             startService(serviceIntent);
         } else if (target == mRewindButton) {
-            serviceIntent.setAction(Constants.ACTION_REWIND);
+            serviceIntent.setAction(Constants.ACTION_REWIND_LEGACY);
             startService(serviceIntent);
         } else if (target == mStopButton) {
-            serviceIntent.setAction(Constants.ACTION_STOP);
+            serviceIntent.setAction(Constants.ACTION_STOP_LEGACY);
+            seekBar.setProgress(0);
+            currentPosition=0;
+            myApplication.setCurrentMediaPosition(0);
+            setProgressText();
             startService(serviceIntent);
         } else if (target == mRewindNote) {
             if (notePointer > 0) {
@@ -431,8 +525,8 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
 
         if(myApplication.isPlaying()) {
             //First we try to kill the current working player service.
-            Intent intent = new Intent(mContext, MusicService.class);
-            intent.setAction(Constants.ACTION_STOP);
+            Intent intent = new Intent(mContext, PlayerServiceLegacy.class);
+            intent.setAction(Constants.ACTION_STOP_LEGACY);
             startService(intent);
 
         }
@@ -684,7 +778,7 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
             case KeyEvent.KEYCODE_HEADSETHOOK:
-                startService(new Intent(Constants.ACTION_TOGGLE_PLAYBACK));
+                startService(new Intent(Constants.ACTION_TOGGLE_PLAYBACK_LEGACY));
                 return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -692,7 +786,7 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
 
     public void startPlayProgressUpdater() {
 
-        currentPosition = MusicService.getCurrentPosition();
+        currentPosition = PlayerServiceLegacy.getCurrentPosition();
 
         if (oldMediaSeekPosition != currentPosition) {
 
@@ -718,7 +812,7 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
     }
 
     private void updateSeekChange() {
-         MusicService.processSeekToRequest(seekBar.getProgress());
+         PlayerServiceLegacy.processSeekToRequest(seekBar.getProgress());
         setProgressText();
     }
 
@@ -797,9 +891,9 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
     @Override
     protected void onPause() {
         super.onPause();
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-        }
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+                new IntentFilter(Constants.INTENTFILTER_PLAYER_SERVICE)
+        );
     }
 
     @Override

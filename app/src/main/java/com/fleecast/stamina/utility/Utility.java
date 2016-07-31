@@ -193,7 +193,21 @@ public class Utility {
                 .show();
 
     }
+    public static void showMessage(CharSequence messageToUser, String titleOfDialog, Context context,boolean showIcon,String confirmText){
 
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(titleOfDialog);
+                if(titleOfDialog!=null)
+                    dialog.setMessage(messageToUser);
+            dialog.setPositiveButton(confirmText, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+            if(showIcon)
+                dialog.setIcon(android.R.drawable.ic_dialog_alert);
+                dialog.show();
+
+    }
     public static void snackMaker(View view,String userMessage , String txtUserAction,int actionColor,int timeLast){
 
         Snackbar snackbar = Snackbar.make(view, userMessage, timeLast)

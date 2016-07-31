@@ -47,6 +47,8 @@ public class Constants {
 
 
     public static final String ACTION_SHOW_PLAYER_NO_NEW = "com.fleecast.stamina.action.SHOW_PLAYER_NO_NEW";
+
+    // Main Player Actions
     public static final String ACTION_CLOSE = "com.fleecast.stamina.action.CLOSE";
     public static final String ACTION_PLAY = "com.fleecast.stamina.action.PLAY";
     public static final String ACTION_PAUSE =  "com.fleecast.stamina.action.PAUSE";
@@ -54,8 +56,20 @@ public class Constants {
     public static final String ACTION_STOP =  "com.fleecast.stamina.action.STOP";
     public static final String ACTION_REWIND =  "com.fleecast.stamina.action.REWIND";
     public static final String ACTION_SKIP =  "com.fleecast.stamina.action.SKIP";
-    public static final String ACTION_TOGGLE_PLAYBACK = "com.fleecast.stamina.action.SKIP.TOGGLE_PLAYBACK";
+    public static final String ACTION_TOGGLE_PLAYBACK = "com.fleecast.stamina.action.TOGGLE_PLAYBACK";
+
+    // Legacy Player Actions
+    public static final String ACTION_CLOSE_LEGACY = "com.fleecast.stamina.action.legacy.CLOSE";
+    public static final String ACTION_PLAY_LEGACY = "com.fleecast.stamina.action.legacy.PLAY";
+    public static final String ACTION_PAUSE_LEGACY =  "com.fleecast.stamina.action.legacy.PAUSE";
+    public static final String ACTION_NEXT_LEGACY =  "com.fleecast.stamina.action.legacy.SKIP";
+    public static final String ACTION_STOP_LEGACY =  "com.fleecast.stamina.action.legacy.STOP";
+    public static final String ACTION_REWIND_LEGACY =  "com.fleecast.stamina.action.legacy.REWIND";
+    public static final String ACTION_SKIP_LEGACY =  "com.fleecast.stamina.action.legacy.SKIP";
+    public static final String ACTION_TOGGLE_PLAYBACK_LEGACY = "com.fleecast.stamina.action.legacy.TOGGLE_PLAYBACK";
+
     public static final String ACTION_STOP_RECORD =  "com.fleecast.stamina.action.STOP_RECORD";
+
 
     public static final String EXTRA_SEEK_TO = "ExtraSeekTo";
     public static final String EXTRA_UPDATE_SEEKBAR = "ExtraUpdateSeekBar";

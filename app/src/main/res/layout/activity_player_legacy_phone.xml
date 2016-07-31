@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:id="@+id/relativeLayout3">
+    <ImageButton
+        android:id="@+id/btnPlayLegacyPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play"
+        android:src="@drawable/ic_action_playback_play"
+        android:background="@color/amber"
+        android:layout_alignTop="@+id/btnStopLegacyPhone"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
+    <ImageButton
+        android:id="@+id/btnPauseLegacyPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pause"
+        android:src="@drawable/ic_action_playback_pause"
+        android:background="@color/about_instagram_color"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="22dp"
+        android:layout_alignTop="@+id/btnStopLegacyPhone"
+        android:layout_toRightOf="@+id/btnPlayLegacyPhone"
+        android:layout_toEndOf="@+id/btnPlayLegacyPhone"
+        />
+    <ImageButton
+        android:id="@+id/btnStopLegacyPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:src="@drawable/ic_action_playback_stop"
+        android:background="@color/american_rose"
+        android:layout_below="@+id/seekBar1LegacyPhone"
+        android:layout_toRightOf="@+id/btnPauseLegacyPhone"
+        android:layout_toEndOf="@+id/btnPauseLegacyPhone"
+        android:layout_margin="10dp"
+        />
+
+    <SeekBar
+        android:id="@+id/seekBar1LegacyPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtTotalTimeLegacyPhone"
+        android:layout_alignRight="@+id/txtTotalTimeLegacyPhone"
+        android:layout_alignEnd="@+id/txtTotalTimeLegacyPhone" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Playing"
+        android:id="@+id/txtTotalTimeLegacyPhone"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="8dp" />
+
+
+</RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/relativeLayout3"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/txtTitleLegacyPhonePlayer"
+                android:textColor="@color/air_force_blue"
+                android:visibility="gone"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginBottom="14dp"
+                android:ellipsize="end"
+                android:maxLines="2" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/txtDescriptionLegacyPhonePlayer"
+                android:visibility="gone"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginBottom="14dp"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

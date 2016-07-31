@@ -13,13 +13,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -41,7 +41,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -50,6 +49,8 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayer;
+import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayerPhone;
+import com.fleecast.stamina.legacyplayer.PlayerServiceLegacy;
 import com.fleecast.stamina.models.NoteInfoStruct;
 import com.fleecast.stamina.models.NotesAdapter;
 import com.fleecast.stamina.models.RealmContactHelper;
@@ -58,14 +59,13 @@ import com.fleecast.stamina.notetaking.ActivityAddAudioNote;
 import com.fleecast.stamina.notetaking.ActivityAddTextNote;
 import com.fleecast.stamina.notetaking.ActivityEditPhoneRecordNote;
 import com.fleecast.stamina.notetaking.ActivityIgnoreListManager;
-import com.fleecast.stamina.notetaking.ActivityPlayerPortrait;
+import com.fleecast.stamina.notetaking.ActivityPlayerPhone;
 import com.fleecast.stamina.notetaking.ActivityRecordsPlayList;
 import com.fleecast.stamina.notetaking.ActivityViewTextNote;
 import com.fleecast.stamina.notetaking.NoteDeleteHelper;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
 import com.fleecast.stamina.notetaking.PlayerService;
 import com.fleecast.stamina.settings.ActivitySettings;
-import com.fleecast.stamina.todo.ActivityTodoParentRecyclerView;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView = (RecyclerView) findViewById(R.id.rvNotes);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT)  {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -252,8 +252,35 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                //Remove swiped item from list and notify the RecyclerView
-                deleteItem(adapter.getItemAtPosition(viewHolder.getAdapterPosition()), true);
+
+                if(swipeDir == ItemTouchHelper.LEFT) {
+                    NoteInfoStruct noteInfoStruct = adapter.getItemAtPosition(viewHolder.getAdapterPosition());
+                    Intent intent = new Intent(context, ActivityViewTextNote.class);
+                    intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, noteInfoStruct.getId());
+
+                    if (!noteInfoStruct.getHasAudio()) {
+
+                    } else if (noteInfoStruct.getHasAudio() && noteInfoStruct.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+
+
+                    } else if (noteInfoStruct.getHasAudio() && (noteInfoStruct.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
+
+                    }
+
+
+
+
+
+                    intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, noteInfoStruct.getTitle());
+                    intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, noteInfoStruct.getDescription());
+
+                    startActivity(intent);
+                    adapter.notifyDataSetChanged();
+
+                }else {
+                    //Remove swiped item from list and notify the RecyclerView
+                    deleteItem(adapter.getItemAtPosition(viewHolder.getAdapterPosition()), true);
+                }
             }
         };
 
@@ -569,51 +596,87 @@ public class MainActivity extends AppCompatActivity
 
                         if (myApplication.isRecordUnderGoing() == Constants.CONST_RECORDER_SERVICE_IS_FREE) {
 
-                            myApplication.setIndexSomethingIsPlaying(0);
-                            Intent intent = new Intent(context, ActivityLegacyPlayer.class);
-                            intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, item.getId());
-                            startActivity(intent);
+                            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                                    && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
+                                // your code using RemoteControlClient API here - is between 14-20
 
-                            /* if (myApplication.isPlaying()) {
-                                Intent intent = new Intent(context, PlayerService.class);
-                                intent.setAction(Constants.ACTION_STOP);
-                                startService(intent);
+                                if (myApplication.isPlaying() || myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED) {
+                                    Intent intent = new Intent(context, PlayerServiceLegacy.class);
+                                    intent.setAction(Constants.ACTION_STOP_LEGACY);
+                                    startService(intent);
+                                }
+
+                                myApplication.setIndexSomethingIsPlaying(0);
+
+                                Intent intent = new Intent(context, ActivityLegacyPlayer.class);
+                                intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, item.getId());
+                                startActivity(intent);
+
+                            } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                                if (myApplication.isPlaying()) {
+                                    Intent intent = new Intent(context, PlayerService.class);
+                                    intent.setAction(Constants.ACTION_STOP);
+                                    startService(intent);
+                                }
+                                myApplication.setPlaylistHasLoaded(false);
+
+                                Intent intent = new Intent(context, ActivityRecordsPlayList.class);
+                                intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(item.getId()));
+                                startActivity(intent);
+
                             }
-                            myApplication.setPlaylistHasLoaded(false);
-
-                            Intent intent = new Intent(context, ActivityRecordsPlayList.class);
-                            intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(item.getId()));
-                            startActivity(intent);*/
-
 
                         }
                     }
                 } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
 
-                    if (myApplication.isPlaying()) {
-                        Intent intent = new Intent(context, PlayerService.class);
-                        intent.setAction(Constants.ACTION_STOP);
-                        startService(intent);
+
+                    if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                            && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
+                        // your code using RemoteControlClient API here - is between 14-20
+
+                        if (myApplication.isPlaying() || myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED) {
+                            Intent intent = new Intent(context, PlayerServiceLegacy.class);
+                            intent.setAction(Constants.ACTION_STOP_LEGACY);
+                            startService(intent);
+                        }
+
+                        Intent intent = new Intent(context, ActivityLegacyPlayerPhone.class);
+                        intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
+                        String filePath = ExternalStorageManager.getWorkingDirectory() +
+                                Constants.CONST_PHONE_CALLS_DIRECTORY_NAME +
+                                File.separator + String.valueOf(item.getId());
+                        intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
+                        intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, item.getDescription());
+
+                        Log.e("EEEEEEE", filePath);
+                        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, filePath + Constants.RECORDER_AUDIO_FORMAT_AMR);
+                        startActivity(intent);
+
+                    } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                        if (myApplication.isPlaying()) {
+                            Intent intent = new Intent(context, PlayerService.class);
+                            intent.setAction(Constants.ACTION_STOP);
+                            startService(intent);
+                        }
+
+                        Intent intent = new Intent(context, ActivityPlayerPhone.class);
+                        intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
+                        String filePath = ExternalStorageManager.getWorkingDirectory() +
+                                Constants.CONST_PHONE_CALLS_DIRECTORY_NAME +
+                                File.separator + String.valueOf(item.getId());
+                        intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
+                        intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, item.getDescription());
+
+                        Log.e("EEEEEEE", filePath);
+                        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, filePath + Constants.RECORDER_AUDIO_FORMAT_AMR);
+                        startActivity(intent);
+
                     }
 
-                    Intent intent = new Intent(context, ActivityPlayerPortrait.class);
-                    intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
-                    String filePath = ExternalStorageManager.getWorkingDirectory() +
-                            Constants.CONST_PHONE_CALLS_DIRECTORY_NAME +
-                            File.separator + String.valueOf(item.getId());
-                    intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
-                    intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, item.getDescription());
 
-                    Log.e("EEEEEEE", filePath);
-                    intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, filePath + Constants.RECORDER_AUDIO_FORMAT_AMR);
-                    startActivity(intent);
-
-                    /*
-                    Intent i = new Intent(context, ActivityEditPhoneRecordNote.class);
-                    i.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
-                    i.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
-                    i.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, item.getDescription());
-                    startActivity(i);*/
                 }
 
               /*  Intent i = new Intent(getApplicationContext(), ActivityEditPhoneRecordNote.class);
@@ -1035,9 +1098,24 @@ public class MainActivity extends AppCompatActivity
                 if (myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED ||
                         myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PLAYING) {
 
-                    Intent tmpIntent = new Intent(context, PlayerService.class);
-                    tmpIntent.setAction(Constants.ACTION_STOP);
-                    startService(tmpIntent);
+
+                    if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                            && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
+                        // your code using RemoteControlClient API here - is between 14-20
+
+                            Intent intent = new Intent(context, PlayerServiceLegacy.class);
+                            intent.setAction(Constants.ACTION_STOP_LEGACY);
+                            startService(intent);
+
+                    } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                            Intent intent = new Intent(context, PlayerService.class);
+                            intent.setAction(Constants.ACTION_STOP);
+                            startService(intent);
+
+                    }
+
+
 
                 }
 
@@ -1418,7 +1496,7 @@ public class MainActivity extends AppCompatActivity
             layout.setPadding(2, 2, 2, 2);
 
             TextView tv = new TextView(context);
-            tv.setText("You are deleting all of trash file this operation doeas not revert back!");
+            tv.setText("You are deleting all of trash files. This operation does not revert back!");
             tv.setPadding(40, 40, 40, 40);
             tv.setGravity(Gravity.LEFT);
             tv.setTextSize(20);
@@ -1501,7 +1579,8 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
                     intent.putExtra(Intent.EXTRA_SUBJECT,
                             "Bug Report");
-                    intent.putExtra(Intent.EXTRA_TEXT, "Section of app you got error or problem (e.g Recorder): " + "\n\n" +
+                    intent.putExtra(Intent.EXTRA_TEXT, "Android version (if possible): " + "\n\n" +
+                            "Section of app you get error or problem (e.g Recorder): " + "\n\n" +
                             "Error or problem detail: ");
                     startActivity(intent);
 

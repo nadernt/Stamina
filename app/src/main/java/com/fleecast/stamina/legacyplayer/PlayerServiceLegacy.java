@@ -44,8 +44,6 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
-import com.fleecast.stamina.notetaking.ActivityPlayerPortrait;
-import com.fleecast.stamina.notetaking.ActivityRecordsPlayList;
 import com.fleecast.stamina.utility.Constants;
 
 import java.io.IOException;
@@ -57,8 +55,9 @@ import java.io.IOException;
  * {@link ActivityLegacyPlayer}, which signal the service to perform specific operations: Play, Pause,
  * Rewind, Skip, etc.
  */
-public class MusicService extends Service implements OnCompletionListener, OnPreparedListener,
-        OnErrorListener, MusicFocusable {
+public class PlayerServiceLegacy extends Service implements OnCompletionListener, OnPreparedListener,
+        OnErrorListener, MusicFocusableLegacy,
+        PrepareMusicRetrieverTask.MusicRetrieverPreparedListener {
 
     // The tag we put on debug messages
     final static String TAG = "LegacyMusicPlayer";
@@ -71,13 +70,13 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     // our media player
     static MediaPlayer mPlayer = null;
 
-    // our AudioFocusHelper object, if it's available (it's available on SDK level >= 8)
+    // our AudioFocusHelperLegacy object, if it's available (it's available on SDK level >= 8)
     // If not available, this will be null. Always check for null before using!
-    AudioFocusHelper mAudioFocusHelper = null;
+    AudioFocusHelperLegacy mAudioFocusHelperLegacy = null;
     private MusicRetriever mRetriever;
     private MyApplication myApplication;
     private Handler handler;
-    private boolean playRequestIsFromPortraitePlayer=false;
+    private boolean playRequestIsFromPhonePlayer =false;
 
     // indicates the state our service:
     enum State {
@@ -195,11 +194,12 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
 
         // Create the retriever and start an asynchronous task that will prepare it.
         mRetriever = new MusicRetriever(this);
+        (new PrepareMusicRetrieverTask(mRetriever,this)).execute();
 
 
         // create the Audio Focus Helper, if the Audio Focus feature is available (SDK 8 or above)
         if (android.os.Build.VERSION.SDK_INT >= 8)
-            mAudioFocusHelper = new AudioFocusHelper(getApplicationContext(), this);
+            mAudioFocusHelperLegacy = new AudioFocusHelperLegacy(getApplicationContext(), this);
         else
             mAudioFocus = AudioFocus.Focused; // no focus feature, so we always "have" audio focus
 
@@ -216,12 +216,22 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
-        if (action.equals(Constants.ACTION_TOGGLE_PLAYBACK)) processTogglePlaybackRequest();
-        else if (action.equals(Constants.ACTION_PLAY)){onMusicRetrieverPrepared(); processPlayRequest();}
-        else if (action.equals(Constants.ACTION_PAUSE)) processPauseRequest();
-        else if (action.equals(Constants.ACTION_SKIP)) processSkipRequest();
-        else if (action.equals(Constants.ACTION_STOP)) processStopRequest();
-        else if (action.equals(Constants.ACTION_REWIND)) processRewindRequest();
+        if (action.equals(Constants.ACTION_TOGGLE_PLAYBACK_LEGACY)) processTogglePlaybackRequest();
+        else if (action.equals(Constants.ACTION_PLAY_LEGACY)){
+
+            if(intent.hasExtra(Constants.EXTRA_PLAY_REQUEST_ISـFROM_PORTRATE_PLAYER))
+                playRequestIsFromPhonePlayer = true;
+            else
+                playRequestIsFromPhonePlayer = false;
+
+            //mState = State.Stopped;
+
+            processPlayRequest();
+        }
+        else if (action.equals(Constants.ACTION_PAUSE_LEGACY)) processPauseRequest();
+        else if (action.equals(Constants.ACTION_SKIP_LEGACY)) processSkipRequest();
+        else if (action.equals(Constants.ACTION_STOP_LEGACY)) processStopRequest();
+        else if (action.equals(Constants.ACTION_REWIND_LEGACY)) processRewindRequest();
         //else if (action.equals(Constants.ACTION_S)) processSeekToRequest();
        // else if (action.equals(ACTION_URL)) processAddRequest(intent);
 
@@ -243,27 +253,24 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     }
 
     void processPlayRequest() {
-        Log.e("FFFFFFFFFFf","HHHHHHHHHhhh");
-        /*if (mState == State.Retrieving) {
+
+        if (mState == State.Retrieving) {
             // If we are still retrieving media, just set the flag to start playing when we're
             // ready
             mWhatToPlayAfterRetrieve = null; // play a random song
             mStartPlayingAfterRetrieve = true;
             return;
-        }*/
+        }
 
         tryToGetAudioFocus();
 
         // actually play the song
 
         if (mState == State.Stopped) {
-            Log.i(TAG, "XXXXXXXXXXXXXXXXXXXXXxgggg");
-
             // If we're stopped, just go ahead to the next song and start playing
             playSong();
         }
         else if (mState == State.Paused) {
-            Log.i(TAG, "XXXXXXXXXXXXXXXXXXXXXx");
 
             // If we're paused, just continue playback and restore the 'foreground service' state.
             mState = State.Playing;
@@ -279,18 +286,23 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     }
 
     void processPauseRequest() {
-        /*if (mState == State.Retrieving) {
+
+        if (mState == State.Retrieving) {
             // If we are still retrieving media, clear the flag that indicates we should start
             // playing when we're ready
             mStartPlayingAfterRetrieve = false;
             return;
-        }*/
+        }
 
         if (mState == State.Playing) {
-            // Pause media player and cancel the 'foreground service' state.
+// Pause media player and cancel the 'foreground service' state.
             mState = State.Paused;
+
             mPlayer.pause();
+            myApplication.setIsPlaying(false);
+            myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_PAUSED);
             relaxResources(false); // while paused, we always retain the MediaPlayer
+
             // do not give up audio focus
         }
 
@@ -325,7 +337,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
 
     void processStopRequest(boolean force) {
         if (mState == State.Playing || mState == State.Paused || force) {
-            myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_STOPPED);
+
             sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_CLOSE_PLAYER);
             mState = State.Stopped;
 
@@ -339,6 +351,11 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
                         .setPlaybackState(RemoteControlClient.PLAYSTATE_STOPPED);
             }
 
+            myApplication.setCurrentMediaPosition(0);
+            myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_NOT_ALIVE);
+
+            myApplication.setIsPlaying(false);
+
             // service is no longer necessary. Will be started again if needed.
             stopSelf();
         }
@@ -351,11 +368,12 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
      * @param releaseMediaPlayer Indicates whether the Media Player should also be released or not
      */
     void relaxResources(boolean releaseMediaPlayer) {
-        // stop being a foreground service
-        stopForeground(true);
+
 
         // stop and release the Media Player, if it's available
         if (releaseMediaPlayer && mPlayer != null) {
+            // stop being a foreground service
+            stopForeground(true);
             mPlayer.reset();
             mPlayer.release();
             mPlayer = null;
@@ -366,8 +384,8 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     }
 
     void giveUpAudioFocus() {
-        if (mAudioFocus == AudioFocus.Focused && mAudioFocusHelper != null
-                                && mAudioFocusHelper.abandonFocus())
+        if (mAudioFocus == AudioFocus.Focused && mAudioFocusHelperLegacy != null
+                                && mAudioFocusHelperLegacy.abandonFocus())
             mAudioFocus = AudioFocus.NoFocusNoDuck;
     }
 
@@ -386,6 +404,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
             // playback once we get the focus back.
             if (mPlayer.isPlaying()) {
                 mPlayer.pause();
+                myApplication.setIsPlaying(false);
                 myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_PAUSED);
                 sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_PAUSE);
             }
@@ -398,6 +417,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
 
         if (!mPlayer.isPlaying()) {
             mPlayer.start();
+            myApplication.setIsPlaying(true);
             myApplication.setMediaDuration(mPlayer.getDuration());
             myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_PLAYING);
             sendBroadcastToActivity(Constants.PLAYER_SERVICE_STATUS_PLAYING);
@@ -422,8 +442,8 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     }*/
 
     void tryToGetAudioFocus() {
-        if (mAudioFocus != AudioFocus.Focused && mAudioFocusHelper != null
-                        && mAudioFocusHelper.requestFocus())
+        if (mAudioFocus != AudioFocus.Focused && mAudioFocusHelperLegacy != null
+                        && mAudioFocusHelperLegacy.requestFocus())
             mAudioFocus = AudioFocus.Focused;
     }
 
@@ -488,6 +508,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
                     RemoteControlClient.PLAYSTATE_PLAYING);
 
             mRemoteControlClientCompat.setTransportControlFlags(
+                    RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS |
                     RemoteControlClient.FLAG_KEY_MEDIA_PLAY |
                     RemoteControlClient.FLAG_KEY_MEDIA_PAUSE |
                     RemoteControlClient.FLAG_KEY_MEDIA_NEXT |
@@ -520,7 +541,7 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
             else if (mWifiLock.isHeld()) mWifiLock.release();
         }
         catch (IOException ex) {
-            Log.e("MusicService", "IOException playing next song: " + ex.getMessage());
+            Log.e("PlayerServiceLegacy", "IOException playing next song: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -535,7 +556,6 @@ public class MusicService extends Service implements OnCompletionListener, OnPre
     /** Called when media player is done playing current song. */
     public void onCompletion(MediaPlayer player) {
         // The media player finished playing the current song, so we go ahead and start the next.
-Log.e("Honglaraaaa", myApplication.getIndexSomethingIsPlaying() + " "  + myApplication.stackPlaylist.size());
         if (myApplication.getIndexSomethingIsPlaying() == myApplication.stackPlaylist.size()-1) {
             processStopRequest(true);
         }
@@ -557,10 +577,12 @@ Log.e("Honglaraaaa", myApplication.getIndexSomethingIsPlaying() + " "  + myAppli
     void updateNotification(String text) {
         Intent intent;
 
-        if(!playRequestIsFromPortraitePlayer)
-            intent = new Intent(this, ActivityLegacyPlayer.class);
+        if(!playRequestIsFromPhonePlayer)
+            intent = new Intent(getApplicationContext(), ActivityLegacyPlayer.class);
         else
-            intent = new Intent(this, ActivityRecordsPlayList.class);
+            intent = new Intent(getApplicationContext(), ActivityLegacyPlayerPhone.class);
+
+        intent.setAction(Constants.ACTION_SHOW_PLAYER_NO_NEW);
 
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
                 intent,
@@ -578,10 +600,12 @@ Log.e("Honglaraaaa", myApplication.getIndexSomethingIsPlaying() + " "  + myAppli
     void setUpAsForeground(String text) {
         Intent intent;
 
-        if(!playRequestIsFromPortraitePlayer)
-            intent = new Intent(this, ActivityLegacyPlayer.class);
+        if(!playRequestIsFromPhonePlayer)
+            intent = new Intent(getApplicationContext(), ActivityLegacyPlayer.class);
         else
-            intent = new Intent(this, ActivityRecordsPlayList.class);
+            intent = new Intent(getApplicationContext(), ActivityLegacyPlayerPhone.class);
+
+        intent.setAction(Constants.ACTION_SHOW_PLAYER_NO_NEW);
 
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
                 intent,
@@ -610,6 +634,8 @@ Log.e("Honglaraaaa", myApplication.getIndexSomethingIsPlaying() + " "  + myAppli
         Log.e(TAG, "Error: what=" + String.valueOf(what) + ", extra=" + String.valueOf(extra));
 
         mState = State.Stopped;
+        myApplication.setIsPlaying(false);
+        myApplication.setPlayerServiceCurrentState(Constants.CONST_PLAY_SERVICE_STATE_STOPPED);
         relaxResources(true);
         giveUpAudioFocus();
         return true; // true indicates we handled the error
@@ -624,6 +650,17 @@ Log.e("Honglaraaaa", myApplication.getIndexSomethingIsPlaying() + " "  + myAppli
             configAndStartMediaPlayer();
     }
 
+    public void onMusicRetrieverPrepared() {
+        // Done retrieving!
+        mState = State.Stopped;
+
+        // If the flag indicates we should start playing after retrieving, let's do that now.
+        if (mStartPlayingAfterRetrieve) {
+            tryToGetAudioFocus();
+            playSong();
+        }
+    }
+
     public void onLostAudioFocus(boolean canDuck) {
         /*Toast.makeText(getApplicationContext(), "lost audio focus." + (canDuck ? "can duck" :
             "no duck"), Toast.LENGTH_SHORT).show();*/
@@ -633,18 +670,6 @@ Log.e("Honglaraaaa", myApplication.getIndexSomethingIsPlaying() + " "  + myAppli
         if (mPlayer != null && mPlayer.isPlaying())
             configAndStartMediaPlayer();
     }
-
-    public void onMusicRetrieverPrepared() {
-        // Done retrieving!
-        mState = State.Stopped;
-
-       /* // If the flag indicates we should start playing after retrieving, let's do that now.
-        if (mStartPlayingAfterRetrieve) {
-            tryToGetAudioFocus();
-            playSong(true);
-        }*/
-    }
-
 
     @Override
     public void onDestroy() {

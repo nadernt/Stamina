@@ -21,7 +21,7 @@ package com.fleecast.stamina.legacyplayer;
  * using AudioManager.OnAudioFocusChangeListener because that interface is only available in SDK
  * level 8 and above, and we want our application to work on previous SDKs.
  */
-public interface MusicFocusable {
+public interface MusicFocusableLegacy {
     /** Signals that audio focus was gained. */
     public void onGainedAudioFocus();
 

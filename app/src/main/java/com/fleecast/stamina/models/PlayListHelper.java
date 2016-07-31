@@ -31,6 +31,8 @@ public final class PlayListHelper {
     private final String folderToPlay;
     private final String mFileDbUniqueToken;
     private final  RealmAudioNoteHelper realmAudioNoteHelper;
+    private final  RealmNoteHelper realmNoteHelper;
+
     private final Context mContext;
     private MyApplication myApplication;
 
@@ -44,14 +46,15 @@ public final class PlayListHelper {
 
         realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
         myApplication = (MyApplication) mContext.getApplicationContext();
+        realmNoteHelper = null;
     }
 
     public PlayListHelper(Context mContext) {
 
         this.folderToPlay=null;
         this.mFileDbUniqueToken=null;
-        this.realmAudioNoteHelper=null;
-
+        realmAudioNoteHelper = null;
+        realmNoteHelper = new RealmNoteHelper(mContext);
         this.mContext = mContext;
 
         myApplication = (MyApplication) mContext.getApplicationContext();
@@ -62,12 +65,15 @@ public final class PlayListHelper {
     public void loadJustSingleFileForPlay(String fileName,int dbId)
     {
         List <AudioNoteInfoStruct> tmpStackPlaylist = new ArrayList<>();
-Log.e("GGGG", dbId + " filename: " + fileName);
+
+        NoteInfoRealmStruct tmpNoteInfo = realmNoteHelper.getNoteById(dbId);
+
+
         tmpStackPlaylist.add(0,new AudioNoteInfoStruct(
                 dbId,
                 dbId,
                 fileName,
-                null,null,Constants.CONST_NULL_ZERO));
+                tmpNoteInfo.getTitle(),tmpNoteInfo.getDescription(),Constants.CONST_NULL_ZERO));
 
         myApplication.stackPlaylist = new ArrayList<AudioNoteInfoStruct>(tmpStackPlaylist);
 

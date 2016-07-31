@@ -93,6 +93,9 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
     private GridViewAppItemStruct draggedItem;
     private RealmAppHelper realmAppHelper;
 
+
+    public static boolean returnFromFragmentForResult=false; // this is for before lolypop versions and fragment onActivityCallResult bug.
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -102,6 +105,10 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
     @Override
     public void onResume() {
         super.onResume();
+        if(isReturnFromFragmentForResult()) {
+            returnFromFragmentForResult=false;
+            populateAppGroupsBar();
+        }
 
     }
 
@@ -440,10 +447,12 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+      //  super.onActivityResult(requestCode, resultCode, data);
+        Log.e("TTTTTTTTTTTTTTTTT","hhhhhhhh");
 
         if(requestCode==Constants.REQUEST_ADD_EDIT_GROUP_ACTIVITY)
         {
+            Log.e("TTTTTTTTTTTTTTTTT","BBBBBBBBBBbb");
             populateAppGroupsBar();
         }
 
@@ -770,6 +779,12 @@ public class AppLauncherFragment extends android.support.v4.app.Fragment impleme
             loadGrid();
 
     }
+
+    // this is for before lolypop versions and fragment onActivityCallResult bug.
+    public boolean isReturnFromFragmentForResult() {
+        return returnFromFragmentForResult;
+    }
+
 
     @Override
     public void onStart() {
