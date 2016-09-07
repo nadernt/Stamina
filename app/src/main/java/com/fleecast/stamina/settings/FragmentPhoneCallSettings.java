@@ -79,7 +79,6 @@ public class FragmentPhoneCallSettings extends Fragment {
 
                     // The default is microphone
                     if (nextChild.getTag().toString().equals(String.valueOf(Prefs.getInt(Constants.RECORDER_PHONE_RECORDER_SOURCE_OPTION, MediaRecorder.AudioSource.VOICE_CALL)))) {
-                        Log.e(TAG, "Fuck Ya! " + index);
                         ((RadioButton) nextChild).setChecked(true);
                     }
 

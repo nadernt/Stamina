@@ -112,60 +112,6 @@ public class RealmAudioNoteHelper {
         return realm.where(AudioNoteInfoRealmStruct.class).equalTo("parent_db_id", parent_db_id).findAll();
     }
 
-/*
-
-    public ArrayList<AudioNoteInfoStruct> findAllAudioNotes() {
-        ArrayList<AudioNoteInfoStruct> data = new ArrayList<>();
-
-
-        realmResult = realm.where(AudioNoteInfoRealmStruct.class).findAll();
-        realmResult.sort("id", Sort.DESCENDING);
-        if (realmResult.size() > 0) {
-
-            //String title, description,audioFileName;
-
-            for (int i = 0; i < realmResult.size(); i++) {
-
-                int id = realmResult.get(i).getId();
-                String title = realmResult.get(i).getTitle();
-                String description = realmResult.get(i).getDescription();
-                int parentDbId = realmResult.get(i).getParentDbId();
-                int tag = realmResult.get(i).getTag();
-
-                data.add(new AudioNoteInfoStruct(id, parentDbId,title, description,0));
-            }
-
-        } else {
-            showLog("Size : 0");
-        }
-
-        return data;
-    }
-*/
-
-
-    /**
-     * method update article
-     *
-     * @param id
-     * @param title
-     * @param description
-     *//*
-    public void updateNote(int id, String title, String description, boolean has_audio)  {
-        Date now = new Date();
-
-        realm.beginTransaction();
-
-        AudioNoteInfoRealmStruct audioNoteInfoRealmStruct = realm.where(AudioNoteInfoRealmStruct.class).equalTo("id", id).findFirst();
-
-        audioNoteInfoRealmStruct.setTitle(title);
-        audioNoteInfoRealmStruct.setDescription(description);
-
-        realm.commitTransaction();
-        showLog("Updated : " + title);
-    }
-*/
-
     /**
      * method delete articles by id
      *

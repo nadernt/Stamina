@@ -11,6 +11,10 @@
                 android:icon="@drawable/ic_action_record"
                 android:title="Audio" />
             <item
+                android:id="@+id/nav_take_todo"
+                android:icon="@drawable/ic_action_calendar_month"
+                android:title="Todo" />
+            <item
                 android:id="@+id/nav_phone_record"
                 android:icon="@drawable/ic_action_phone_start"
                 android:title="Record calls?" />

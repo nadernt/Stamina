@@ -2,6 +2,7 @@ package com.fleecast.stamina.todo;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.models.RealmToDoHelper;
 import com.fleecast.stamina.utility.Utility;
 
 import java.util.ArrayList;
@@ -22,14 +24,15 @@ public class TodoParentAdapter extends RecyclerView.Adapter<TodoParentAdapter.Vi
     private final Context context;
 
     private ArrayList<TodoParentRealmStruct> todoParentRealmStructs;
-
+    private RealmToDoHelper realmToDoHelper;
 
     public TodoParentAdapter(Context context, ArrayList<TodoParentRealmStruct> todoParentRealmStructs, OnItemClickListener listener, OnItemLongClickListener longClickListener) {
         this.todoParentRealmStructs = new ArrayList(todoParentRealmStructs);
-        Log.e("FFFFFFFFf", todoParentRealmStructs.size() + "");
         this.clickListener = listener;
         this.longClickListener = longClickListener;
         this.context = context;
+        realmToDoHelper = new RealmToDoHelper(context);
+
     }
 
 
@@ -48,12 +51,36 @@ public class TodoParentAdapter extends RecyclerView.Adapter<TodoParentAdapter.Vi
         holder.longClick(todoParentRealmStructs.get(position), longClickListener);
         holder.tvId.setText(String.valueOf(todoParentRealmStructs.get(position).getId()));
 
-        if(todoParentRealmStructs.get(position).getHasDone())
-            holder.title.setPaintFlags(  holder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        ArrayList<TodoChildRealmStruct> tmpChild = realmToDoHelper.getAllChildTodosAreDone(todoParentRealmStructs.get(position).getId());
 
-        holder.title.setText(Utility.ellipsize(todoParentRealmStructs.get(position).getTitle(),50));
+        if(tmpChild.size()==0) {
+            holder.title.setPaintFlags(holder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.title.setTextSize(15);
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.chocolate));
+            holder.number_item.setVisibility(View.GONE);
+        }else{
+            holder.title.setPaintFlags(holder.title.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.gray_wolf));
+            holder.title.setTextSize(18);
+            holder.number_item.setText(String.valueOf(tmpChild.size()));
+        }
 
-        Log.e("FFFFFFFFf", todoParentRealmStructs.size() + " " + todoParentRealmStructs.get(position).getTitle());
+/*
+        if(todoChildRealmStructs.get(position).getHasDone()) {
+            holder.title.setPaintFlags( holder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.title.setTextSize(15);
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.chocolate));
+            holder.title.setText(todoChildRealmStructs.get(position).getTitle());
+        }
+        else {
+            holder.title.setPaintFlags(holder.title.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.gray_wolf));
+            holder.title.setTextSize(18);
+            holder.title.setText(todoChildRealmStructs.get(position).getTitle());
+        }
+*/
+
+        holder.title.setText(todoParentRealmStructs.get(position).getTitle());
 
         holder.create_time.setText(Utility.unixTimeToReadable(todoParentRealmStructs.get(position).getCreateTimeStamp().getTime() / 1000L));
 
@@ -67,13 +94,14 @@ public class TodoParentAdapter extends RecyclerView.Adapter<TodoParentAdapter.Vi
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvId, title, create_time;
+        TextView tvId, title, create_time,number_item;
 
         public ViewHolder(View itemView) {
             super(itemView);
             tvId = (TextView) itemView.findViewById(R.id.tvIdTodoParent);
             title = (TextView) itemView.findViewById(R.id.tvTitleTodoParent);
             create_time = (TextView) itemView.findViewById(R.id.tvCreateTimeTodoParent);
+            number_item = (TextView) itemView.findViewById(R.id.tvNumberOfTodos);
         }
 
         public void click(final TodoParentRealmStruct todoParentRealmStruct, final OnItemClickListener listener) {

@@ -24,15 +24,7 @@ import android.util.Log;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/**
- * RemoteControlClient enables exposing information meant to be consumed by remote controls capable
- * of displaying metadata, artwork and media transport control buttons. A remote control client
- * object is associated with a media button event receiver. This event receiver must have been
- * previously registered with
- * {@link android.media.AudioManager#registerMediaButtonEventReceiver(android.content.ComponentName)}
- * before the RemoteControlClient can be registered through
- * {@link android.media.AudioManager#registerRemoteControlClient(android.media.RemoteControlClient)}.
- */
+
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class RemoteControlClientCompat {
 
@@ -123,14 +115,7 @@ public class RemoteControlClientCompat {
         }
     }
 
-    /**
-     * Class used to modify metadata in a {@link android.media.RemoteControlClient} object. Use
-     * {@link android.media.RemoteControlClient#editMetadata(boolean)} to create an instance of an
-     * editor, on which you set the metadata for the RemoteControlClient instance. Once all the
-     * information has been set, use {@link #apply()} to make it the new metadata that should be
-     * displayed for the associated client. Once the metadata has been "applied", you cannot reuse
-     * this instance of the MetadataEditor.
-     */
+
     public class MetadataEditorCompat {
 
         private Method mPutStringMethod;

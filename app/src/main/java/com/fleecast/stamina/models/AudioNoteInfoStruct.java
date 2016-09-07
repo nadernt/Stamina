@@ -12,7 +12,6 @@ public class AudioNoteInfoStruct {
     private int id;
     private int tag;
 
-    //public AudioNoteInfoStruct(int id,int parentDbId,String file_name, String title, String description,int tag) {
     public AudioNoteInfoStruct(int id, int parent_db_id, String file_name, String title, String description,int tag) {
 
         this.id = id;

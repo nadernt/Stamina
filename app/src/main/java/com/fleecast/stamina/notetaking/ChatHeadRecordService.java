@@ -1,10 +1,12 @@
 package com.fleecast.stamina.notetaking;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
@@ -408,7 +410,19 @@ public class ChatHeadRecordService extends Service {
 			if (myApplication.isRecordUnderGoing()==Constants.CONST_RECORDER_SERVICE_IS_FREE)
 			{
 				myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
+
+
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+				audioManager.setSpeakerphoneOn(true);
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+				recorder.recordMedia(true, MediaRecorder.AudioSource.MIC);
+				Log.e("GGGGGGGg", "Honglaaaaaaaaaaaaaaaaa");
+			}else{
 				recorder.recordMedia(true, MediaRecorder.AudioSource.VOICE_CALL);
+			}
+
+
 			}
 			else{
 				showErrorsToUser(inflater, "<h5>Note:</h5>\n<p><font color=\"gray\">Another record is under progress by application." +
@@ -418,6 +432,7 @@ public class ChatHeadRecordService extends Service {
 
 		} else {
 			myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
+			// this is stop command so choosing record source is not matter.
 			recorder.recordMedia(false, MediaRecorder.AudioSource.VOICE_CALL);
 		}
 

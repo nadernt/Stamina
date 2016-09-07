@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.fleecast.stamina.models.MostUsedAndRecentAppsStruct;
 import com.fleecast.stamina.models.AudioNoteInfoStruct;
+import com.fleecast.stamina.models.NoteInfoRealmStruct;
 import com.fleecast.stamina.models.TempNoteInfoStruct;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Prefs;
@@ -14,10 +15,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
+import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
+import io.realm.internal.Table;
 
 /**
  * Created by nnt on 2/03/16.
@@ -68,7 +73,10 @@ public class MyApplication extends Application{
         singleton = this;
 
         context = getApplicationContext();
-
+        /*DataMigration dataMigration = new DataMigration()
+                .migrate()
+                .migration() // Migration to run instead of throwing an exception
+                .build();*/
         // Initialize the Prefs class
         new Prefs.Builder()
                 .setContext(this)
@@ -81,7 +89,7 @@ public class MyApplication extends Application{
         RealmConfiguration configRealm = new RealmConfiguration.Builder(this)
                 // Version of the database
                 .name("megan.realm")
-                .schemaVersion(0)
+                .schemaVersion(1)
                 .migration(new DataMigration())
                 .build();
 
@@ -316,8 +324,8 @@ public class MyApplication extends Application{
             private String phone_number;
             private int order;*/
             // Create a new schema if the version 0
-            if (oldVersion == 0) {
-                schema.create("NoteInfoRealmStruct")
+            if (oldVersion != newVersion) {
+                /*schema.create("NoteInfoRealmStruct")
                         .addField("id", Integer.class)
                         .addField("title", String.class)
                         .addField("description", String.class)
@@ -329,7 +337,13 @@ public class MyApplication extends Application{
                         .addField("phone_number", String.class)
                         .addField("call_type", Integer.class)
                         .addField("tag", Integer.class)
-                        .addField("note_type", Integer.class);
+                        .addField("note_type", Integer.class)
+                        .addField("extras", String.class);*/
+
+                RealmObjectSchema personSchema = schema.get("NoteInfoRealmStruct");
+                personSchema
+                        .addField("extras", String.class);
+
                 oldVersion++;
             }
 

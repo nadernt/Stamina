@@ -49,8 +49,6 @@ public class MusicRetriever {
 
     public MusicRetriever(Context context) {
         this.context = context;
-        /*String fileName = getIntent().getStringExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER);
-        playListHelper.loadJustSingleFileForPlay(fileName, dbId);*/
         myApplication = (MyApplication)context.getApplicationContext();
     }
 
@@ -66,19 +64,6 @@ public class MusicRetriever {
     public Item getItem() {
 
         myApplication.setIsPlaying(false);
-
-/*
-        if (myApplication.getIndexSomethingIsPlaying()  > myApplication.stackPlaylist.size()-1) {
-            myApplication.setIndexSomethingIsPlaying(myApplication.getIndexSomethingIsPlaying());
-            return null;
-        }
-
-        if (myApplication.getIndexSomethingIsPlaying() < 0 )
-        {
-            myApplication.setIndexSomethingIsPlaying(0);
-            return null;
-        }
-*/
 
         return new Item(myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getId(),
                 myApplication.stackPlaylist.get(myApplication.getIndexSomethingIsPlaying()).getTitle(),

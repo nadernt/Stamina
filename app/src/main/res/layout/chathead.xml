@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="64dp"
-    android:layout_height="64dp"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
     android:id="@+id/chathead_relativelayout"
     android:background="@drawable/launchpad_icons_bg">
     

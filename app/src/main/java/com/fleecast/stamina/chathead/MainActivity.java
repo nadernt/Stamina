@@ -66,6 +66,8 @@ import com.fleecast.stamina.notetaking.NoteDeleteHelper;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
 import com.fleecast.stamina.notetaking.PlayerService;
 import com.fleecast.stamina.settings.ActivitySettings;
+import com.fleecast.stamina.todo.ActivityAddToEvent;
+import com.fleecast.stamina.todo.ActivityTodoParentRecyclerView;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
@@ -179,7 +181,7 @@ public class MainActivity extends AppCompatActivity
              * Phone recorder settings.
              */
             //Voice Call
-            Prefs.putInt(Constants.RECORDER_PHONE_RECORDER_SOURCE_OPTION, 4);
+            Prefs.putInt(Constants.RECORDER_PHONE_RECORDER_SOURCE_OPTION, MediaRecorder.AudioSource.VOICE_CALL);
 
             /**
              * Audio recorder settings.
@@ -192,12 +194,41 @@ public class MainActivity extends AppCompatActivity
 
             Prefs.putString(Constants.PREF_WORKING_DIRECTORY_PATH, Environment.getExternalStorageDirectory().getPath());
 
-            ExternalStorageManager.prepareWorkingDirectory(this);
+            ExternalStorageManager.ifWorkingDirIsNotExitMakeIt(this);
 
         }
+        ExternalStorageManager.ifWorkingDirIsNotExitMakeIt(this);
+
 
 
     }
+
+private void testFucntions(){
+
+    Intent intent = new Intent(this, ActivityTodoParentRecyclerView.class);
+    //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                               /* if(myApplication.getCurrentOpenedTextNoteId()>0)
+                                    intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD,myApplication.getCurrentOpenedTextNoteId());
+                                else
+                                    intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD, true);
+*/
+    //   updateChatHeadSize(1);
+    startActivity(intent);
+
+    /* intent = new Intent(this, ActivityAddToEvent.class);
+    //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+*/
+                               /* if(myApplication.getCurrentOpenedTextNoteId()>0)
+                                    intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD,myApplication.getCurrentOpenedTextNoteId());
+                                else
+                                    intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD, true);
+*/
+    //   updateChatHeadSize(1);
+    startActivity(intent);
+}
 
    private void populateUI() {
 
@@ -224,7 +255,9 @@ public class MainActivity extends AppCompatActivity
        startActivity(intent);
 */
         setContentView(R.layout.activity_main);
+
         myApplication = (MyApplication) getApplicationContext();
+
         myApplication.setLauncherDialogNotVisible(false);
 
         context = MainActivity.this;
@@ -236,6 +269,7 @@ public class MainActivity extends AppCompatActivity
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params.setScrollFlags(0);
 
+       //startTheChatHead();
         Log.e(TAG, "ActivityTakenNotesList");
         noteInfoStructs = new ArrayList<>();
         realmNoteHelper = new RealmNoteHelper(context);
@@ -266,10 +300,6 @@ public class MainActivity extends AppCompatActivity
                     } else if (noteInfoStruct.getHasAudio() && (noteInfoStruct.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
 
                     }
-
-
-
-
 
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, noteInfoStruct.getTitle());
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, noteInfoStruct.getDescription());
@@ -310,6 +340,8 @@ public class MainActivity extends AppCompatActivity
             navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls  ✔");
         else
             navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
+
+//       testFucntions();
 
     }
 
@@ -1128,7 +1160,7 @@ public class MainActivity extends AppCompatActivity
         }
         android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(context);
 
-        adb.setMessage("Are you sure want to delete " + Html.fromHtml("<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>") + "?");
+        adb.setMessage(Html.fromHtml("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?"));
 
         adb.setTitle("Note");
         final NoteDeleteHelper noteDeleteHelper = new NoteDeleteHelper(context);
@@ -1176,6 +1208,13 @@ public class MainActivity extends AppCompatActivity
                 if (isItFromSwipeFunction)
                     adapter.notifyDataSetChanged();
                 return;
+            }
+        });
+        adb.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                if (isItFromSwipeFunction)
+                    adapter.notifyDataSetChanged();
             }
         });
         adb.show();
@@ -1441,7 +1480,7 @@ public class MainActivity extends AppCompatActivity
                 String msg = "In some countries, even if both parties know about the recording the call " +
                         "conversation, that would still be violating the law and privacy. Record the phone " +
                         "calls on your own responsibility. Please for more details about the call recording " +
-                        "refer to your local or national regulations and law.";
+                        "refer to your local or national regulations and laws.";
                 AlertDialog.Builder adb = new AlertDialog.Builder(this);
                 LayoutInflater adbInflater = LayoutInflater.from(this);
                 View eulaLayout = adbInflater.inflate(R.layout.alertdialog_phone_recording, null);
@@ -1603,12 +1642,17 @@ public class MainActivity extends AppCompatActivity
 
             adb.show();
 
+        } else if (id == R.id.nav_take_todo) {
+
+            Intent intent = new Intent(this, ActivityTodoParentRecyclerView.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
 
         } else if (id == R.id.nav_rate) {
 
 
         } else if (id == R.id.nav_help) {
-            String url = "http://www.fleecast.com/stamina";
+            String url = Constants.CONST_URL_HELPS;
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);

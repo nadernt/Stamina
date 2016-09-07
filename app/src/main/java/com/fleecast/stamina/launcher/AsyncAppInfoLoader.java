@@ -62,13 +62,7 @@ public class AsyncAppInfoLoader extends AsyncTask<PackageManagerStruct, GridView
                     CharSequence label = resolveInfo.loadLabel(packageManager);
 
                     if(icon != null && label != null) {
-
-                       /* BitmapDrawable bd=(BitmapDrawable) icon;
-                        int height=bd.getBitmap().getHeight();
-                        int width=bd.getBitmap().getWidth();
-                        Log.e("Dad",height + "  " + width);*/
-
-                        // update the UI thread
+                      // update the UI thread
                         publishProgress(new GridViewAppItemStruct(icon, label.toString(), new ActivityInfoStruct(resolveInfo.activityInfo.packageName,resolveInfo.activityInfo.name), Constants.APP_IS_IN_DEFAULT_GROUP));
 
                         index++;
@@ -76,12 +70,6 @@ public class AsyncAppInfoLoader extends AsyncTask<PackageManagerStruct, GridView
                     }
 
                     icon = null;
-
-                    /*index++;
-
-                    if(index>5)
-                    break;
-*/
 
                 }
 
@@ -106,7 +94,7 @@ public class AsyncAppInfoLoader extends AsyncTask<PackageManagerStruct, GridView
                 querySize=20;
 
             for(int i=0; i<querySize;i++){
-
+                try {
                 Intent intent = new Intent(Intent.ACTION_MAIN, null);
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);
                 intent.setAction(Intent.ACTION_MAIN);
@@ -121,7 +109,7 @@ public class AsyncAppInfoLoader extends AsyncTask<PackageManagerStruct, GridView
 
                 ActivityInfo aInfo = rInfo.activityInfo;
 
-                try {
+
 
                     Drawable icon = rInfo.loadIcon(packageManager);
                     CharSequence label = rInfo.loadLabel(packageManager);
@@ -146,7 +134,6 @@ public class AsyncAppInfoLoader extends AsyncTask<PackageManagerStruct, GridView
         }
 
         packageManager = null;
-        Log.e("DBG", "Indez!" + index);
         return index;
     }
 

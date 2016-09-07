@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5dp">
+
     <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/cvTodoChild"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -23,48 +23,40 @@
 
             <TextView
                 android:id="@+id/tvTitleTodoChild"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tvIdTodoChild"
+                android:text="Title"
                 android:textColor="@color/slate_gray"
                 android:textSize="18sp"
-                android:text="Title"
-                android:layout_below="@+id/tvIdTodoChild"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_toLeftOf="@+id/imgBtnOptionsOfTodo"
+                android:layout_toStartOf="@+id/imgBtnOptionsOfTodo"
+                android:layout_marginRight="10dp" />
 
             <TextView
                 android:id="@+id/tvCreateTimeTodoChild"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/tvTitleTodoChild"
                 android:text="Update Time"
                 android:textColor="@color/blue_green"
-                android:layout_marginRight="5dp"
                 android:textSize="12dp"
-                android:layout_below="@+id/tvTitleTodoChild" />
+                android:layout_toLeftOf="@+id/imgBtnOptionsOfTodo"
+                android:layout_toStartOf="@+id/imgBtnOptionsOfTodo"
+                android:layout_marginRight="10dp" />
 
-            <ImageView
+            <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageView2"
-                android:src="@drawable/ic_action_tick"
-                android:background="@color/about_facebook_color"
-                android:layout_marginRight="9dp"
-                android:layout_marginEnd="9dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/imageView3"
-                android:layout_toStartOf="@+id/imageView3" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView3"
-                android:src="@drawable/ic_action_minus"
-                android:background="@color/bright_maroon"
+                android:id="@+id/imgBtnOptionsOfTodo"
+                android:src="@drawable/ic_action_overflow"
+                android:background="@color/about_instagram_color"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="28dp" />
+                android:layout_marginRight="5dp" />
 
         </RelativeLayout>
 

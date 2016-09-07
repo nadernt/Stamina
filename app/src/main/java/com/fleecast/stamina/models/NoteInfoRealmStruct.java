@@ -23,6 +23,15 @@ public class NoteInfoRealmStruct extends RealmObject {
     private int tag;
     private String phone_number;
     private int note_type;
+    private String extras;
+
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
+    }
 
     public int getCallType() {
         return call_type;

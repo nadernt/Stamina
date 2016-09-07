@@ -18,11 +18,6 @@ package com.fleecast.stamina.legacyplayer;
 
 import android.os.AsyncTask;
 
-/**
- * Asynchronous task that prepares a MusicRetriever. This asynchronous task essentially calls
- * {@link MusicRetriever#prepare()} on a {@link MusicRetriever}, which may take some time to
- * run. Upon finishing, it notifies the indicated {@MusicRetrieverPreparedListener}.
- */
 public class PrepareMusicRetrieverTask extends AsyncTask<Void, Void, Void> {
     MusicRetriever mRetriever;
     MusicRetrieverPreparedListener mListener;

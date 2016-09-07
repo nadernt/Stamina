@@ -36,7 +36,7 @@
     <color name="aureolin">#FDEE00</color>
     <color name="aurometalsaurus">#6E7F80</color>
     <color name="avocado_green">#B2C248</color>
-    <color name="awesome">#FF2052</color>
+    <color name="awesome">#ff2052</color>
     <color name="aztech_purple">#893BFF</color>
     <color name="azure">#007fff</color>
     <color name="azure_mist_web">#f0ffff</color>
@@ -44,11 +44,11 @@
     <color name="baby_blue">#89CFF0</color>
     <color name="baby_blue_eyes">#a1caf1</color>
     <color name="baby_pink">#F4C2C2</color>
-    <color name="ball_blue">#21ABCD</color>
+    <color name="ball_blue">#21abcd</color>
     <color name="banana_mania">#FAE7B5</color>
     <color name="banana_yellow">#FFE135</color>
     <color name="bashful_pink">#c25283</color>
-    <color name="basket_ball_orange">#F88158</color>
+    <color name="basket_ball_orange">#f88158</color>
     <color name="battleship_grey">#848482</color>
     <color name="bazaar">#98777B</color>
     <color name="bean_red">#F75D59</color>
@@ -808,7 +808,7 @@
     <color name="slime_green">#BCE954</color>
     <color name="smokey_gray">#726E6D</color>
     <color name="smokey_topaz">#933D41</color>
-    <color name="smoky_black">#100C08</color>
+    <color name="smoky_black">#100c08</color>
     <color name="snow">#FFFAFA</color>
     <color name="spiro_disco_ball">#0FC0FC</color>
     <color name="spring_bud">#A7FC00</color>
@@ -873,7 +873,7 @@
     <color name="ultramarine">#120A8F</color>
     <color name="ultramarine_blue">#4166F5</color>
     <color name="umber">#635147</color>
-    <color name="united_nations_blue">#5B92E5</color>
+    <color name="united_nations_blue">#5b92e5</color>
     <color name="university_of_california_gold">#B78727</color>
     <color name="unmellow_yellow">#FFFF66</color>
     <color name="up_forest_green">#014421</color>

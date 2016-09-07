@@ -10,7 +10,19 @@
     <android.support.v7.widget.RecyclerView
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:id="@+id/rvToDoChild">
+        android:id="@+id/rvToDoChild"
+        android:layout_below="@+id/txtTitleOfChildViewActivity">
 
     </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/txtTitleOfChildViewActivity"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:textColor="@color/about_facebook_color" />
 </RelativeLayout>

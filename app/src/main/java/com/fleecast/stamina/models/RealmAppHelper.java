@@ -115,7 +115,7 @@ public class RealmAppHelper {
             realm.copyToRealm(appDbRealmStruct);
         }
 
-        viewAllDB();
+       // viewAllDB();
 
         realm.commitTransaction();
 
@@ -189,21 +189,6 @@ public class RealmAppHelper {
         showLog("Updated : " + title);
     }
 
-    public void updateAppGroupAfterDelete(int app_group) {
-        /*realm.beginTransaction();
-
-        RealmQuery<AppDbRealmStruct> query = realm.where(AppDbRealmStruct.class)
-                .equalTo("app_group", app_package_name);
-
-        AppDbRealmStruct appDbRealmStruct = realm.where(AppDbRealmStruct.class).equalTo("app_group", app_group);
-        appDbRealmStruct.setAppGroup(app_group);
-
-        realm.commitTransaction();
-        showLog("Updated : " + app_group);
-
-        showToast(app_group + " successfully updated.");*/
-    }
-
     /**
      * method delete articles by id
      *
@@ -219,8 +204,6 @@ public class RealmAppHelper {
             appToDeleteFromDb.deleteFirstFromRealm();
             realm.commitTransaction();
         }
-
-//        showToast("Clear data successfully.");
     }
 
 
@@ -248,7 +231,6 @@ public class RealmAppHelper {
         RealmResults<AppDbRealmStruct> query = realm.where(AppDbRealmStruct.class).greaterThan("use_rank", 0).findAllSorted("use_rank", Sort.DESCENDING);
         for (int i = 0; i < query.size(); i++) {
             mostUsedAppsStruct.add(new MostUsedAndRecentAppsStruct(query.get(i).getTitle(), query.get(i).getAppPackageName(), query.get(i).getAppGroup(), query.get(i).getUseRank()));
-            //  Log.e("Most Used Packages", query.get(i).getAppPackageName());
         }
         return mostUsedAppsStruct;
 
@@ -262,7 +244,6 @@ public class RealmAppHelper {
 
             if(query.get(i).getUseRank()>Constants.CONST_NULL_ZERO) // we do this because drag & drop add zero to this field and makes mistake.
                 mostUsedAppsStruct.add(new MostUsedAndRecentAppsStruct(query.get(i).getTitle(), query.get(i).getAppPackageName(), query.get(i).getAppGroup(), query.get(i).getUseRank()));
-            //Log.e("Most Used Packages", query.get(i).getAppPackageName());
         }
         return mostUsedAppsStruct;
 

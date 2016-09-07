@@ -30,7 +30,10 @@
                 android:layout_below="@+id/tvIdTodoParent"
                 android:text="Title"
                 android:textColor="@color/slate_gray"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:layout_toLeftOf="@+id/tvNumberOfTodos"
+                android:layout_toStartOf="@+id/tvNumberOfTodos"
+                android:layout_marginLeft="5dp" />
 
             <TextView
                 android:id="@+id/tvCreateTimeTodoParent"
@@ -40,6 +43,23 @@
                 android:layout_marginRight="5dp"
                 android:text="Update Time"
                 android:textColor="@color/blue_green"
+                android:textSize="12dp"
+                android:layout_marginLeft="5dp" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="999"
+                android:id="@+id/tvNumberOfTodos"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/parent_todo_bubble"
+                android:textColor="@color/white"
                 android:textSize="12dp" />
 
         </RelativeLayout>

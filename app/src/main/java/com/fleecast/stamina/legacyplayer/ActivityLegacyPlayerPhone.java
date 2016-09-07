@@ -49,30 +49,15 @@ public class ActivityLegacyPlayerPhone extends Activity implements OnClickListen
 
     ImageButton mPlayButton;
     ImageButton mPauseButton;
-    ImageButton mSkipButton;
-    ImageButton mRewindButton;
     ImageButton mStopButton;
-    ImageButton m;
-    ImageButton mEjectButton;
     MyApplication myApplication;
     private SeekBar seekBar;
-    private ImageButton mRewindNote;
-    private ImageButton mNextNote;
     private TextView txtTotalTime;
     private Handler handler = new Handler();
     private int oldMediaSeekPosition = 0;
-    private int parentDbId;
-    private PlayListHelper playListHelper;
     private int currentPosition;
-    private int notePointer = Constants.CONST_NULL_MINUS;
-    private ImageView imgNoNotePlaceHolder;
     private TextView txtTitlePlayer;
     private TextView txtDetailsPlayer;
-    private ImageButton imgHideDetails;
-    private RelativeLayout detailsOfAudioNote;
-    private boolean theOrintationIsLandscape =false;
-    private int tmpCurrentPlayingFile = Constants.CONST_NULL_ZERO;
-    private Context mContext;
     private int dbId;
 
 
@@ -132,8 +117,6 @@ public class ActivityLegacyPlayerPhone extends Activity implements OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_legacy_phone);
-
-        this.mContext = ActivityLegacyPlayerPhone.this;
 
         myApplication = (MyApplication) getApplicationContext();
 

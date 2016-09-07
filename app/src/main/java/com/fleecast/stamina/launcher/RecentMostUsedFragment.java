@@ -114,14 +114,6 @@ public class RecentMostUsedFragment extends android.support.v4.app.Fragment impl
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixelToConvert, getResources().getDisplayMetrics());
     }
 
-/*    public static int convertDpToPixels(float dp, Context context){
-        Resources resources = context.getResources();
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                resources.getDisplayMetrics()
-        );
-    }*/
 
     private class MostUsedApps extends AsyncAppInfoLoader {
         private List<GridViewAppItemStruct> tmpItems  = new ArrayList<GridViewAppItemStruct>();
@@ -223,23 +215,6 @@ public class RecentMostUsedFragment extends android.support.v4.app.Fragment impl
 
         return fragmentRecentMostUsed;
     }
-
- /*   @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            Log.e("ORIENTATION_LANDSCAPE","ORIENTATION_LANDSCAPE");
-            gridViewRecentUsed.setNumColumns(5);
-        }
-
-
-        if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Log.e("ORIENTATION_PORTRAIT","ORIENTATION_PORTRAIT");
-            gridViewRecentUsed.setNumColumns(2);
-        }
-
-    }*/
 
     @Override
     public void onStart() {

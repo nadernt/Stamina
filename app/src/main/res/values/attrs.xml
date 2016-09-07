@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="TouchDot">
         <attr name="circleColor" format="color" />
-     </declare-styleable>
+    </declare-styleable>
     <declare-styleable name="CustomRoundButton">
         <attr name="circle_center_color" format="color" />
         <attr name="circle_border_color" format="color" />

@@ -49,29 +49,6 @@ public class AppLauncherGridViewAdapter extends BaseAdapter implements Filterabl
         return position;
     }
 
-    /*  // create a new ImageView for each item referenced by the Adapter
-      public View getView(int position, View convertView, ViewGroup parent) {
-          ImageView imageView;
-          if (convertView == null) {
-
-              //Calculation of ImageView Size - density independent.
-              //maybe you should do this calculation not exactly in this method but put is somewhere else.
-              Resources r = Resources.getSystem();
-              float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, r.getDisplayMetrics());
-
-
-              imageView = new ImageView(mContext);
-              imageView.setLayoutParams(new GridView.LayoutParams((int)px, (int)px));
-              imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-              //imageView.setPadding(8, 8, 8, 8);
-              imageView.setBackgroundColor(Color.BLUE);
-          } else {
-              imageView = (ImageView) convertView;
-          }
-
-          imageView.setImageResource(mThumbIds[position]);
-          return imageView;
-      }*/
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
@@ -201,13 +178,7 @@ public class AppLauncherGridViewAdapter extends BaseAdapter implements Filterabl
                 results.values = filteredItems;
                 results.count = filteredItems.size();
             } else {
-                /*// We perform filtering operation
-                List<GridViewAppItemStruct> nItemList = new ArrayList<GridViewAppItemStruct>();
 
-                for (GridViewAppItemStruct mitem : mItems) {
-                    if (mitem.getTitle().toUpperCase().startsWith(constraint.toString().toUpperCase()))
-                        nItemList.add(mitem);
-                }*/
                 List<GridViewAppItemStruct> filteredItems = filterByGroupCode(constraint);
                 results.values = filteredItems;
                 results.count = filteredItems.size();

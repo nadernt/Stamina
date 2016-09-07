@@ -39,17 +39,6 @@ public class NoteInfoStruct {
     }
 
 
-/*
-    public NoteInfoStruct() {
-        this.create_time_stamp = create_time_stamp;
-        this.update_time = update_time;
-        this.description = description;
-        this.has_audio = has_audio;
-        this.id = id;
-        this.title = title;
-    }
-*/
-
     public int getCallType() {
         return call_type;
     }

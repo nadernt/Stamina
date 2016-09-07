@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.fleecast.stamina.todo.ActivityAddToEvent">
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="At location"
+        android:id="@+id/chkEvenAtLocation"
+        android:textColor="@color/smoky_black"
+        android:layout_alignTop="@+id/imgBtnEventLocation"
+        android:layout_alignLeft="@+id/chkEventWillFinishAt"
+        android:layout_alignStart="@+id/chkEventWillFinishAt"
+        android:checked="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/txtEventTitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/about_instagram_color" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Event start time:"
+        android:id="@+id/textViewEventLayout"
+        android:textColor="@color/smoky_black"
+        android:layout_alignBottom="@+id/imgBtnEventStartAt"
+        android:layout_toRightOf="@+id/imgBtnEventStartAt"
+        android:layout_toEndOf="@+id/imgBtnEventStartAt"
+        android:layout_marginLeft="5dp"
+        android:textSize="12dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="NA"
+        android:id="@+id/txtEventEndTime"
+        android:layout_alignBaseline="@+id/chkEventWillFinishAt"
+        android:layout_alignBottom="@+id/chkEventWillFinishAt"
+        android:layout_toRightOf="@+id/chkEventWillFinishAt"
+        android:layout_toEndOf="@+id/chkEventWillFinishAt"
+        android:textColor="@color/smoky_black"
+        android:layout_marginTop="10dp"
+        android:textSize="12dp"
+        android:layout_marginLeft="5dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End time:"
+        android:id="@+id/chkEventWillFinishAt"
+        android:textColor="@color/smoky_black"
+        android:layout_alignTop="@+id/imgBtnEventEndDate"
+        android:layout_toRightOf="@+id/imgBtnEventEndDate"
+        android:layout_toEndOf="@+id/imgBtnEventEndDate"
+        android:layout_marginLeft="5dp"
+        android:checked="false" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Repeat Every Days"
+        android:id="@+id/chkEventRepeatsEveryDay"
+        android:layout_below="@+id/chkEventWillFinishAt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/smoky_black"
+        android:layout_marginTop="10dp"
+        android:checked="false" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play Alarm"
+        android:id="@+id/chkEventPlayAlarm"
+        android:textColor="@color/smoky_black"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/chkEventRepeatsEveryDay"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgBtnEventStartAt"
+        android:src="@drawable/ic_action_calendar_day"
+        android:background="@color/bashful_pink"
+        android:layout_below="@+id/txtEventTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgBtnEventEndDate"
+        android:src="@drawable/ic_action_calendar_month"
+        android:background="@color/ball_blue"
+        android:layout_below="@+id/imgBtnEventStartAt"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="date"
+        android:id="@+id/txtEventStartTime"
+        android:textColor="@color/smoky_black"
+        android:textSize="12dp"
+        android:layout_alignTop="@+id/textViewEventLayout"
+        android:layout_toRightOf="@+id/chkEventWillFinishAt"
+        android:layout_toEndOf="@+id/chkEventWillFinishAt" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgBtnEventLocation"
+        android:src="@drawable/ic_action_location"
+        android:background="@color/awesome"
+        android:layout_below="@+id/chkEventPlayAlarm"
+        android:layout_toLeftOf="@+id/chkEventWillFinishAt"
+        android:layout_toStartOf="@+id/chkEventWillFinishAt"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="ADD EVENT"
+        android:id="@+id/txtEventConfirm"
+        android:textColor="@color/about_twitter_color"
+        android:layout_alignTop="@+id/txtEventCancel"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="CANCEL"
+        android:id="@+id/txtEventCancel"
+        android:textColor="@color/about_twitter_color"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/txtEventLocationDetails"
+        android:layout_toEndOf="@+id/txtEventLocationDetails" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/txtEventLocationDetails"
+        android:layout_alignBaseline="@+id/chkEvenAtLocation"
+        android:layout_alignBottom="@+id/chkEvenAtLocation"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="5dp" />
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/activity_add_to_event" />
+
+</RelativeLayout>

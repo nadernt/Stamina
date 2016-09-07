@@ -6,13 +6,6 @@ import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-/**
- * This class overrides the onKeyPreIme method to dispatch a key event if the
- * KeyEvent passed to onKeyPreIme has a key code of KeyEvent.KEYCODE_BACK.
- * This allows key event listeners to detect that the soft keyboard was
- * dismissed.
- *
- */
 public class ExtendedEditText extends EditText {
 
     public ExtendedEditText(Context context, AttributeSet attrs, int defStyle) {

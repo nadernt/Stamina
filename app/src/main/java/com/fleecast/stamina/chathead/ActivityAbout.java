@@ -41,7 +41,7 @@ public class ActivityAbout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         View aboutPage = new AboutPage(this)
-                .setDescription("Stamina is an android application for taking your notes easy and fast. You can use it for managing daily usages like making audio books for your university, text note taking to organise and remember the important things and your clients or friends phone calls recording. ")
+                 .setDescription("Stamina is an android application for taking your notes easy and fast. You can use it for managing daily life like making audio books for your university, taking simple text notes, organise and remembering the important things by task lists and record clients or friends phone calls.")
                 .isRTL(false)
                 .setImage(R.drawable.ic_sun)
                 .addItem(new Element().setTitle("Version 1.0"))

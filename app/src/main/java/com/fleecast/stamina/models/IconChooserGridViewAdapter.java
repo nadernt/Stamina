@@ -17,11 +17,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
-/**
- * 
- * @author manish.s
- *
- */
 public class IconChooserGridViewAdapter extends  BaseAdapter {
 
 	private final String[] IMAGE_URLS;
@@ -108,7 +103,6 @@ public class IconChooserGridViewAdapter extends  BaseAdapter {
 		config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
 		config.tasksProcessingOrder(QueueProcessingType.LIFO);
 		// config.writeDebugLogs(); // Remove for release app
-
 		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(config.build());
 	}

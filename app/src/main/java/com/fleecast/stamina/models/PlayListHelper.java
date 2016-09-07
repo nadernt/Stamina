@@ -120,8 +120,6 @@ public final class PlayListHelper {
 
 
         Spanned[] htmlArrayForList = new Spanned[listOfFiles.length];
-      /*  String htmlComposeDescriptions;
-        String htmlComposeTitle;*/
 
         List<AudioNoteInfoRealmStruct> audioNoteInfoStruct = new ArrayList<>(realmAudioNoteHelper.findAllAudioNotesByParentId(Integer.valueOf(mFileDbUniqueToken)));
         String htmlComposeListView;
@@ -183,7 +181,6 @@ public final class PlayListHelper {
 
 
     private String getHexStringFromInt(int resourceColorId){
-        //ContextCompat.getColor(mContext, R.color.color_name)
         int intColor = ContextCompat.getColor(mContext, resourceColorId);
         return "#" + String.valueOf(Integer.toHexString(intColor)).substring(2);
     }

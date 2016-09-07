@@ -131,7 +131,7 @@ public class LauncherDialogActivity extends AppCompatActivity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		Log.e("DBG", "onDestroysssssssssssssssssssssssssssssssssss: " + active);
+		Log.e("DBG", "onDestroy: " + active);
 		active = false;
 	}
 

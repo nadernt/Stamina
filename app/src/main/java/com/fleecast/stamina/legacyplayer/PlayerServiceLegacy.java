@@ -48,13 +48,6 @@ import com.fleecast.stamina.utility.Constants;
 
 import java.io.IOException;
 
-/**
- * Service that handles media playback. This is the Service through which we perform all the media
- * handling in our application. Upon initialization, it starts a {@link MusicRetriever} to scan
- * the user's media. Then, it waits for Intents (which come from our main activity,
- * {@link ActivityLegacyPlayer}, which signal the service to perform specific operations: Play, Pause,
- * Rewind, Skip, etc.
- */
 public class PlayerServiceLegacy extends Service implements OnCompletionListener, OnPreparedListener,
         OnErrorListener, MusicFocusableLegacy,
         PrepareMusicRetrieverTask.MusicRetrieverPreparedListener {
@@ -208,11 +201,7 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
         mMediaButtonReceiverComponent = new ComponentName(this, MusicIntentReceiver.class);
     }
 
-    /**
-     * Called when we receive an Intent. When we receive an intent sent to us via startService(),
-     * this is the method that gets called. So here we react appropriately depending on the
-     * Intent's action, which specifies what is being requested of us.
-     */
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
@@ -361,12 +350,6 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
         }
     }
 
-    /**
-     * Releases resources used by the service for playback. This includes the "foreground service"
-     * status and notification, the wake locks and possibly the MediaPlayer.
-     *
-     * @param releaseMediaPlayer Indicates whether the Media Player should also be released or not
-     */
     void relaxResources(boolean releaseMediaPlayer) {
 
 
@@ -389,19 +372,10 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
             mAudioFocus = AudioFocus.NoFocusNoDuck;
     }
 
-    /**
-     * Reconfigures MediaPlayer according to audio focus settings and starts/restarts it. This
-     * method starts/restarts the MediaPlayer respecting the current audio focus state. So if
-     * we have focus, it will play normally; if we don't have focus, it will either leave the
-     * MediaPlayer paused or set it to a low volume, depending on what is allowed by the
-     * current focus settings. This method assumes mPlayer != null, so if you are calling it,
-     * you have to do so from a context where you are sure this is the case.
-     */
+
     void configAndStartMediaPlayer() {
         if (mAudioFocus == AudioFocus.NoFocusNoDuck) {
-            // If we don't have audio focus and can't duck, we have to pause, even if mState
-            // is State.Playing. But we stay in the Playing state so that we know we have to resume
-            // playback once we get the focus back.
+
             if (mPlayer.isPlaying()) {
                 mPlayer.pause();
                 myApplication.setIsPlaying(false);
@@ -425,34 +399,12 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
         }
     }
 
-    /*void processAddRequest(Intent intent) {
-        // user wants to play a song directly by URL or path. The URL or path comes in the "data"
-        // part of the Intent. This Intent is sent by {@link ActivityLegacyPlayer} after the user
-        // specifies the URL/path via an alert box.
-        if (mState == State.Retrieving) {
-            // we'll play the requested URL right after we finish retrieving
-            mWhatToPlayAfterRetrieve = intent.getData();
-            mStartPlayingAfterRetrieve = true;
-        }
-        else if (mState == State.Playing || mState == State.Paused || mState == State.Stopped) {
-            Log.i(TAG, "Playing from URL/path: " + intent.getData().toString());
-            tryToGetAudioFocus();
-            playSong(intent.getData().toString());
-        }
-    }*/
-
     void tryToGetAudioFocus() {
         if (mAudioFocus != AudioFocus.Focused && mAudioFocusHelperLegacy != null
                         && mAudioFocusHelperLegacy.requestFocus())
             mAudioFocus = AudioFocus.Focused;
     }
 
-    /**
-     * Starts playing the next song. If manualUrl is null, the next song will be randomly selected
-     * from our Media Retriever (that is, it will be a random song in the user's device). If
-     * manualUrl is non-null, then it specifies the URL or path to the song that will be played
-     * next.
-     */
     void playSong() {
         mState = State.Stopped;
         relaxResources(false); // release everything except MediaPlayer
@@ -463,15 +415,6 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
                 mIsStreaming = false; // playing a locally available song
 
                 playingItem = mRetriever.getItem();
-
-              /*  if (playingItem == null) {
-                    Toast.makeText(this,
-                            "No available music to play. Place some music on your external storage "
-                            + "device (e.g. your SD card) and try again.",
-                            Toast.LENGTH_LONG).show();
-                    processStopRequest(true); // stop everything!
-                    return;
-                }*/
 
                 // set the source of the media player a a content URI
                 createMediaPlayerIfNeeded();
@@ -527,16 +470,8 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
                             mDummyAlbumArt)
                     .apply();
 
-            // starts preparing the media player in the background. When it's done, it will call
-            // our OnPreparedListener (that is, the onPrepared() method on this class, since we set
-            // the listener to 'this').
-            //
-            // Until the media player is prepared, we *cannot* call start() on it!
             mPlayer.prepareAsync();
 
-            // If we are streaming from the internet, we want to hold a Wifi lock, which prevents
-            // the Wifi radio from going to sleep while the song is playing. If, on the other hand,
-            // we are *not* streaming, we want to release the lock if we were holding it before.
             if (mIsStreaming) mWifiLock.acquire();
             else if (mWifiLock.isHeld()) mWifiLock.release();
         }
@@ -592,11 +527,6 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
         mNotificationManager.notify(NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
-    /**
-     * Configures service as a foreground service. A foreground service is a service that's doing
-     * something the user is actively aware of (such as playing music), and must appear to the
-     * user as a notification. That's why we create the notification here.
-     */
     void setUpAsForeground(String text) {
         Intent intent;
 
@@ -624,10 +554,7 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
         startForeground(NOTIFICATION_ID, mNotificationBuilder.build());
     }
 
-    /**
-     * Called when there's an error playing media. When this happens, the media player goes to
-     * the Error state. We warn the user about the error and reset the media player.
-     */
+
     public boolean onError(MediaPlayer mp, int what, int extra) {
         Toast.makeText(getApplicationContext(), "Media player error! Resetting.",
             Toast.LENGTH_SHORT).show();
@@ -642,7 +569,6 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
     }
 
     public void onGainedAudioFocus() {
-        //Toast.makeText(getApplicationContext(), "gained audio focus.", Toast.LENGTH_SHORT).show();
         mAudioFocus = AudioFocus.Focused;
 
         // restart media player with new focus settings
@@ -662,8 +588,7 @@ public class PlayerServiceLegacy extends Service implements OnCompletionListener
     }
 
     public void onLostAudioFocus(boolean canDuck) {
-        /*Toast.makeText(getApplicationContext(), "lost audio focus." + (canDuck ? "can duck" :
-            "no duck"), Toast.LENGTH_SHORT).show();*/
+
         mAudioFocus = canDuck ? AudioFocus.NoFocusCanDuck : AudioFocus.NoFocusNoDuck;
 
         // start/restart/pause media player with new focus settings

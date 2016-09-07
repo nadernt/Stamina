@@ -18,7 +18,7 @@ public class Constants {
     public static final String CONST_PHONE_CALLS_DIRECTORY_NAME = "/phonecalls"; // My birthday as folder name
     public static final String CHATHEAD_X = "ChatHeadX";
     public static final String CHATHEAD_Y = "ChatHeadY";
-
+    public static final String CONST_URL_HELPS = "http://stamina.help.s3-website-ap-southeast-2.amazonaws.com/index.html";
     public static final int CONST_NOTETYPE_TEXT = 0;
     public static final int CONST_NOTETYPE_AUDIO = 1;
     public static final int CONST_NOTETYPE_PHONECALL = 2;
@@ -97,6 +97,7 @@ public class Constants {
     public static final float DUCK_VOLUME = 0.1f;
     public static final int RESULT_CODE_REQUEST_DIALOG = 123;
     public static final String EXTRA_AUDIO_NOTE_PARENT_DB_ID = "ExtraAudioNoteParentDbId";
+    public static final String EXTRA_TODO_PARENT_DB_ID = "ExtraTodoParentDbId";
     public static final String EXTRA_AUDIO_NOTE_FILE_DB_ID = "ExtraAudioNoteFileDbId";
     public static final int CONST_PLAYER_LIST_TEXT_ELLLIPSIZE = 30;
     public static final String EXTRA_FOLDER_TO_PLAY_ID = "ExtraFolderToPlayId";
@@ -140,6 +141,7 @@ public class Constants {
     public static final int RESULT_CODE_REQUEST_LIST = 777;
     public static final String PHONE_RECORDER_CHATHEAD_Y = "PhoneRecorderChatheadY";
     public static final String PHONE_RECORDER_CHATHEAD_X = "PhoneRecorderChatheadX";
+
 
 
     //public static final String EXTRA_KILL_AND_RESTART_ME = "ExtraKillAndRestartMe";
@@ -248,5 +250,17 @@ public class Constants {
     public static int RECORD_TAP_KEEP = 3;
 
     public static String TEMP_FOLDER_NAME ="temporary";
+
+    public static final int RESULT_CODE_REQUEST_MAP_ACTIVITY = 111;
+    public static final String EXTRA_MAP_LNG = "ExtraMapLatlng";
+    public static final String EXTRA_MAP_LAT = "ExtraMapLat";
+    public static final String EXTRA_MAP_ADDRESS = "ExtraMapAddress";
+    public static final String EXTRA_MAP_PHONENUMBER = "ExtraMapPhoneNumber";
+    public static final String EXTRA_MAP_WEBSITE = "ExtraMapWebSite";
+    public static final String EXTRA_MAP_PLACENAME = "ExtraMapName";
+    public static final String EXTRA_MAP_FULL_INFO = "ExtraMapFullInfo";
+    public static final String EXTRA_ADDED_EVENT_TITLE = "ExtraAddedEventTitle";
+
+
 
 }

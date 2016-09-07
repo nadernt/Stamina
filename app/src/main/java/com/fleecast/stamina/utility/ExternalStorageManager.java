@@ -92,15 +92,13 @@ public class ExternalStorageManager {
         if(ExternalStorageManager.checkAvailable()) {
 
             String pathToWorkingDirectory = Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH, "");
-
+            File f = new File(pathToWorkingDirectory + Constants.CONST_WORKING_DIRECTORY_NAME);
             // if user didn't choose any custom directory or it is first time.
-            if (pathToWorkingDirectory.length() == 0) {
-                pathToWorkingDirectory = Environment.getExternalStorageDirectory().getPath() + Constants.CONST_WORKING_DIRECTORY_NAME;
-                File directory = new File(pathToWorkingDirectory);
-                directory.mkdirs();
-            } else{
+            if (!f.exists()) {
+                f.mkdirs();
+            }
                 pathToWorkingDirectory = pathToWorkingDirectory + Constants.CONST_WORKING_DIRECTORY_NAME;
-        }
+
 
                 return pathToWorkingDirectory;
         }
@@ -115,6 +113,30 @@ public class ExternalStorageManager {
 
         }
         return "";
+    }
+
+    public static void ifWorkingDirIsNotExitMakeIt(Context context){
+
+        if(ExternalStorageManager.checkAvailable()) {
+
+            String pathToWorkingDirectory = Prefs.getString(Constants.PREF_WORKING_DIRECTORY_PATH, "");
+            File f = new File(pathToWorkingDirectory + Constants.CONST_WORKING_DIRECTORY_NAME);
+            // if user didn't choose any custom directory or it is first time.
+            if (!f.exists()) {
+                f.mkdirs();
+            }
+
+        }
+        else
+        {
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            alertDialogBuilder.setTitle("Note:")
+                    .setIcon(R.drawable.ic_action_info)
+                    .setMessage("The storage device is not accessible now!").show();
+
+
+        }
     }
 
     public static String getWorkingDirectory() {

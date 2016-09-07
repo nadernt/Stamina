@@ -1,72 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent" android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    xmlns:CircularView="http://schemas.android.com/tools"
     android:supportsRtl="false"
     android:id="@+id/onnoff_relativelayout">
-    <ImageView android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/screen_tweak_img"
-        android:src="@drawable/screen_tweak_sun"
+    <RelativeLayout
+        android:id="@+id/CircularView"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        CircularView:startDeg="0"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/launchpad_icons_bg"/>
+        android:layout_centerHorizontal="true">
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/cancel_everything_img"
-        android:src="@drawable/cancel_everything"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/launchpad_icons_bg"
-         />
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/screen_tweak_img"
+            android:src="@drawable/screen_tweak_sun"
+            android:background="@drawable/launchpad_icons_bg"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/hide_bubble_img"
-        android:src="@drawable/hide_bubble"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/launchpad_icons_bg"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/help_img"
+            android:src="@drawable/help_img"
+            android:background="@drawable/launchpad_icons_bg"
+            android:layout_alignTop="@+id/note_list_img"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/note_list_img"
-        android:src="@drawable/note_list"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/launchpad_icons_bg"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/minimize_bubble_img"
+            android:src="@drawable/minimize_bubble"
+            android:background="@drawable/launchpad_icons_bg"
+            android:layout_alignTop="@+id/note_todo_img"
+            android:layout_toRightOf="@+id/help_img"
+            android:layout_toEndOf="@+id/help_img" />
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/resize_buble_img"
-        android:src="@drawable/resize"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/launchpad_icons_bg"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/note_list_img"
+            android:src="@drawable/note_list"
+            android:background="@drawable/launchpad_icons_bg"
+            android:layout_alignTop="@+id/note_take_audio_img"
+            android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/note_take_audio_img"
-        android:src="@drawable/note_audio"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/launchpad_icons_bg"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/note_todo_img"
+            android:src="@drawable/note_todo"
+            android:background="@drawable/launchpad_icons_bg"
+            android:layout_above="@+id/note_take_audio_img"
+            android:layout_toLeftOf="@+id/note_take_audio_img"
+            android:layout_toStartOf="@+id/note_take_audio_img" />
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:id="@+id/note_take_text_img"
-        android:src="@drawable/note_text"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/launchpad_icons_bg"/>
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/note_take_audio_img"
+            android:src="@drawable/note_audio"
+            android:background="@drawable/launchpad_icons_bg"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/note_take_text_img"
+            android:src="@drawable/note_text"
+            android:background="@drawable/launchpad_icons_bg"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
 </RelativeLayout>

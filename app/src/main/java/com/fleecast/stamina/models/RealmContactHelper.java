@@ -79,20 +79,6 @@ public class RealmContactHelper {
         return contactStructList;
     }
 
-/*
-    public RealmResults<AppDbRealmStruct> getAllAppsDatabaseInfo(){
-
-        RealmResults<AppDbRealmStruct> query = realm.where(AppDbRealmStruct.class).findAll();
-
-       *//* for(int i=0; i<query.size();i++){
-            GridViewAppItemStruct
-            getAllAppsDatabaseInfo().add()
-            Log.e("Current Packages:", query.get(i).getTitle() + " " + query.get(i).getAppGroup());
-        }*//*
-        return  query;
-    }*/
-
-
     public void deleteContactFromIgnoreList(String contact_number) {
 
         RealmResults<ContactDbRealmStruct> contactToDeleteFromDbIgnorelist = realm.where(ContactDbRealmStruct.class).equalTo("id", getJustNumberOfPhone(contact_number)).findAll();
@@ -102,8 +88,6 @@ public class RealmContactHelper {
             contactToDeleteFromDbIgnorelist.deleteFirstFromRealm();
             realm.commitTransaction();
         }
-
-//        showToast("Clear data successfully.");
     }
 
 

@@ -89,8 +89,6 @@ public class BeautifyNoteText {
 
         } else if (noteInfo.getHasAudio() && noteInfo.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
-            /*RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
-            tmpRealmAudio = realmAudioNoteHelper.findAllAudioNotesByParentId(noteInfo.getId());*/
 
             File file = new File(ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(noteInfo.getId())));
 
@@ -233,8 +231,6 @@ public class BeautifyNoteText {
         File[] listOfFiles = folder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                //String name = pathname.getName().toLowerCase();
-                //return name.endsWith(".xml") && pathname.isFile();
                 return pathname.isFile() && !pathname.isHidden();
             }
         });
@@ -313,7 +309,6 @@ public class BeautifyNoteText {
     }
 
     private String getHexStringFromInt(int resourceColorId){
-        //ContextCompat.getColor(mContext, R.color.color_name)
         int intColor = ContextCompat.getColor(mContext, resourceColorId);
         return "#" + String.valueOf(Integer.toHexString(intColor)).substring(2);
     }
@@ -334,7 +329,7 @@ public class BeautifyNoteText {
         long diffMinutes = diff / (60 * 1000) % 60;
         long diffHours = diff / (60 * 60 * 1000);
 
-        Log.e("DGGGG", diffHours + ":" + diffMinutes + ":"  + diffSeconds);
+        Log.e("DBG", diffHours + ":" + diffMinutes + ":"  + diffSeconds);
         String toReturn="";
 
 

@@ -19,9 +19,11 @@ package com.fleecast.stamina.legacyplayer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import com.fleecast.stamina.notetaking.PlayerService;
 import com.fleecast.stamina.utility.Constants;
 
 /**
@@ -33,39 +35,42 @@ import com.fleecast.stamina.utility.Constants;
 public class MusicIntentReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
-            Toast.makeText(context, "Headphones disconnected.", Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 
-            // send an intent to our PlayerServiceLegacy to telling it to pause the audio
-            context.startService(new Intent(Constants.ACTION_PAUSE_LEGACY));
+            if (intent.getAction().equals(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+                Toast.makeText(context, "Headphones disconnected.", Toast.LENGTH_SHORT).show();
 
-        } else if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
-            KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-            if (keyEvent.getAction() != KeyEvent.ACTION_DOWN)
-                return;
+                // send an intent to our PlayerServiceLegacy to telling it to pause the audio
+                context.startService(new Intent(Constants.ACTION_PAUSE_LEGACY));
 
-            switch (keyEvent.getKeyCode()) {
-                case KeyEvent.KEYCODE_HEADSETHOOK:
-                case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                    context.startService(new Intent(Constants.ACTION_TOGGLE_PLAYBACK_LEGACY));
-                    break;
-                case KeyEvent.KEYCODE_MEDIA_PLAY:
-                    context.startService(new Intent(Constants.ACTION_PLAY_LEGACY));
-                    break;
-                case KeyEvent.KEYCODE_MEDIA_PAUSE:
-                    context.startService(new Intent(Constants.ACTION_PAUSE_LEGACY));
-                    break;
-                case KeyEvent.KEYCODE_MEDIA_STOP:
-                    context.startService(new Intent(Constants.ACTION_STOP_LEGACY));
-                    break;
-                case KeyEvent.KEYCODE_MEDIA_NEXT:
-                    context.startService(new Intent(Constants.ACTION_SKIP_LEGACY));
-                    break;
-                case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    // TODO: ensure that doing this in rapid succession actually plays the
-                    // previous song
-                    context.startService(new Intent(Constants.ACTION_REWIND_LEGACY));
-                    break;
+            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_BUTTON)) {
+                KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
+                if (keyEvent.getAction() != KeyEvent.ACTION_DOWN)
+                    return;
+
+                switch (keyEvent.getKeyCode()) {
+                    case KeyEvent.KEYCODE_HEADSETHOOK:
+                    case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                        context.startService(new Intent(Constants.ACTION_TOGGLE_PLAYBACK_LEGACY));
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_PLAY:
+                        context.startService(new Intent(Constants.ACTION_PLAY_LEGACY));
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                        context.startService(new Intent(Constants.ACTION_PAUSE_LEGACY));
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_STOP:
+                        context.startService(new Intent(Constants.ACTION_STOP_LEGACY));
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_NEXT:
+                        context.startService(new Intent(Constants.ACTION_SKIP_LEGACY));
+                        break;
+                    case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                        // TODO: ensure that doing this in rapid succession actually plays the
+                        // previous song
+                        context.startService(new Intent(Constants.ACTION_REWIND_LEGACY));
+                        break;
+                }
             }
         }
     }

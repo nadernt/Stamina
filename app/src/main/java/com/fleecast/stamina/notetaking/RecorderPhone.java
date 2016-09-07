@@ -1,8 +1,11 @@
 package com.fleecast.stamina.notetaking;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,13 +25,15 @@ public class RecorderPhone {
     private MediaRecorder mRecorder = null;
     private MyApplication myApplication;
     private String mFileName = "";
+    boolean isRecordStarted=false;
 
     public RecorderPhone(Context context, String workingDirectory, String mFileName) {
         this.mFileName = workingDirectory + File.separator + mFileName;
+        Log.e(LOG_TAG,"Output file name: " +mFileName);
         this.context = context;
 
         myApplication = (MyApplication) context.getApplicationContext();
-
+        isRecordStarted=false;
     }
 
     public void recordMedia(boolean start_stop, int mediaRecorderSource) {
@@ -45,20 +50,30 @@ public class RecorderPhone {
     }
 
     private void startRecording() {
-
+// Assume thisActivity is the current activity
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int permissionCheck = ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.CAPTURE_AUDIO_OUTPUT);
+            Log.e(LOG_TAG, "Honglaaaaaaaaaaaaaaaaa");
+        }
+        //if(permissionCheck)
         Log.e(LOG_TAG, "Rec Init");
-        myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
+      //  myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(mediaRecorderSource);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileName);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setOutputFile(mFileName);
+
 
         try {
             mRecorder.prepare();
+         //   Thread.sleep(1000);
             myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
             mRecorder.start();
+            isRecordStarted=true;
         } catch (Exception e) {
+            isRecordStarted=false;
             Log.e(LOG_TAG, "prepare() failed");
             myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -68,11 +83,12 @@ public class RecorderPhone {
     }
 
     private void stopRecording() {
-        if(mRecorder!=null) {
+        if(mRecorder!=null && isRecordStarted) {
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
         }
         myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
     }
+
 }

@@ -78,7 +78,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
     private ImageView btnRecordsListPlayer;
     private int currentNoteType=0;
     private boolean weAreInEditMode=false;
-    //private boolean theNoteIsAudioType=false;
     private boolean itIsTotallyNewNote =true;
     private boolean skipSaveOnPause =false;
     private MenuItem mnuItemRedo;
@@ -98,9 +97,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-      /*  Log.e(TAG, "onDestroy killRecordService");
-        killRecordService();*/
-        //stopService(new Intent(this,RecorderNoteService.class));
     }
 
     @Override
@@ -108,8 +104,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.audio_note_add_activity);
-
-        //startService(new Intent(this,RecorderNoteService.class));
 
 
         myApplication =  (MyApplication)getApplicationContext();
@@ -196,15 +190,12 @@ public class ActivityAddAudioNote extends AppCompatActivity {
     private void intentHandler(Intent intent){
 
         if(intent.hasExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD)){
-            Log.e("DBG","CC");
 
             /*****************************************************************************************************************
              * ***************************************************************************************************************
              * now you should get the db key intent and fetch the record from the db and fill it in the text edits.
              * ***************************************************************************************************************
              *****************************************************************************************************************/
-
-            // initVariables();
 
             dbId = intent.getIntExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD,Constants.CONST_NULL_ZERO);
 
@@ -213,9 +204,7 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                 weAreInEditMode=true;
                 noteInfoRealmStruct = realmNoteHelper.getNoteById(dbId);
 
-                //dbId = myApplication.tmpCurrentAudioNoteInfoStruct.getId();
 
-                //noteInfoRealmStruct = realmNoteHelper.getNoteById(dbId);
                 myApplication.tmpCurrentAudioNoteInfoStruct = new TempNoteInfoStruct();
                 myApplication.tmpCurrentAudioNoteInfoStruct.setId(dbId);
                 myApplication.tmpCurrentAudioNoteInfoStruct.setDescription(noteInfoRealmStruct.getDescription());
@@ -257,7 +246,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
 
                                 latestRecordFileName = tmpFile.getPath();
 
-                                Log.e("Mucha",latestRecordFileName);
                             }
 
                         }
@@ -274,9 +262,7 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                 recorderControlsLayout.setVisibility(View.VISIBLE);
                 currentNoteType = Constants.CONST_IS_TEXT_AND_RECORD;
 
-                Log.e("DBG", myApplication.isRecordUnderGoing() + " ");
 
-//                skipSaveOnPause =false;
                 itIsTotallyNewNote=false;
 
                 // We are running activty by tapping on notification description
@@ -304,7 +290,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
         } else if(intent.hasExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD)){
 
                  if ((myApplication.tmpCurrentAudioNoteInfoStruct != null) ) {
-                     Log.e("DBG","AA");
 
                      dbId = myApplication.tmpCurrentAudioNoteInfoStruct.getId();
 
@@ -333,12 +318,8 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                  }
                  else
                  {
-                     Log.e("DBG","BB");
 
                      initVariables();
-
-                   /*  myApplication.tmpCurrentAudioNoteInfoStruct = new TempNoteInfoStruct();
-                     myApplication.tmpCurrentAudioNoteInfoStruct.setId(dbId);*/
 
                      mnuItemPlayRecord.setVisible(true);
                      btnDeleteRecord.setVisibility(View.INVISIBLE);
@@ -386,7 +367,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
         else{
             return i;
         }
-        Log.e("DBG",i + " BB");
 
         return i;
     }
@@ -425,11 +405,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
             if (weAreInEditMode)
                 createdTime = noteInfoRealmStruct.getCreateTimeStamp();
 
-           /* if (currentNoteType == Constants.CONST_IS_ONLY_TEXT || currentNoteType == Constants.CONST_IS_EDIT_ONLY_TEXT)
-                theNoteIsAudioType = false;
-            else
-                theNoteIsAudioType = true;*/
-
             if (!weAreInEditMode)
                 realmNoteHelper.addNote(dbId, title, description, true, updateTime, createdTime, null, null, Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL, null, 0, Constants.CONST_NOTETYPE_AUDIO);
             else
@@ -459,7 +434,7 @@ public class ActivityAddAudioNote extends AppCompatActivity {
         txtTitle.setText("");
         txtTimeLaps.setVisibility(View.INVISIBLE);
         currentNoteType= Constants.CONST_NULL_ZERO;
-        //theNoteIsAudioType=false;
+
         weAreInEditMode=false;
         currentNoteType=0;
         toggleNoStopRecord=false;
@@ -493,8 +468,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
             int h = windowManager.getDefaultDisplay().getHeight();
             szWindow.set(w, h);
         }
-
-        // myApplication = (MyApplication)getApplicationContext();
 
          recorderControlsLayout = (RelativeLayout) findViewById(R.id.recorderControlsLayout);
 
@@ -570,8 +543,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
 
 
                         adb.setTitle("Note");
-
-                        //adb.setIcon(android.R.drawable.ic_dialog_alert);
 
                         adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -788,7 +759,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
 
         boolean foundAnyFile= false;
         File file = new File(folderOfRecords);
-//        Log.e("MAMAM", file.exists() + " " + file.isDirectory() );
 
         if(file.exists() && file.isDirectory()) {
             for (File tmpFile : file.listFiles()) {
@@ -811,23 +781,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
     return foundAnyFile;
     }
 
-/* private void animateTimeLaps(View view,boolean startStopAnimate){
-
-    if(startStopAnimate) {
-        //recorder.resetTimer();
-       // recorder.startTimer();
-        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
-        animation.setDuration(500); // duration - half a second
-        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-        animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
-        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
-        view.startAnimation(animation);
-    }
-    else {
-      //  recorder.stopTimer();
-        view.clearAnimation();
-    }
-}*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -867,7 +820,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                 File file = new File(latestRecordFileName);
 
                 if (!file.exists()) {
-                    Log.e(TAG, "No record to play");
                     return false;
                 }
                 playLatestRecord();
@@ -998,18 +950,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
 
                     }
                     else if(msgRecordService == Constants.REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY){
-                        Log.e("DBG","Callam");
-                        /*latestRecordFileName = intent.getStringExtra(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY_FILENAME);
-                        mnuItemPlayRecord.setVisible(true);
-                        btnDeleteRecord.setVisibility(View.VISIBLE);
-
-                        if(isThereAnyRecordInPath(latestRecordFileName))
-                        {
-                            btnRecordsListPlayer.setVisibility(View.VISIBLE);
-                        }else
-                        {
-                            btnRecordsListPlayer.setVisibility(View.INVISIBLE);
-                        }*/
 
                         Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 

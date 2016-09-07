@@ -168,42 +168,11 @@ public class CustomRoundButton extends ImageView {
         mCanvas.setColor(textColor);
         mCanvas.setTextSize(textSize);
         mCanvas.setShadowLayer(2.0f, 5.0f, 5.0f, Color.BLACK);
-        //Log.e("Acha", utility.wordEllipsizeMaker(buttonText,12,15));
 
         canvas.drawText(Utility.wordEllipsizeMaker(buttonText, 12, 15), viewWidthHalf, this.getMeasuredHeight()-6 , mCanvas);
 
         bitmap.recycle();
         bitmap=null;
-        // TextView tv = new TextView(context);
-
-
-        /*Rect rectText = new Rect();
-        paintText.getTextBounds(captionString, 0, captionString.length(), rectText);
-
-        newCanvas.drawText(captionString,
-                0, rectText.height(), paintText);
-        */
-
-
-
-/*
-            mCanvas.setStyle(Paint.Style.FILL);
-            mCanvas.setStrokeWidth(outerCirclesStorkThickness);
-            mCanvas.setAntiAlias(true);
-            mCanvas.setColor(circleCenterColor);
-            mCanvas.setAlpha(buttonAlpha);
-            Paint _paintBlur = new Paint();
-            _paintBlur.set(mCanvas);
-            _paintBlur.setColor(Color.argb(127, 74, 138, 255));
-            _paintBlur.setStrokeWidth(30f);
-            _paintBlur.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
-*/
-
-        //canvas.drawCircle(viewWidthHalf, viewHeightHalf, radius, _paintBlur);
-
-
-
-
 
     }
 
@@ -238,34 +207,10 @@ public class CustomRoundButton extends ImageView {
         return icon;
     }
 
-/* public static float convertDpToPixel(float dp, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return px;
-    }
-
-    *//**
-     * This method converts device specific pixels to device independent pixels.
-     *
-     * @param px
-     *            A value in px (pixels) unit. Which we need to convert into db
-     * @param context
-     *            Context to get resources and device specific display metrics
-     * @return A float value to represent db equivalent to px value
-     *//*
-    public static float convertPixelsToDp(float px, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / (metrics.densityDpi / 160f);
-        return dp;
-
-    }*/
 
     private float calcPixelIndependent(float pixelToConvert){
 
         float scale = getResources().getDisplayMetrics().density;
-        //return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixelToConvert, getResources().getDisplayMetrics());
         return (pixelToConvert * scale + 0.5f);
 
     }
@@ -286,10 +231,6 @@ public class CustomRoundButton extends ImageView {
 
     public Padding getPadding(){
         return this.padding;
-    }
-
-    private void drawImageViewShape(Canvas canvas){
-
     }
 
     @Override

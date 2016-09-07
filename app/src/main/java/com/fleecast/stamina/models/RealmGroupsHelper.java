@@ -70,9 +70,6 @@ public class RealmGroupsHelper {
 
         RealmQuery<GroupsDbRealmStruct> query = realm.where(GroupsDbRealmStruct.class)
                 .equalTo("id", id);
-
-        // showLog("app_package_name ; " + app_package_name);
-
         return query.count() == 0 ? false : true;
     }
 

@@ -90,10 +90,6 @@ public class RealmNoteHelper {
      */
     public boolean isExist(int id) {
 
-/*
-        NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
-*/
-
         RealmQuery<NoteInfoRealmStruct> query = realm.where(NoteInfoRealmStruct.class)
                 .equalTo("id", id);
 
@@ -185,7 +181,7 @@ public class RealmNoteHelper {
                     //if(phoneNumber==null)Log.e("GGG",phoneNumber);
                     data.add(i, new NoteInfoStruct(id, title, description, has_audio, update_time, create_time_stamp, realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(), realmResult.get(i).getCallType(), phoneNumber, 0, 0));
                 } catch (Exception e) {
-                    Log.e("GGG", e.getMessage());
+                    Log.e("Err: ", e.getMessage());
                 }
             }
 
@@ -198,7 +194,7 @@ public class RealmNoteHelper {
 
     private  RealmResults<NoteInfoRealmStruct> filterQueryResults( RealmResults<NoteInfoRealmStruct> realmResult){
 
-// filtering by text, audio or phone call
+// Filtering by text, audio or phone call
 
 /**  TEXT AUDIO PHONE
  *  ____________________
@@ -278,30 +274,6 @@ public class RealmNoteHelper {
 
         return query.count() == 0 ? false : true;
     }
-
-   /* *//**
-     * method update article
-     *
-     * @param id
-     * @param title
-     * @param description
-     *//*
-    public void updateNote(int id, String title, String description, boolean has_audio)  {
-        Date now = new Date();
-
-        realm.beginTransaction();
-
-        NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
-
-        noteInfoRealmStruct.setTitle(title);
-        noteInfoRealmStruct.setDescription(description);
-        noteInfoRealmStruct.setHasAudio(has_audio);
-        noteInfoRealmStruct.setUpdateTime(now);
-
-        realm.commitTransaction();
-        showLog("Updated : " + title);
-    }*/
-
 
     /**
      * method delete articles by id

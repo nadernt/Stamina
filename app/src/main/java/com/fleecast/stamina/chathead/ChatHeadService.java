@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,8 +39,6 @@ import com.fleecast.stamina.todo.ActivityTodoParentRecyclerView;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
-import java.text.DecimalFormatSymbols;
-
 
 /**
  * Created by nader on 2/7/2016.
@@ -49,7 +48,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     private WindowManager windowManager;
     private RelativeLayout chatheadView, removeView, launchPadView;
     private LinearLayout txtView, txt_linearlayout;
-    private ImageView chatheadImg, removeImg, screen_tweak_img,cancel_everything_img,hide_bubble_img, notelist_img, resize_buble_img, note_take_audio_img;
+    private ImageView chatheadImg, removeImg, screen_tweak_img, help_img, minimize_bubble_img, notelist_img, note_todo_img, note_take_audio_img;
     private TextView txtTimeLapse,txtInfoBubble;
     private int x_init_cord, y_init_cord, x_init_margin, y_init_margin;
     private Point szWindow = new Point();
@@ -65,7 +64,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     private float easingAmount = 0.15f;
     private static final int HOME_Y_ZERO =0;
     private static final int TRIANGULAR_DISTANCE = 10;
-    private  int CHATHEAD_HOME_Y_OFFSET_IN_PIXEL=-64;
+    private  int CHATHEAD_HOME_Y_OFFSET_IN_PIXEL=-48;
     private int chatHeadYFinalPos =0;
     private static final int OVERLAPPING_PERCENT = 50;
     private long timeToMakeChatheadTransparent = 2000;
@@ -82,12 +81,10 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     private ImageView note_take_text_img;
     private boolean lockPositionOnButtomCorner =false;
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
-        Log.d(Utility.LogTag, "ChatHeadService.onCreate()");
     }
     private PendingIntent createPendingIntent() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -104,16 +101,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                 .build();
     }
 
-   /* private Notification createNotification(PendingIntent intent) {
-        return new Notification.Builder(this)
-                .setContentTitle(getText(R.string.app_name))
-                .setContentText(getText(R.string.notificationText))
-                .setSmallIcon(R.drawable.ic_sun)
-                .setContentIntent(intent)
-                .setVisibility(Notification.VISIBILITY_SECRET)
-                .build();
-    }*/
-
     private void handleStart(){
         windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
 
@@ -122,18 +109,15 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         PendingIntent pendingIntent = createPendingIntent();
 
         IntentFilter filter = new IntentFilter();
+
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        //filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
+
         mReceiver = new ScreenReceiver(this);
         registerReceiver(mReceiver, filter);
         ismReceiverRegistered=true;
 
 
-        /*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            notification = createNotification(pendingIntent);
-        } else {*/
         notification = createNotificationCompat(pendingIntent);
-        //}
 
         startForeground(FOREGROUND_ID, notification);
 
@@ -172,13 +156,13 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         screen_tweak_img = (ImageView) launchPadView.findViewById(R.id.screen_tweak_img);
         note_take_audio_img = (ImageView) launchPadView.findViewById(R.id.note_take_audio_img);
-        hide_bubble_img= (ImageView) launchPadView.findViewById(R.id.hide_bubble_img);
+        minimize_bubble_img = (ImageView) launchPadView.findViewById(R.id.minimize_bubble_img);
         notelist_img = (ImageView) launchPadView.findViewById(R.id.note_list_img);
-        resize_buble_img = (ImageView) launchPadView.findViewById(R.id.resize_buble_img);
+        note_todo_img = (ImageView) launchPadView.findViewById(R.id.note_todo_img);
         note_take_text_img = (ImageView) launchPadView.findViewById(R.id.note_take_text_img);
-        cancel_everything_img= (ImageView) launchPadView.findViewById(R.id.cancel_everything_img);
+        help_img = (ImageView) launchPadView.findViewById(R.id.help_img);
 
-        positionMiddleLaunchpadButtons();
+        //positionMiddleLaunchpadButtons();
 
         /* REMOVE */
         removeView = (RelativeLayout)inflater.inflate(R.layout.remove, null);
@@ -203,8 +187,8 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         txtInfoBubble = (TextView) chatheadView.findViewById(R.id.txtInfoBubble);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                calcPixelIndependent(64),
-                calcPixelIndependent(64),
+                calcPixelIndependent(48),
+                calcPixelIndependent(48),
                 WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
                         WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|
@@ -215,13 +199,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         params.x = xFabIcon;
         params.y = yFabIcon;
 
-        //final float scale = this.getResources().getDisplayMetrics().density;
-
-        //params.width =(int) (48 * scale + 0.5f);
-        //params.height =(int) (48 * scale + 0.5f);
-
-        //params.width =48;
-        // params.height =48;
 
         windowManager.addView(chatheadView, params);
 
@@ -229,71 +206,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
 
         runTransparentTimer();
-
-     /*   SensorManager sensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-        sensorManager.registerListener(new SensorEventListener() {
-            int orientation = -1;
-
-
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    windowManager.getDefaultDisplay().getSize(szWindow);
-                } else {
-                    int w = windowManager.getDefaultDisplay().getWidth();
-                    int h = windowManager.getDefaultDisplay().getHeight();
-                    szWindow.set(w, h);
-                }
-
-               // Log.e("DBGGGGGGGGGG","X/Y: " + szWindow.x + "/" + szWindow.y);
-
-                WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) chatheadView.getLayoutParams();
-
-
-
-                if (event.values[1] < 6.5 && event.values[1] > -6.5) {
-                    if (orientation != 1) {
-
-                        Log.e(Utility.LogTag, "ChatHeadRecordService.onConfigurationChanged -> landscap");
-
-                        if(txtView != null){
-                            txtView.setVisibility(View.GONE);
-                        }
-
-                        if(layoutParams.y + (chatheadView.getHeight() + getStatusBarHeight()) > szWindow.y){
-                            layoutParams.y = szWindow.y- (chatheadView.getHeight() + getStatusBarHeight());
-                            windowManager.updateViewLayout(chatheadView, layoutParams);
-                        }
-
-                        if(layoutParams.x != 0 && layoutParams.x < szWindow.x){
-                            resetPosition();
-                        }
-                    }
-                    orientation = 1;
-                } else {
-                    if (orientation != 0) {
-                        Log.d(Utility.LogTag, "ChatHeadRecordService.onConfigurationChanged -> portrait");
-
-                        if(txtView != null){
-                            txtView.setVisibility(View.GONE);
-                        }
-
-                        //if(layoutParams.x > szWindow.x){
-                        resetPosition();
-                        //}
-                                            }
-                    orientation = 0;
-                }
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                // TODO Auto-generated method stub
-
-            }
-        }, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);*/
 
 
         chatheadView.setOnTouchListener(new View.OnTouchListener() {
@@ -324,10 +236,9 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                 int x_cord = (int) event.getRawX();
                 int y_cord = (int) event.getRawY();
                 int x_cord_Destination, y_cord_Destination;
-                //  Log.i("XY", "X:" + x_cord + "  Y:" + y_cord);
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        //Log.e("MAFAFAFA", szWindow.y + " " + notelist_img.getY() + " "  + screen_tweak_img.getY() );
 
                         pullBubbleXDest=0;
                         stopTransparentTimer();
@@ -343,7 +254,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                         remove_img_width = removeImg.getLayoutParams().width;
                         remove_img_height = removeImg.getLayoutParams().height;
-                        //final int x = (szWindow.x - chatheadView.getWidth()) / 2;
 
                         x_init_cord = x_cord;
                         y_init_cord = y_cord;
@@ -351,10 +261,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                         x_init_margin = layoutParams.x;
                         y_init_margin = layoutParams.y;
 
-                       /* if (txtView != null) {
-                            txtView.setVisibility(View.GONE);
-                            myHandler.removeCallbacks(myRunnable);
-                        }*/
                         break;
                     case MotionEvent.ACTION_MOVE:
 
@@ -456,8 +362,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                                 LauncherDialogActivity.myActivityInstance.finish();
                             }
 
-                            Log.i("FUCKKKKKKKKKK", "Service Shutdowned");
-
                             cancelEverything();
 
                             stopService(new Intent(ChatHeadService.this, ChatHeadService.class));
@@ -489,13 +393,13 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                                     //Here the condition is different for chatheadSize we need to act reversed in order to avoid change the icon to wronge similar what it was before.
                                     if(!chatheadSize) {
-                                        sizeofChathead = calcPixelIndependent(64);
+                                        sizeofChathead = calcPixelIndependent(48);
                                     }
                                     else{
                                         sizeofChathead = calcPixelIndependent(32);
                                     }
 
-                                    updateUserViewSize();
+                                   // updateUserViewSize();
 
                                     layoutParams.width = sizeofChathead;
                                     layoutParams.height = sizeofChathead;
@@ -507,7 +411,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                             inBounded = false;
 
 
-                            if (checkWantsAddScreenTimeout(chatheadView)) {
+                            /*if (checkWantsAddScreenTimeout(chatheadView)) {
 
                                 //Stop past timer
                                 timeoutCounter(0);
@@ -518,22 +422,34 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                                 updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
 
                                 timeoutCounter(1);
-                            } else if (isViewOverlapping(screen_tweak_img, chatheadImg)) {
+                            } else */
+                            if (isViewOverlapping(screen_tweak_img, chatheadImg)) {
 
-                                initValuesToZeroForNewPolicies();
+                                //initValuesToZeroForNewPolicies();
 
-                                userPowerPolicies.setCurrentScreenTweak(!userPowerPolicies.getCurrentScreenTweak());
-                                userPowerPolicies.setScreenAlwaysON(chatheadView, userPowerPolicies.getCurrentScreenTweak());
-
-                                if (userPowerPolicies.getCurrentScreenTweak())
-                                    updateUserView(DecimalFormatSymbols.getInstance().getInfinity(), true);
+                                if (!userPowerPolicies.getCurrentScreenTweak()) {
+                                    Log.e("DBG","A");
+                                    updateUserView(CurrentUserOption.power_tweek_on);
+                                    userPowerPolicies.setCurrentScreenTweak(true);
+                                    userPowerPolicies.setScreenAlwaysON(chatheadView, true);
+                                }
                                 else
-                                    updateUserView(" ", false);
+                                {
+                                    Log.e("DBG","B");
+                                    userPowerPolicies.setCurrentScreenTweak(false);
+                                    userPowerPolicies.setScreenAlwaysON(chatheadView, false);
+                                    updateUserView(CurrentUserOption.no_image);
+                                }
+
+
+
+
 
                             }else if (isViewOverlapping(note_take_audio_img, chatheadImg)) {
 
                                 // If we do not have any on going record.
                                 if(myApplication.isRecordUnderGoing()!=Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
+                                    updateUserView(CurrentUserOption.add_audio_note);
 
                                     Intent intent = new Intent(ChatHeadService.this, ActivityAddAudioNote.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -552,6 +468,8 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                             }
                             else if (isViewOverlapping(note_take_text_img, chatheadImg)) {
 
+                                updateUserView(CurrentUserOption.add_text_note);
+
                                 Intent intent = new Intent(ChatHeadService.this, ActivityAddTextNote.class);
                                 //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -566,34 +484,28 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                             }
                             else if (isViewOverlapping(notelist_img, chatheadImg)) {
+                                updateUserView(CurrentUserOption.view_note_list);
                                 //initValuesToZeroForNewPolicies();
                                 Intent intent = new Intent(ChatHeadService.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
 
                             }
-                            else if (isViewOverlapping(resize_buble_img, chatheadImg)) {
+                            else if (isViewOverlapping(note_todo_img, chatheadImg)) {
+
+                                updateUserView(CurrentUserOption.add_todo_note);
 
                                 Intent intent = new Intent(ChatHeadService.this, ActivityTodoParentRecyclerView.class);
-                                //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                               /* if(myApplication.getCurrentOpenedTextNoteId()>0)
-                                    intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD,myApplication.getCurrentOpenedTextNoteId());
-                                else
-                                    intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD, true);
-*/
-                                //   updateChatHeadSize(1);
                                 startActivity(intent);
 
-                               /* //For auto size we will give it whatever integer.
-                                updateChatHeadSize(777);*/
+                            }  else if (isViewOverlapping(minimize_bubble_img, chatheadImg)) {
 
-                            }  else if (isViewOverlapping(hide_bubble_img, chatheadImg)) {
+                                updateUserView(CurrentUserOption.minimize_bubble);
                                 //initValuesToZeroForNewPolicies();
                                 lockPositionOnButtomCorner = true;
 
                                 layoutParams.x = 0;
-                                layoutParams.y = szWindow.y;
+                                layoutParams.y = 0;
 
                                 int sizeofChathead=calcPixelIndependent(20);
                                 txtInfoBubble.setTextSize(12);
@@ -601,9 +513,15 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                                 layoutParams.height = sizeofChathead;
                                 windowManager.updateViewLayout(chatheadView, layoutParams);
                                 //Toast.makeText(ChatHeadRecordService.this, "app_settings_img", Toast.LENGTH_SHORT).show();
-                            } else if (isViewOverlapping(cancel_everything_img, chatheadImg)) {
+                            } else if (isViewOverlapping(help_img, chatheadImg)) {
+                                updateUserView(CurrentUserOption.get_help);
 
-                                cancelEverything();
+                                String url = Constants.CONST_URL_HELPS;
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                intent.setData(Uri.parse(url));
+                                startActivity(intent);
                             }
 
 
@@ -649,23 +567,23 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         float yPosOfMidButtons  = (float)(((szWindow.y/4)-getStatusBarHeight()/2) - 32);
         note_take_text_img.setY(yPosOfMidButtons) ;
-        cancel_everything_img.setY(yPosOfMidButtons);
+        help_img.setY(yPosOfMidButtons);
 
     }
 
-    private void updateChatHeadSize(int iWantSmallChatHead)
+  /*  private void updateChatHeadSize(int iWantSmallChatHead)
     {
 
         WindowManager.LayoutParams params = (WindowManager.LayoutParams) chatheadView.getLayoutParams();
-/*        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                calcPixelIndependent(64),
-                calcPixelIndependent(64),
+*//*        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                calcPixelIndependent(48),
+                calcPixelIndependent(48),
                 WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
                         WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                 PixelFormat.TRANSLUCENT);
-        params.gravity = Gravity.TOP | Gravity.LEFT;*/
+        params.gravity = Gravity.TOP | Gravity.LEFT;*//*
 
         int sizeofChathead=0;
 
@@ -673,7 +591,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
             chatheadSize = false;
 
         if(chatheadSize) {
-            sizeofChathead = calcPixelIndependent(64);
+            sizeofChathead = calcPixelIndependent(48);
         }
         else{
             sizeofChathead = calcPixelIndependent(32);
@@ -684,7 +602,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         params.height = sizeofChathead;
         windowManager.updateViewLayout(chatheadView, params);
 
-    }
+    }*/
 
     private int calcPixelIndependent(int pixelToConvert){
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixelToConvert, getResources().getDisplayMetrics());
@@ -702,10 +620,10 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         chosenNumberToTurnOffScreen =0;
         userPowerPolicies.setCurrentScreenTweak(!userPowerPolicies.getCurrentScreenTweak());
         userPowerPolicies.setScreenAlwaysON(chatheadView, false);
-        updateUserView(" ", false);
+        updateUserView(CurrentUserOption.no_image);
     }
 
-    private void updateUserViewSize(){
+   /* private void updateUserViewSize(){
 
         if(!chatheadSize){
             txtInfoBubble.setTextSize(40);
@@ -714,27 +632,58 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         {
             txtInfoBubble.setTextSize(20);
         }
+    }*/
+
+    enum CurrentUserOption{
+        power_tweek_on,
+        add_text_note,
+        add_audio_note,
+        add_todo_note,
+        minimize_bubble,
+        view_note_list,
+        get_help,
+        no_image
     }
+    private void updateUserView(CurrentUserOption currentUserOption){
 
-    private void updateUserView(String text_to_show, boolean add_padding){
-
-        if(!chatheadSize){
-            if(add_padding)
-                txtInfoBubble.setPadding(0, 0, 0, 20);
-            else
-                txtInfoBubble.setPadding(0,0,0,0);
-        }
-        else
+        if(currentUserOption==CurrentUserOption.add_audio_note)
         {
-            if(add_padding)
-                txtInfoBubble.setPadding(0, 0, 0, 10);
-            else
-                txtInfoBubble.setPadding(0,0,0,0);
+            chatheadImg.setImageResource(R.drawable.note_audio);
+        }
+        else if(currentUserOption==CurrentUserOption.add_text_note)
+        {
+            chatheadImg.setImageResource(R.drawable.note_text);
+        }
+        else if(currentUserOption==CurrentUserOption.add_todo_note)
+        {
+            chatheadImg.setImageResource(R.drawable.note_todo);
+        }
+        else if(currentUserOption==CurrentUserOption.minimize_bubble)
+        {
+            chatheadImg.setImageResource(R.drawable.minimize_bubble);
+        }
+        else if(currentUserOption==CurrentUserOption.power_tweek_on)
+        {
+            chatheadImg.setImageResource(R.drawable.screen_tweak_sun);
+
+        }
+        else if(currentUserOption==CurrentUserOption.view_note_list)
+        {
+            chatheadImg.setImageResource(R.drawable.note_list);
+
+        }
+        else if(currentUserOption==CurrentUserOption.get_help)
+        {
+            chatheadImg.setImageResource(R.drawable.help_img);
+
+        }
+        else if(currentUserOption==CurrentUserOption.no_image)
+        {
+            chatheadImg.setImageResource(R.drawable.empty_pic);
+
         }
 
 
-        if(text_to_show.length() > 0)
-            txtInfoBubble.setText(text_to_show);
     }
 
     private void timeoutCounter(long timeout_milisec) {
@@ -765,10 +714,10 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                         // Normal count
                         if(chosenNumberToTurnOffScreen!=0){
-                            updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
+                            //updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
                             timeIntervals=defaultTimeStepsToTurnOffScreen * 1000;
                         } else { // Time finished
-                            updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
+                          //  updateUserView(String.valueOf(chosenNumberToTurnOffScreen), false);
                             // Time to dim the screen.
                             timeIntervals=3000;
                         }
@@ -782,7 +731,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                         userPowerPolicies.setScreenAlwaysON(chatheadView, false);
                         userPowerPolicies.turnOFFScreen(ChatHeadService.this);
                         chosenNumberToTurnOffScreen=0;
-                        updateUserView(" ", false);
+                        updateUserView(CurrentUserOption.no_image);
                         handlerScreenTimeoutTimer.removeCallbacks(runnableScreenTimeoutTimer);
                     }
                 }
@@ -804,7 +753,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         int yDistance = chatheadViewPosition[1] - 0;
         int xDistance = chatheadViewPosition[0] - (int) (double)(szWindow.x-(viewOfChathead.getWidth()*2))/2 ;
 
-        int buttomAccptableOffsetToTriger =  resize_buble_img.getTop() - paddingOffset;
+        int buttomAccptableOffsetToTriger =  note_todo_img.getTop() - paddingOffset;
         int topAccptableOffsetToTriger =  viewOfChathead.getHeight() + paddingOffset;
 
 
@@ -814,51 +763,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         return (distanceFromZeroXAxis < xOffsetAccptableTriger) && (topAccptableOffsetToTriger < distance) && (distance < buttomAccptableOffsetToTriger);
 
-       /* int yOffsetAccptableTriger =  viewOfChathead.getHeight() + (int)(double)(viewOfChathead.getHeight()/2);
-        int leftOffsetAccptableTriger =  (int) (double)(szWindow.x-(viewOfChathead.getWidth()*2))/2;
-        int rightOffsetAccptableTriger =  (int) (double)(szWindow.x+viewOfChathead.getWidth())/2;
-        int buttomtOffsetAccptableTriger =  (int) (double)(szWindow.y-(viewOfChathead.getHeight()*3))/2;
-
-
-        int[] chatheadViewPosition = new int[2];
-
-        viewOfChathead.getLocationOnScreen(chatheadViewPosition);
-
-        int topOfChatHeadPos =chatheadViewPosition[1];
-        int leftOfChatHeadPos =chatheadViewPosition[0];
-
-        if((yOffsetAccptableTriger <= topOfChatHeadPos) &&
-                (leftOffsetAccptableTriger <= leftOfChatHeadPos) &&
-                (rightOffsetAccptableTriger >= leftOfChatHeadPos) && (buttomtOffsetAccptableTriger > topOfChatHeadPos))
-            return true;
-        else
-            return false;*/
     }
-
-
-    /*private boolean checkWantsAddScreenTimeout(View viewOfChathead){
-
-        int yOffsetAccptableTriger =  viewOfChathead.getHeight() + (int)(double)(viewOfChathead.getHeight()/2);
-        int leftOffsetAccptableTriger =  (int) (double)(szWindow.x-(viewOfChathead.getWidth()*2))/2;
-        int rightOffsetAccptableTriger =  (int) (double)(szWindow.x+viewOfChathead.getWidth())/2;
-        int buttomtOffsetAccptableTriger =  (int) (double)(szWindow.y-(viewOfChathead.getHeight()*3))/2;
-
-
-        int[] chatheadViewPosition = new int[2];
-
-        viewOfChathead.getLocationOnScreen(chatheadViewPosition);
-
-        int topOfChatHeadPos =chatheadViewPosition[1];
-        int leftOfChatHeadPos =chatheadViewPosition[0];
-
-        if((yOffsetAccptableTriger <= topOfChatHeadPos) &&
-                (leftOffsetAccptableTriger <= leftOfChatHeadPos) &&
-                (rightOffsetAccptableTriger >= leftOfChatHeadPos) && (buttomtOffsetAccptableTriger > topOfChatHeadPos))
-            return true;
-        else
-            return false;
-    }
-*/
 
     private void runTransparentTimer() {
 
@@ -926,60 +831,12 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     public void onScreenOnOffEvent(boolean screen_state) {
         if (screen_state) {
             cancelEverything();
-            Log.e("TAG", "Screen Off!");
         }
     }
 
-   /* @Override
-    public void onMyScreenOrintationEvent(Configuration newConfig) {
-        Log.e("DBGGGGGGGGGG","onConfigurationChanged");
-     *//*   Log.e("DBGGGGGGGGGG","onConfigurationChanged");
-        // TODO Auto-generated method stub
-      //  super.onConfigurationChanged(newConfig);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            windowManager.getDefaultDisplay().getSize(szWindow);
-        } else {
-            int w = windowManager.getDefaultDisplay().getWidth();
-            int h = windowManager.getDefaultDisplay().getHeight();
-            szWindow.set(w, h);
-        }
-
-        WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) chatheadView.getLayoutParams();
-
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Log.d(Utility.LogTag, "ChatHeadRecordService.onConfigurationChanged -> landscap");
-
-            if(txtView != null){
-                txtView.setVisibility(View.GONE);
-            }
-
-            if(layoutParams.y + (chatheadView.getHeight() + getStatusBarHeight()) > szWindow.y){
-                layoutParams.y = szWindow.y- (chatheadView.getHeight() + getStatusBarHeight());
-                windowManager.updateViewLayout(chatheadView, layoutParams);
-            }
-
-            if(layoutParams.x != 0 && layoutParams.x < szWindow.x){
-                resetPosition();
-            }
-
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Log.d(Utility.LogTag, "ChatHeadRecordService.onConfigurationChanged -> portrait");
-
-            if(txtView != null){
-                txtView.setVisibility(View.GONE);
-            }
-
-            //if(layoutParams.x > szWindow.x){
-            resetPosition();
-            //}
-
-        }*//*
-    }*/
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.e("DBGGGGGGGGGG","onConfigurationChanged");
 
         // TODO Auto-generated method stub
         super.onConfigurationChanged(newConfig);
@@ -1015,7 +872,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
             else
             {
                 layoutParams.x = 0;
-                layoutParams.y = szWindow.y;
+                layoutParams.y = 0;
                 windowManager.updateViewLayout(chatheadView, layoutParams);
             }
 
@@ -1033,14 +890,14 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
             else
             {
                 layoutParams.x = 0;
-                layoutParams.y = szWindow.y;
+                layoutParams.y = 0;
                 windowManager.updateViewLayout(chatheadView, layoutParams);
             }
 
 
         }
 
-        positionMiddleLaunchpadButtons();
+      //  positionMiddleLaunchpadButtons();
 
 
     }
@@ -1216,38 +1073,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
         windowManager.updateViewLayout(removeView, param_remove);
     }
 
-    private void showMsg(String sMsg){
-        if(txtView != null && chatheadView != null ){
-            Log.d(Utility.LogTag, "ChatHeadService.showMsg -> sMsg=" + sMsg);
-            txtTimeLapse.setText(sMsg);
-            myHandler.removeCallbacks(myRunnable);
-
-            WindowManager.LayoutParams param_chathead = (WindowManager.LayoutParams) chatheadView.getLayoutParams();
-            WindowManager.LayoutParams param_txt = (WindowManager.LayoutParams) txtView.getLayoutParams();
-
-            txt_linearlayout.getLayoutParams().height = chatheadView.getHeight();
-            txt_linearlayout.getLayoutParams().width = szWindow.x / 2;
-
-            if(isLeft){
-                param_txt.x = param_chathead.x + chatheadImg.getWidth();
-                param_txt.y = param_chathead.y;
-
-                txt_linearlayout.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-            }else{
-                param_txt.x = param_chathead.x - szWindow.x / 2;
-                param_txt.y = param_chathead.y;
-
-                txt_linearlayout.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-            }
-
-            txtView.setVisibility(View.VISIBLE);
-            windowManager.updateViewLayout(txtView, param_txt);
-
-            myHandler.postDelayed(myRunnable, 4000);
-
-        }
-
-    }
 
     Handler myHandler = new Handler();
     Runnable myRunnable = new Runnable() {

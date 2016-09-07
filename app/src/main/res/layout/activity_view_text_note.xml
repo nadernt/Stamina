@@ -68,7 +68,8 @@
                 android:layout_marginLeft="14dp"
                 android:layout_marginRight="14dp"
                 android:layout_marginBottom="14dp"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                android:autoLink="phone|web|map|email" />
 
         </LinearLayout>
     </ScrollView>

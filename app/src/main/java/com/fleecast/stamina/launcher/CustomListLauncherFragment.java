@@ -33,8 +33,6 @@ public class CustomListLauncherFragment extends android.support.v4.app.Fragment 
 
         Log.e("DBG", "onCreate ");
 
-        //myApplication = (MyApplication) LauncherDialogActivity.myActivityInstance.getApplication();
-
     }
  @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

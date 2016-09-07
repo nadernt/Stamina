@@ -67,7 +67,7 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_add_edit_group_item);
 
         RealmAppHelper realmAppHelper = new RealmAppHelper(this);
-        realmAppHelper.updateAppGroupAfterDelete(Constants.APP_IS_IN_DEFAULT_GROUP);
+       // realmAppHelper.updateAppGroupAfterDelete(Constants.APP_IS_IN_DEFAULT_GROUP);
 
         myActivityInstance = AddEditGroupItem.this;
 
@@ -280,7 +280,7 @@ public class AddEditGroupItem extends AppCompatActivity implements View.OnClickL
 
                         RealmAppHelper realmAppHelper = new RealmAppHelper(AddEditGroupItem.this);
 
-                        realmAppHelper.updateAppGroupAfterDelete(currentSelectedItemId);
+                       // realmAppHelper.updateAppGroupAfterDelete(currentSelectedItemId);
 
                             realmGroupsHelper.deleteGroupById(currentSelectedItemId);
 

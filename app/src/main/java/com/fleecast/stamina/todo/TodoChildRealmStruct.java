@@ -60,7 +60,7 @@ public class TodoChildRealmStruct extends RealmObject {
         return has_done;
     }
 
-    public void setHasDone(boolean has_audio) {
+    public void setHasDone(boolean has_done) {
         this.has_done = has_done;
     }
 

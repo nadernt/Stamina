@@ -22,7 +22,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:id="@+id/something">
+                android:id="@+id/something"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
