@@ -54,7 +54,6 @@ public class RecorderPhone {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(context,
                     Manifest.permission.CAPTURE_AUDIO_OUTPUT);
-            Log.e(LOG_TAG, "Honglaaaaaaaaaaaaaaaaa");
         }
         //if(permissionCheck)
         Log.e(LOG_TAG, "Rec Init");
