@@ -48,6 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.backup.ActivityBackupHome;
 import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayer;
 import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayerPhone;
 import com.fleecast.stamina.legacyplayer.PlayerServiceLegacy;
@@ -80,6 +81,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
@@ -205,55 +208,16 @@ public class MainActivity extends AppCompatActivity
 
 private void testFucntions(){
 
-    Intent intent = new Intent(this, ActivityTodoParentRecyclerView.class);
-    //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                               /* if(myApplication.getCurrentOpenedTextNoteId()>0)
-                                    intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD,myApplication.getCurrentOpenedTextNoteId());
-                                else
-                                    intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD, true);
-*/
-    //   updateChatHeadSize(1);
+    Intent intent = new Intent(MainActivity.this, ActivityBackupHome.class);
     startActivity(intent);
+   // Realm realm = Realm.getDefaultInstance();
+   // realm.writeCopyTo();
 
-    /* intent = new Intent(this, ActivityAddToEvent.class);
-    //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-*/
-                               /* if(myApplication.getCurrentOpenedTextNoteId()>0)
-                                    intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_NO_RECORD,myApplication.getCurrentOpenedTextNoteId());
-                                else
-                                    intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_NO_RECORD, true);
-*/
-    //   updateChatHeadSize(1);
-    startActivity(intent);
 }
 
    private void populateUI() {
+       testFucntions();
 
-      /* // TODO Auto-generated method stub
-       java.util.Date now = new java.util.Date();
-       String str = "test by Nader  " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-
-       Log.e("DBGGG",Utility.unixTimeToReadable(now.getTime()));
-*/
-/*
-
-    fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            //myFuckUp();
-            //myApplication.reInitEverything();
-            startTheChatHead();
-        }
-    });
-*/
-
-      /* Intent intent = new Intent(this, ActivityTodoParentRecyclerView.class);
-       startActivity(intent);
-*/
         setContentView(R.layout.activity_main);
 
         myApplication = (MyApplication) getApplicationContext();
@@ -1521,6 +1485,8 @@ private void testFucntions(){
 
         } else if (id == R.id.nav_backup_report) {
 
+            Intent intent = new Intent(this, ActivityBackupHome.class);
+            startActivityForResult(intent,123);
 
         } else if (id == R.id.nav_emptytrash) {
 
