@@ -5,6 +5,9 @@ import android.os.AsyncTask;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.Metadata;
+import com.fleecast.stamina.utility.Constants;
+import com.fleecast.stamina.utility.Utility;
 
 /**
  * Async task to list items in a folder

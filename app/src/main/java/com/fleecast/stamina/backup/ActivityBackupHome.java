@@ -1,38 +1,37 @@
 package com.fleecast.stamina.backup;
 
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.os.DropBoxManager;
-import android.os.StrictMode;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.dropbox.core.DbxException;
 import com.dropbox.core.android.Auth;
-import com.dropbox.core.v1.DbxEntry;
-import com.dropbox.core.v2.files.ListFolderResult;
-import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.users.FullAccount;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
-import com.fleecast.stamina.utility.Utility;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ActivityBackupHome extends DropboxActivity {
 
     private Button dropbox_login_button;
     private Button btnCreatBackUp;
-    private ArrayList <BackupFilesStruct> backupFilesStructArraylist = new ArrayList<>();
+    private ArrayList <BackupFilesStruct> backupFilesStruct = new ArrayList<>();
     private ArrayList <String> cloudPaths = new ArrayList<>();
     private ArrayList <String> cloudPathsAudioFiles = new ArrayList<>();
     private ArrayList <String> cloudPathsJournalFiles = new ArrayList<>();
@@ -59,16 +58,115 @@ public class ActivityBackupHome extends DropboxActivity {
             @Override
             public void onClick(View view) {
 
+                displayIt(new File(ExternalStorageManager.getWorkingDirectory()));
+
+                final OkHttpClient client = new OkHttpClient();
+                MediaType JSON
+                        = MediaType.parse("application/json");
+                //Headers headers = new Headers()
+                final Request request = new Request.Builder()
+                        .url("https://api.dropboxapi.com/2/files/list_folder")
+                        .addHeader("Authorization", "Bearer PIcmea9okk4AAAAAAAAhBE-HQHoEU14hY_AtB02GJs0PsRdFARC3f_r4wTUvQ3zq")
+                        .post(RequestBody.create(JSON,"{\"path\": \"/stamina/\",\"recursive\": true,\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false}"))
+                        .build();
+
+                AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
+                    @Override
+                    protected String doInBackground(Void... params) {
+                        try {
+                            Response response = client.newCall(request).execute();
+                            if (!response.isSuccessful()) {
+                                return null;
+                            }
+                            return response.body().string();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        super.onPostExecute(s);
+                        if (s != null) {
+
+//                            System.out.println(s);
+
+                           // String data = "";
+                            try {
+                                JSONObject  jsonRootObject = new JSONObject(s);
+
+                                JSONArray jsonArray = jsonRootObject.optJSONArray("entries");
+
+                                for(int i=0; i < jsonArray.length(); i++){
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                                    String path_lower = jsonObject.optString("path_lower").toString();
+                                  //  String name = jsonObject.optString("name").toString();
+                                    String isFile = jsonObject.optString(".tag").toString();
+
+
+
+                                    if(isFile.contains("file") && path_lower.contains(".journal")){
+                                            cloudPathsJournalFiles.add(path_lower);
+                                        //getFinalList(loopIndex);
+                                    }
+                                    else if(isFile.contains("file") &&
+                                            !path_lower.contains(Constants.CONST_RECYCLEBIN_DIRECTORY_NAME) &&
+                                            !path_lower.contains(Constants.TEMP_FOLDER_NAME)) {
+                                            cloudPathsAudioFiles.add(path_lower);
+
+                                    }
+                                    //data += "Node"+i+" : \n path_lower= "+ path_lower +" \n Name= "+ name +" \n tag= "+ isFile +" \n ";
+                                }
+
+                                ArrayList<BackupFilesStruct> tmpStr = new ArrayList<BackupFilesStruct>();
+
+                                for (int i = 0; i < backupFilesStruct.size(); i++){
+
+                                    String str  = Constants.CONST_WORKING_DIRECTORY_NAME + File.separator;
+                                    // Removing android system path.
+                                    int startIndex = backupFilesStruct.get(i).getFilePath().indexOf(str);
+
+                                    str = backupFilesStruct.get(i).getFilePath().substring(startIndex, str.length());
+
+                                    for(int j=0; j < cloudPathsAudioFiles.size();j++) {
+                                        if (cloudPathsAudioFiles.contains(str)){
+                                            //Remove from cloud list to make final list.
+                                            cloudPathsAudioFiles.remove(j);
+                                            tmpStr.add(new BackupFilesStruct(backupFilesStruct.get(i).getFile()));
+                                        }
+                                    }
+                                }
+
+
+                                backupFilesStruct = new ArrayList<BackupFilesStruct>(tmpStr);
+
+                                for(int i=0 ; i< backupFilesStruct.size() ; i++)
+                                  System.out.println(backupFilesStruct.get(i).getFilePath() + "#");
+
+                            } catch (JSONException e) {e.printStackTrace();}
+
+                        }
+                    }
+                };
+
+                asyncTask.execute();
+
+
 /*
-                for(int i=0 ; i< backupFilesStructArraylist.size();i++){
-                    System.out.println(backupFilesStructArraylist.get(i).getFilePath());
+                for(int i=0 ; i< backupFilesStruct.size();i++){
+                    System.out.println(backupFilesStruct.get(i).getFilePath());
                 }
 
 */
 
-                displayIt(new File(ExternalStorageManager.getWorkingDirectory()));
 
-                new ListFolderTask(DropboxClientFactory.getClient(), new ListFolderTask.Callback() {
+
+
+              /*  new ListFolderTask(DropboxClientFactory.getClient(), new ListFolderTask.Callback() {
+                    public int loopIndex;
+
                     @Override
                     public void onDataLoaded(ListFolderResult result) {
 
@@ -89,12 +187,27 @@ public class ActivityBackupHome extends DropboxActivity {
                                 e.printStackTrace();
                             }
                         }
+*/
 
-                        for (int i=0; i< cloudPaths.size(); i++) {
+                        /*new ListFileTask(cloudPaths, new ListFileTask.Callback() {
+                            @Override
+                            public void onDataLoaded(List<String> result) {
 
-                            if(!cloudPaths.get(i).contains(".") &&
-                                    !cloudPaths.get(i).contains(Constants.CONST_RECYCLEBIN_DIRECTORY_NAME) &&
-                                    !cloudPaths.get(i).contains(Constants.TEMP_FOLDER_NAME)) {
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                            }
+                        });*/
+
+                      /*  new LongOperation().execute();
+                        for (loopIndex=0; loopIndex< cloudPaths.size(); loopIndex++) {
+                            System.out.println(loopIndex + "yyyyyyyyyyyyyyyyyyyyyyyyyyy" + cloudPaths.size());
+
+                            if(!cloudPaths.get(loopIndex).contains(".") &&
+                                    !cloudPaths.get(loopIndex).contains(Constants.CONST_RECYCLEBIN_DIRECTORY_NAME) &&
+                                    !cloudPaths.get(loopIndex).contains(Constants.TEMP_FOLDER_NAME)) {
 
                                 new ListFolderTask(DropboxClientFactory.getClient(), new ListFolderTask.Callback() {
                                     @Override
@@ -103,11 +216,12 @@ public class ActivityBackupHome extends DropboxActivity {
                                         while (true) {
 
                                             for (Metadata metadata : result.getEntries()) {
-                                                System.out.println(metadata.getPathDisplay());
+                                                System.out.println(metadata.getPathDisplay() + " :");
                                                 cloudPathsAudioFiles.add(metadata.getPathDisplay());
                                             }
 
                                             if (!result.getHasMore()) {
+                                                getFinalList(loopIndex);
                                                 break;
                                             }
 
@@ -123,15 +237,19 @@ public class ActivityBackupHome extends DropboxActivity {
                                     public void onError(Exception e) {
                                         Utility.showMessage(e.getMessage(), "Error", ActivityBackupHome.this);
                                     }
-                                }).execute(cloudPaths.get(i));
+                                }).execute(cloudPaths.get(loopIndex));
                             }
                             else{
 
-                                if(cloudPaths.get(i).contains(".journal"))
-                                    cloudPathsJournalFiles.add(cloudPaths.get(i));
-
+                                if(cloudPaths.get(loopIndex).contains(".journal"))
+                                    cloudPathsJournalFiles.add(cloudPaths.get(loopIndex));
+                                getFinalList(loopIndex);
                             }
+
+
                         }
+
+
 
                     }
 
@@ -141,14 +259,8 @@ public class ActivityBackupHome extends DropboxActivity {
                     }
                 }).execute("/stamina");
 
+*/
 
-                for (int i=0 ; i<cloudPathsAudioFiles.size();i++){
-                    for(int j=0; j < backupFilesStructArraylist.size();j++) {
-                        if (cloudPathsAudioFiles.get(i).contains(ExternalStorageManager.getWorkingDirectory())) {
-
-                        }
-                    }
-                }
 
              /*   new ListFolderTask(DropboxClientFactory.getClient(), new ListFolderTask.Callback() {
                     @Override
@@ -217,6 +329,26 @@ public class ActivityBackupHome extends DropboxActivity {
 
     }
 
+
+    private void getDropBoxUploadList(int forLoopIndex){
+        if(forLoopIndex==cloudPaths.size()-1){
+            System.out.println("backupFilesStruct.size(): " + backupFilesStruct.size()  + " cloudPathsAudioFiles.size(): "  + cloudPathsAudioFiles.size());
+
+        }
+    }
+
+    private class LongOperation extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
     private int getDbIdFromFileName(String file_name)
     {
 
@@ -228,7 +360,7 @@ public class ActivityBackupHome extends DropboxActivity {
 
     public void displayIt(File node){
       //  System.out.println(node.getParent() +"*");
-        //backupFilesStructArraylist.add(new BackupFilesStruct(node));
+        //backupFilesStruct.add(new BackupFilesStruct(node));
         if(!node.getAbsolutePath().contains(Constants.CONST_RECYCLEBIN_DIRECTORY_NAME) &&
                 !node.getAbsolutePath().contains(Constants.TEMP_FOLDER_NAME) &&
                 /* Excluding the phonecall directory */
@@ -239,12 +371,12 @@ public class ActivityBackupHome extends DropboxActivity {
                 File f = new File(ExternalStorageManager.getWorkingDirectory()+ File.separator + node.getName());
                 if(!f.exists()) {
                     System.out.println(node.getAbsoluteFile());
-                    backupFilesStructArraylist.add(new BackupFilesStruct(node));
+                    backupFilesStruct.add(new BackupFilesStruct(node));
                 }
             }
             else{
                 System.out.println(node.getAbsoluteFile());
-                backupFilesStructArraylist.add(new BackupFilesStruct(node));
+                backupFilesStruct.add(new BackupFilesStruct(node));
             }
 
 
