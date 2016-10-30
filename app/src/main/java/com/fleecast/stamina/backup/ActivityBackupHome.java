@@ -13,14 +13,18 @@ import com.dropbox.core.v2.users.FullAccount;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
+import com.fleecast.stamina.utility.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -36,6 +40,9 @@ public class ActivityBackupHome extends DropboxActivity {
     private ArrayList <String> cloudPathsAudioFiles = new ArrayList<>();
     private ArrayList <String> cloudPathsJournalFiles = new ArrayList<>();
     private int indexFiles;
+    MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+    private Button btnCopyToCloud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,109 +58,65 @@ public class ActivityBackupHome extends DropboxActivity {
 
         Button loginButton = (Button)findViewById(R.id.dropbox_login_button);
 
-        btnCreatBackUp = (Button) findViewById(R.id.btnCreatBackUp);
+        btnCreatBackUp = (Button) findViewById(R.id.btnCreateBackUp);
+        btnCopyToCloud = (Button) findViewById(R.id.btnCopyToCloud);
+        btnCopyToCloud.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(Constants.CONST_URL_DROPBOX)
+                        .build();
+
+                client.newCall(request)
+                        .enqueue(new Callback() {
+                            @Override
+                            public void onFailure(final Call call, IOException e) {
+                                // Error
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Utility.showMessage("Error to connect to service","Error",ActivityBackupHome.this);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onResponse(Call call, final Response response) throws IOException {
+
+                                if(response.networkResponse().code() == 200)
+                                    populateDropBoxUploadList();
+                            }
+                        });
+
+            }
+        });
 
         btnCreatBackUp.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
-                displayIt(new File(ExternalStorageManager.getWorkingDirectory()));
 
-                final OkHttpClient client = new OkHttpClient();
-                MediaType JSON
-                        = MediaType.parse("application/json");
-                //Headers headers = new Headers()
-                final Request request = new Request.Builder()
-                        .url("https://api.dropboxapi.com/2/files/list_folder")
-                        .addHeader("Authorization", "Bearer PIcmea9okk4AAAAAAAAhBE-HQHoEU14hY_AtB02GJs0PsRdFARC3f_r4wTUvQ3zq")
-                        .post(RequestBody.create(JSON,"{\"path\": \"/stamina/\",\"recursive\": true,\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false}"))
-                        .build();
 
-                AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
+
+
+                /*client.newCall()post("http://www.roundsapp.com/post", "", new Callback() {
                     @Override
-                    protected String doInBackground(Void... params) {
-                        try {
-                            Response response = client.newCall(request).execute();
-                            if (!response.isSuccessful()) {
-                                return null;
-                            }
-                            return response.body().string();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return null;
-                        }
+                    public void onFailure(Call call, IOException e) {
+                        // Something went wrong
                     }
 
                     @Override
-                    protected void onPostExecute(String s) {
-                        super.onPostExecute(s);
-                        if (s != null) {
-
-//                            System.out.println(s);
-
-                           // String data = "";
-                            try {
-                                JSONObject  jsonRootObject = new JSONObject(s);
-
-                                JSONArray jsonArray = jsonRootObject.optJSONArray("entries");
-
-                                for(int i=0; i < jsonArray.length(); i++){
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                                    String path_lower = jsonObject.optString("path_lower").toString();
-                                  //  String name = jsonObject.optString("name").toString();
-                                    String isFile = jsonObject.optString(".tag").toString();
-
-
-
-                                    if(isFile.contains("file") && path_lower.contains(".journal")){
-                                            cloudPathsJournalFiles.add(path_lower);
-                                        //getFinalList(loopIndex);
-                                    }
-                                    else if(isFile.contains("file") &&
-                                            !path_lower.contains(Constants.CONST_RECYCLEBIN_DIRECTORY_NAME) &&
-                                            !path_lower.contains(Constants.TEMP_FOLDER_NAME)) {
-                                            cloudPathsAudioFiles.add(path_lower);
-
-                                    }
-                                    //data += "Node"+i+" : \n path_lower= "+ path_lower +" \n Name= "+ name +" \n tag= "+ isFile +" \n ";
-                                }
-
-                                ArrayList<BackupFilesStruct> tmpStr = new ArrayList<BackupFilesStruct>();
-
-                                for (int i = 0; i < backupFilesStruct.size(); i++){
-
-                                    String str  = Constants.CONST_WORKING_DIRECTORY_NAME + File.separator;
-                                    // Removing android system path.
-                                    int startIndex = backupFilesStruct.get(i).getFilePath().indexOf(str);
-
-                                    str = backupFilesStruct.get(i).getFilePath().substring(startIndex, str.length());
-
-                                    for(int j=0; j < cloudPathsAudioFiles.size();j++) {
-                                        if (cloudPathsAudioFiles.contains(str)){
-                                            //Remove from cloud list to make final list.
-                                            cloudPathsAudioFiles.remove(j);
-                                            tmpStr.add(new BackupFilesStruct(backupFilesStruct.get(i).getFile()));
-                                        }
-                                    }
-                                }
-
-
-                                backupFilesStruct = new ArrayList<BackupFilesStruct>(tmpStr);
-
-                                for(int i=0 ; i< backupFilesStruct.size() ; i++)
-                                  System.out.println(backupFilesStruct.get(i).getFilePath() + "#");
-
-                            } catch (JSONException e) {e.printStackTrace();}
-
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            String responseStr = response.body().string();
+                            // Do what you want to do with the response.
+                        } else {
+                            // Request not successful
                         }
                     }
-                };
-
-                asyncTask.execute();
-
-
+                });*/
 /*
                 for(int i=0 ; i< backupFilesStruct.size();i++){
                     System.out.println(backupFilesStruct.get(i).getFilePath());
@@ -304,7 +267,6 @@ public class ActivityBackupHome extends DropboxActivity {
                 ProgressDialog dialog = ProgressDialog.show(ActivityBackupHome.this, "",
                         "Loading. Please wait...", true);
 */
-
             }
         });
 
@@ -330,11 +292,116 @@ public class ActivityBackupHome extends DropboxActivity {
     }
 
 
-    private void getDropBoxUploadList(int forLoopIndex){
-        if(forLoopIndex==cloudPaths.size()-1){
-            System.out.println("backupFilesStruct.size(): " + backupFilesStruct.size()  + " cloudPathsAudioFiles.size(): "  + cloudPathsAudioFiles.size());
 
-        }
+    private void populateDropBoxUploadList(){
+        final OkHttpClient client = new OkHttpClient();
+        //Headers headers = new Headers()
+        final Request request = new Request.Builder()
+                .url(Constants.CONST_URL_DROPBOX + "/2/files/list_folder")
+                .addHeader("Authorization", "Bearer PIcmea9okk4AAAAAAAAhBE-HQHoEU14hY_AtB02GJs0PsRdFARC3f_r4wTUvQ3zq")
+                .post(RequestBody.create(JSON,"{\"path\": \"/stamina/\",\"recursive\": true,\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false}"))
+                .build();
+
+        AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                displayIt(new File(ExternalStorageManager.getWorkingDirectory()));
+
+                for(int i=0 ; i< backupFilesStruct.size() ; i++)
+                    System.out.println(backupFilesStruct.get(i).getFilePath() + "*");
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                try {
+                    Response response = client.newCall(request).execute();
+                    if (!response.isSuccessful()) {
+                        return null;
+                    }
+                    return response.body().string();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                if (s != null) {
+
+                    try {
+                        JSONObject  jsonRootObject = new JSONObject(s);
+
+                        JSONArray jsonArray = jsonRootObject.optJSONArray("entries");
+
+                        for(int i=0; i < jsonArray.length(); i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                            String path_lower = jsonObject.optString("path_lower").toString();
+                            //  String name = jsonObject.optString("name").toString();
+                            String isFile = jsonObject.optString(".tag").toString();
+
+
+
+                            if(isFile.contains("file") && path_lower.contains(".journal")){
+                                cloudPathsJournalFiles.add(path_lower);
+                                //getFinalList(loopIndex);
+                            }
+                            else if(isFile.contains("file") &&
+                                    !path_lower.contains(Constants.CONST_RECYCLEBIN_DIRECTORY_NAME) &&
+                                    !path_lower.contains(Constants.TEMP_FOLDER_NAME)) {
+                                cloudPathsAudioFiles.add(path_lower);
+
+                            }
+                            //data += "Node"+i+" : \n path_lower= "+ path_lower +" \n Name= "+ name +" \n tag= "+ isFile +" \n ";
+                        }
+
+
+
+                        ArrayList<BackupFilesStruct> tmpStr = new ArrayList<BackupFilesStruct>();
+
+                        for (int i = 0; i < backupFilesStruct.size(); i++){
+
+                            String str  = Constants.CONST_WORKING_DIRECTORY_NAME + File.separator;
+                            // Removing android system path.
+                            int startIndex = backupFilesStruct.get(i).getFilePath().indexOf(str);
+
+                            str = backupFilesStruct.get(i).getFilePath().substring(startIndex, backupFilesStruct.get(i).getFilePath().length());
+
+                            boolean isFileExistInCloude=false;
+
+                            for(int j=0; j < cloudPathsAudioFiles.size();j++) {
+
+                                if (cloudPathsAudioFiles.get(j).equalsIgnoreCase(str)){
+                                    isFileExistInCloude =true;
+                                    //Remove from cloud list to make final list.
+                                    cloudPathsAudioFiles.remove(j);
+                                    break;
+                                }
+                            }
+
+                            if(!isFileExistInCloude)
+                                tmpStr.add(new BackupFilesStruct(backupFilesStruct.get(i).getFile()));
+
+                        }
+
+
+                        backupFilesStruct = new ArrayList<>(tmpStr);
+
+                        for(int i=0 ; i< backupFilesStruct.size() ; i++)
+                            System.out.println(backupFilesStruct.get(i).getFilePath() + "#");
+
+                    } catch (JSONException e) {e.printStackTrace();}
+
+                }
+            }
+        };
+
+        asyncTask.execute();
+
     }
 
     private class LongOperation extends AsyncTask<Void, Void, Void> {
@@ -370,14 +437,14 @@ public class ActivityBackupHome extends DropboxActivity {
             if(node.isFile()) {
                 File f = new File(ExternalStorageManager.getWorkingDirectory()+ File.separator + node.getName());
                 if(!f.exists()) {
-                    System.out.println(node.getAbsoluteFile());
+                    //System.out.println(node.getAbsoluteFile());
                     backupFilesStruct.add(new BackupFilesStruct(node));
                 }
             }
-            else{
-                System.out.println(node.getAbsoluteFile());
+            /*else{
+                //System.out.println(node.getAbsoluteFile());
                 backupFilesStruct.add(new BackupFilesStruct(node));
-            }
+            }*/
 
 
         }

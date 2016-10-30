@@ -19,6 +19,7 @@ public class Constants {
     public static final String CHATHEAD_X = "ChatHeadX";
     public static final String CHATHEAD_Y = "ChatHeadY";
     public static final String CONST_URL_HELPS = "http://stamina.help.s3-website-ap-southeast-2.amazonaws.com/index.html";
+    public static final String CONST_URL_DROPBOX = "https://api.dropboxapi.com";
     public static final int CONST_NOTETYPE_TEXT = 0;
     public static final int CONST_NOTETYPE_AUDIO = 1;
     public static final int CONST_NOTETYPE_PHONECALL = 2;
@@ -141,7 +142,6 @@ public class Constants {
     public static final int RESULT_CODE_REQUEST_LIST = 777;
     public static final String PHONE_RECORDER_CHATHEAD_Y = "PhoneRecorderChatheadY";
     public static final String PHONE_RECORDER_CHATHEAD_X = "PhoneRecorderChatheadX";
-
 
 
     //public static final String EXTRA_KILL_AND_RESTART_ME = "ExtraKillAndRestartMe";
