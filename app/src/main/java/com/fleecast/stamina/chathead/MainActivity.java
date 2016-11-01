@@ -146,6 +146,8 @@ public class MainActivity extends AppCompatActivity
 
             Prefs.putBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, true);
 
+            Prefs.putBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, false);
+
             Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION);
 
             Prefs.putBoolean(Constants.RECORDER_PHONE_IS_RECORD, false);

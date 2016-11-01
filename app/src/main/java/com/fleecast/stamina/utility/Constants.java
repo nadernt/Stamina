@@ -24,6 +24,7 @@ public class Constants {
     public static final int CONST_NOTETYPE_AUDIO = 1;
     public static final int CONST_NOTETYPE_PHONECALL = 2;
     public static final int CONST_NOTETYPE_TODO = 3;
+    public static String PREF_USER_HAS_MASTER_PASSWORD = "PrefUserHasMasterPassword";
 
 
 

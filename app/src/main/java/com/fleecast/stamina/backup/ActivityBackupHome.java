@@ -1,18 +1,28 @@
 package com.fleecast.stamina.backup;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dropbox.core.android.Auth;
 import com.dropbox.core.v2.users.FullAccount;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
+import com.fleecast.stamina.utility.Prefs;
 import com.fleecast.stamina.utility.Utility;
 
 import org.json.JSONArray;
@@ -43,14 +53,50 @@ public class ActivityBackupHome extends DropboxActivity {
     MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     private Button btnCopyToCloud;
+    private CheckBox chkEncrypt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_home);
-
+      /*  try {
+            BackupEncrypt.writeEncryptKey(this,"k");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }*/
+        BackupEncrypt.removeEncryptKey(this);
+        Log.e("KKKKKKK", String.valueOf(BackupEncrypt.testEncryptKey(this,"k")));
         dropbox_login_button = (Button) findViewById(R.id.dropbox_login_button);
+        chkEncrypt = (CheckBox) findViewById(R.id.chkEncrypt);
 
+        chkEncrypt.setChecked(Prefs.getBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, false));
+
+        chkEncrypt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Prefs.putBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, chkEncrypt.isChecked());
+
+                if(!BackupEncrypt.isThereEncryptKey(ActivityBackupHome.this))
+                {
+                    doEncryption(EncryptionDialogOption.NEW_PASSWORD);
+                }
+
+                //if(!chkEncrypt.isChecked())
+                 //   {
+                       // if(BackupEncrypt.isThereEncryptKey(ActivityBackupHome.this))
+
+
+
+                   // }
+            }
+        });
        /* if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -291,6 +337,88 @@ public class ActivityBackupHome extends DropboxActivity {
 
     }
 
+    enum EncryptionDialogOption {
+        NEW_PASSWORD, CHANGE_OLD_PASS, JUST_ENTER_PASS
+    }
+
+    private void doEncryption(EncryptionDialogOption encryptionDialogOption){
+
+        LayoutInflater inflater = LayoutInflater.from(ActivityBackupHome.this);
+
+        View alertLayout = inflater.inflate(R.layout.password_dialog, null);
+
+        final EditText txtFirstPassword = (EditText) alertLayout.findViewById(R.id.txtFirstPassword);
+        final EditText txtSecondPassword = (EditText) alertLayout.findViewById(R.id.txtSecondPassword);
+        final CheckBox cbShowPassword = (CheckBox) alertLayout.findViewById(R.id.chkShowPassword);
+        final EditText txtOldPassword = (EditText) alertLayout.findViewById(R.id.txtOldPassword);
+        final LinearLayout layoutOldPass = (LinearLayout) alertLayout.findViewById(R.id.layoutOldPass);
+        final LinearLayout layoutNewPass = (LinearLayout) alertLayout.findViewById(R.id.layoutNewPass);
+        final LinearLayout layoutNewPassRepeat = (LinearLayout) alertLayout.findViewById(R.id.layoutNewPassRepeat);
+        final TextView txtViewPassDialogComments = (TextView) alertLayout.findViewById(R.id.txtViewPassDialogComments);
+
+        cbShowPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // to encode password in dots
+                    txtSecondPassword.setTransformationMethod(null);
+                    txtOldPassword.setTransformationMethod(null);
+                    txtFirstPassword.setTransformationMethod(null);
+                } else {
+                    // to display the password in normal text
+                    txtSecondPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    txtOldPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    txtFirstPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        });
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(ActivityBackupHome.this);
+
+        switch (encryptionDialogOption){
+            case JUST_ENTER_PASS:
+                layoutOldPass.setVisibility(View.GONE);
+                layoutNewPass.setVisibility(View.GONE);
+                alert.setTitle("Enter Password");
+                break;
+            case CHANGE_OLD_PASS:
+                txtViewPassDialogComments.setText("(Note: don't use any language except english! The password must be at least 8 character.)");
+                alert.setTitle("Change Password");
+                break;
+            case NEW_PASSWORD:
+                txtViewPassDialogComments.setText("You don't have any master password in this device. Please create a new password by typing in the top fields.\nIf you have multiple devices use the password of thoes devices here.\n(Note: don't use any language except english! The password must be at least 8 character.)");
+                alert.setTitle("New Password");
+                layoutOldPass.setVisibility(View.GONE);
+                break;
+        }
+
+
+        // this is set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        // disallow cancel of AlertDialog on click of back button and outside touch
+        alert.setCancelable(false);
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getBaseContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String firstPass = txtFirstPassword.getText().toString();
+                String secondPass = txtSecondPassword.getText().toString();
+                Toast.makeText(getBaseContext(), "Username: " + firstPass + " Password: " + secondPass, Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+
+    }
 
 
     private void populateDropBoxUploadList(){
@@ -488,3 +616,24 @@ public class ActivityBackupHome extends DropboxActivity {
         }).execute();
     }
 }
+
+/*
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    break;
+            }
+        }
+    };
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityBackupHome.this);
+builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+        .setNegativeButton("No", dialogClickListener).show();
+*/

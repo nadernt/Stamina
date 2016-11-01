@@ -414,10 +414,13 @@ public class ChatHeadRecordService extends Service {
 
 			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-				audioManager.setSpeakerphoneOn(true);
-				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-				recorder.recordMedia(true, MediaRecorder.AudioSource.MIC);
-				Log.e("GGGGGGGg", "Honglaaaaaaaaaaaaaaaaa");
+
+					audioManager.setSpeakerphoneOn(true);
+					audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
+					recorder.recordMedia(true, MediaRecorder.AudioSource.MIC);
+					Log.e("GGGGGGGg", "Honglaaaaaaaaaaaaaaaaa");
+
 			}else{
 				recorder.recordMedia(true, MediaRecorder.AudioSource.VOICE_CALL);
 			}
