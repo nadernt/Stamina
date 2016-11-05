@@ -17,6 +17,8 @@ import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -272,4 +274,13 @@ public class Utility {
         else
             return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
     }
+
+public static Spanned fixedHtmlFrom(String strHtml) {
+
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        return Html.fromHtml(strHtml, Html.FROM_HTML_MODE_LEGACY);
+    } else {
+        return Html.fromHtml(strHtml);
+    }
+}
 }

@@ -220,7 +220,7 @@
             android:name=".todo.MapsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme" />
-        <activity android:name=".backup.ActivityBackupHome"></activity>
+        <activity android:name=".backup.ActivityBackupHome"  android:screenOrientation="portrait" />
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"

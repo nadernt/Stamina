@@ -22,6 +22,13 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
+            <com.fleecast.stamina.customgui.HorizontalDivider
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Backup process options" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -36,10 +43,16 @@
                     android:text="Encrypt backup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/chkEncrypt"
-                    android:layout_weight="1" />
+                    android:id="@+id/chkEncrypt"/>
+
             </LinearLayout>
 
+            <com.fleecast.stamina.customgui.HorizontalDivider
+                android:id="@+id/view6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Backup process options" />
 
             <Button
                 android:id="@+id/btnImportBackup"
