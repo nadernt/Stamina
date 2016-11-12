@@ -52,7 +52,9 @@ public class FragmentAppSettings extends Fragment {
     private View fragmentView;
     private TextView txtWorkingPath;
     private CheckBox chkIconGroupSize;
+/*
     private Button btnDeletePassKey;
+*/
 
     public FragmentAppSettings() {
         // Required empty public constructor
@@ -85,19 +87,19 @@ public class FragmentAppSettings extends Fragment {
 
         fragmentView = inflater.inflate(R.layout.fragment_app_settings, container, false);
 
-        btnDeletePassKey = (Button) fragmentView.findViewById(R.id.btnDeletePassKey);
+       /* btnDeletePassKey = (Button) fragmentView.findViewById(R.id.btnDeletePassKey);
 
         if(!BackupEncrypt.isThereEncryptKey(getActivity()))
-            btnDeletePassKey.setVisibility(View.GONE);
+            btnDeletePassKey.setVisibility(View.GONE);*/
 
-        btnDeletePassKey.setOnClickListener(new View.OnClickListener() {
+        /*btnDeletePassKey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                doEncryption();
 
             }
-        });
+        });*/
 
         /*Button btnChangeDirectory = (Button) fragmentView.findViewById(R.id.btnChangeDirectory);
         txtWorkingPath = (TextView) fragmentView.findViewById(R.id.txtWorkingPath);
@@ -148,7 +150,7 @@ public class FragmentAppSettings extends Fragment {
         return fragmentView;
     }
 
-    private void doEncryption() {
+   /* private void doEncryption() {
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
 
@@ -221,25 +223,32 @@ public class FragmentAppSettings extends Fragment {
                 String strFirstPass = txtFirstPassword.getText().toString().trim();
 
                       if (empty(strFirstPass)) {
+
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
                             txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>"));
                             return;
+
                         }
+
                         if (strFirstPass.length() < Constants.MIN_PASSWORD_LENGTH || strFirstPass.length() > Constants.MAX_PASSWORD_LENGTH) {
+
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
                             txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>"));
                             return;
+
                         }
 
                         if (BackupEncrypt.testEncryptKey(getActivity(), strFirstPass)) {
 
-
-                                Prefs.putBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, false);
+                            Prefs.putBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, false);
 
                             wantToCloseDialog = true;
+
                         } else {
+
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
                             txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>"));
+
                         }
 
                 if (wantToCloseDialog) {
@@ -256,7 +265,7 @@ public class FragmentAppSettings extends Fragment {
     public static boolean empty(final String s) {
         return s == null || s.trim().isEmpty();
     }
-
+*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -274,13 +283,7 @@ public class FragmentAppSettings extends Fragment {
         }
 
     }
-    private int calcPixelIndependent(int pixelToConvert){
 
-//        float scale = (int) getResources().getDisplayMetrics().density;
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixelToConvert, getResources().getDisplayMetrics());
-        //     return (int) (pixelToConvert * scale + 0.5f);
-
-    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

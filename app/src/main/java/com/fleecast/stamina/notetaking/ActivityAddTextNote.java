@@ -237,7 +237,7 @@ public class ActivityAddTextNote extends AppCompatActivity {
                 if (!weAreInEditMode)
                     realmNoteHelper.addNote(dbId, title, description, false, updateTime, createdTime, null, null, Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL, null, 0, Constants.CONST_NOTETYPE_TEXT);
                 else
-                    realmNoteHelper.updateNotes(dbId, title, description, updateTime, 0, 0);
+                    realmNoteHelper.updateNotes(dbId, title, description, updateTime, 0, Constants.CONST_NOTETYPE_TEXT);
                 myApplication.setTextNoteSaved(true);
                 myApplication.setCurrentOpenedTextNoteId(dbId);
 

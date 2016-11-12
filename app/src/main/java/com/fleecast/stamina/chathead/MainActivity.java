@@ -19,7 +19,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -217,6 +219,14 @@ private void testFucntions(){
 
 }
 
+    private void setPermisions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, Constants.CONST_EXTERNAL_STORAGE_REQUEST_CODE);
+
+
+        }
+
+    }
    private void populateUI() {
        testFucntions();
 
@@ -239,6 +249,8 @@ private void testFucntions(){
         Log.e(TAG, "ActivityTakenNotesList");
         noteInfoStructs = new ArrayList<>();
         realmNoteHelper = new RealmNoteHelper(context);
+
+       setPermisions();
 
         /*recyclerView.dele*/
         recyclerView = (RecyclerView) findViewById(R.id.rvNotes);
@@ -309,6 +321,11 @@ private void testFucntions(){
 
 //       testFucntions();
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private String getContactNumberByName(String queryContactName) {

@@ -5,7 +5,9 @@ import java.util.Date;
 
 public class BackUpNotesStruct  implements Serializable {
 
+
     private int id;
+    private int id_child;
     private String title;
     private boolean has_audio;
     private Date create_time_stamp;
@@ -17,11 +19,15 @@ public class BackUpNotesStruct  implements Serializable {
     private int tag;
     private String phone_number;
     private int order;
+    private String child_title;
+    private boolean todo_done;
+    private int note_type;
+    private String child_description;
 
     public BackUpNotesStruct(int id, String title, String description, boolean has_audio,
-                          Date update_time,Date create_time_stamp, Date start_time,
-                          Date end_time, int call_type, String phone_number, int tag,
-                          int order) {
+                             Date update_time, Date create_time_stamp, Date start_time,
+                             Date end_time, int call_type, String phone_number, int tag,
+                             int order, int note_type, String child_title, String child_description, boolean todo_done) {
         this.call_type = call_type;
         this.create_time_stamp = create_time_stamp;
         this.description = description;
@@ -34,8 +40,21 @@ public class BackUpNotesStruct  implements Serializable {
         this.tag = tag;
         this.title = title;
         this.update_time = update_time;
+        this.note_type=note_type;
+        this.child_title = child_title;
+        this.child_description = child_description;
+        this.todo_done = todo_done;
+
     }
 
+
+    public int getId_child() {
+        return id_child;
+    }
+
+    public void setId_child(int id_child) {
+        this.id_child = id_child;
+    }
 
     public int getCallType() {
         return call_type;
@@ -99,10 +118,17 @@ public class BackUpNotesStruct  implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getNoteType() {
+        return note_type;
+    }
+
+    public void setNoteType(int note_type) {
+        this.note_type = note_type;
+    }
     public Date getCreateTimeStamp() {
         return create_time_stamp;
     }
-
     public void setCreateTimeStamp(Date create_time_stamp) {
         this.create_time_stamp = create_time_stamp;
     }
@@ -130,5 +156,28 @@ public class BackUpNotesStruct  implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public boolean getTodoDone() {
+        return todo_done;
+    }
+
+    public void setTodoDone(boolean todo_done) {
+        this.todo_done = todo_done;
+    }
+
+    public String getChildTitle() {
+        return child_title;
+    }
+
+    public void setChildTitle(String child_title) {
+        this.child_title = child_title;
+    }
+
+    public String getChildDescription() {
+        return child_description;
+    }
+
+    public void setChildDescription(String child_description) {
+        this.child_description = child_description;
     }
 }

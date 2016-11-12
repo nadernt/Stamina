@@ -26,6 +26,10 @@ public class Constants {
     public static final int CONST_NOTETYPE_TODO = 3;
     public static final int MIN_PASSWORD_LENGTH = 3;
     public static final int MAX_PASSWORD_LENGTH = 10;
+    public static final String CONST_BACKUPFILE_EXTENSION = ".journal";
+    public static final Object CONST_BACKUPFILE_PREFIX = "backup_";
+    public static final int CONST_EXTERNAL_STORAGE_REQUEST_CODE = 123;
+
     public static String PREF_USER_HAS_MASTER_PASSWORD = "PrefUserHasMasterPassword";
 
 
@@ -263,7 +267,5 @@ public class Constants {
     public static final String EXTRA_MAP_PLACENAME = "ExtraMapName";
     public static final String EXTRA_MAP_FULL_INFO = "ExtraMapFullInfo";
     public static final String EXTRA_ADDED_EVENT_TITLE = "ExtraAddedEventTitle";
-
-
 
 }

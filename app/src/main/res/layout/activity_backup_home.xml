@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Backup process options" />
+                android:text="Backup" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,13 +37,22 @@
                     android:id="@+id/btnCreateBackUp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="I want create backup" />
+                    android:text="Create backup" />
 
                 <CheckBox
                     android:text="Encrypt backup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/chkEncrypt"/>
+
+                <ImageView
+                    android:id="@+id/imgBtnRemoveKey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/american_rose"
+                    android:src="@drawable/ic_action_key"
+                    android:layout_gravity="center" />
 
             </LinearLayout>
 
@@ -58,7 +67,7 @@
                 android:id="@+id/btnImportBackup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="I want import backup" />
+                android:text="Import backup" />
 
             <com.fleecast.stamina.customgui.HorizontalDivider
                 android:id="@+id/view4"

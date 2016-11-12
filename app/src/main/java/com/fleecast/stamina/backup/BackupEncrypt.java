@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.fleecast.stamina.utility.Constants;
+import com.fleecast.stamina.utility.ExternalStorageManager;
+
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -12,9 +15,11 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
@@ -31,9 +36,27 @@ public class BackupEncrypt {
     private static final String fileToBeDecrypted = "c:\\Temp\\sampleFile.conf.crypt";
     private static final String fileDecryptedOutput = "c:\\Temp\\sampleFile.conf.decrypted";
 
-    public static void encryptFile(String path,String password) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
-        FileInputStream fis = new FileInputStream(path);
-        FileOutputStream fos = new FileOutputStream(path.concat(".crypt"));
+    public void WriteBackUp(File outputFile, ArrayList<BackUpNotesStruct> noteInfoStructs) {
+
+        FileOutputStream fos = null;
+        ObjectOutputStream out = null;
+
+        try {
+            fos = new FileOutputStream(outputFile);
+            out = new ObjectOutputStream(fos);
+            //if (encryptionKey != null || !encryptionKey.isEmpty())
+            //   out.writeBoolean(IS_ENCRYPTED);
+            out.writeObject(noteInfoStructs);
+            out.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void encryptFile(File path,String password,File tmpFile ) throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
+
+        FileInputStream fis = new FileInputStream(tmpFile);
+        FileOutputStream fos = new FileOutputStream(path);
         byte[] key = (salt + password).getBytes("UTF-8");
         MessageDigest sha = MessageDigest.getInstance("SHA-256");
         key = sha.digest(key);

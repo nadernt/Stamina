@@ -95,11 +95,12 @@ public class ActivitySettings extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position==0)
+            /*if(position==0)
             {
                 return FragmentAppSettings.newInstance(position);
             }
-            else if(position==1)
+            else if(position==1)*/
+            if(position==0)
             {
                 return FragmentNoteTakingSettings.newInstance(position);
             }
@@ -115,17 +116,17 @@ public class ActivitySettings extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 2 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
+               /* case 0:
+                    return "Application";*/
                 case 0:
-                    return "Application";
-                case 1:
                     return "Notes";
-                case 2:
+                case 1:
                     return "Phone Recorder";
             }
             return null;

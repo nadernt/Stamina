@@ -91,7 +91,7 @@ private void deleteNote(){
 
         Date now = new Date();
 
-        realmNoteHelper.updateNotes(noteId, noteTitle, description,now, 0,0);
+        realmNoteHelper.updateNotes(noteId, noteTitle, description,now, 0,Constants.CONST_NOTETYPE_PHONECALL);
 
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK,returnIntent);
