@@ -23,6 +23,8 @@ public class BackUpNotesStruct  implements Serializable {
     private boolean todo_done;
     private int note_type;
     private String child_description;
+    private int child_order;
+    private Date child_create_time_stamp;
 
     public BackUpNotesStruct(int id, String title, String description, boolean has_audio,
                              Date update_time, Date create_time_stamp, Date start_time,
@@ -180,4 +182,14 @@ public class BackUpNotesStruct  implements Serializable {
     public void setChildDescription(String child_description) {
         this.child_description = child_description;
     }
+
+    public int getChild_order() {
+        return child_order;
+    }
+
+    public void setChild_order(int child_order) {
+        this.child_order = child_order;
+    }
+
 }
+

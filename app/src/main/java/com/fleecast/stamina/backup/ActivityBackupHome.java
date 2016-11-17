@@ -1,6 +1,9 @@
 package com.fleecast.stamina.backup;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,8 +67,20 @@ public class ActivityBackupHome extends DropboxActivity {
     private Button btnCopyToCloud;
     private CheckBox chkEncrypt;
     private ImageView imgBtnRemoveKey;
+    private Button btnImportBackup;
+    private CheckBox chkExmportTextNotes;
+    private CheckBox chkExportAudioNotes;
+    private CheckBox chkExportPhoneCalls;
+    private CheckBox chkExportTodos;
+    private CheckBox chkRestoreTextNotes;
+    private CheckBox chkRestoreAudioNotes;
+    private CheckBox chkRestorPhonecalls;
+    private CheckBox chkRestoreTodos;
+    private CheckBox chkMergeDestination;
+
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_home);
@@ -73,11 +88,22 @@ public class ActivityBackupHome extends DropboxActivity {
         realmNoteHelper = new RealmNoteHelper(ActivityBackupHome.this);
 
         dropbox_login_button = (Button) findViewById(R.id.dropbox_login_button);
-        Button loginButton = (Button) findViewById(R.id.dropbox_login_button);
+        btnImportBackup = (Button) findViewById(R.id.btnImportBackup);
         btnCreateBackUp = (Button) findViewById(R.id.btnCreateBackUp);
         btnCopyToCloud = (Button) findViewById(R.id.btnCopyToCloud);
 
         chkEncrypt = (CheckBox) findViewById(R.id.chkEncrypt);
+        chkExmportTextNotes = (CheckBox) findViewById(R.id.chkExportTextNotes);
+        chkExportAudioNotes = (CheckBox) findViewById(R.id.chkExportAudioNotes);
+        chkExportPhoneCalls = (CheckBox) findViewById(R.id.chkExortPhoneCalls);
+        chkExportTodos = (CheckBox) findViewById(R.id.chkExportTodos);
+
+        chkRestoreTextNotes = (CheckBox) findViewById(R.id.chkRestoreTextNotes);
+        chkRestoreAudioNotes = (CheckBox) findViewById(R.id.chkRestoreAudioNotes);
+        chkRestorPhonecalls = (CheckBox) findViewById(R.id.chkRestorPhonecalls);
+        chkRestoreTodos = (CheckBox) findViewById(R.id.chkRestoreTodos);
+        chkMergeDestination = (CheckBox) findViewById(R.id.chkMergeDestination);
+
         imgBtnRemoveKey = (ImageView) findViewById(R.id.imgBtnRemoveKey);
 
 
@@ -85,7 +111,7 @@ public class ActivityBackupHome extends DropboxActivity {
             chkEncrypt.setChecked(true);
             Prefs.putBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, true);
 
-        } else{
+        } else {
             chkEncrypt.setChecked(false);
             Prefs.putBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, false);
             imgBtnRemoveKey.setVisibility(View.GONE);
@@ -94,7 +120,7 @@ public class ActivityBackupHome extends DropboxActivity {
         imgBtnRemoveKey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                doEncryption(EncryptionDialogOption.REMOVE_ENCRYPT_KEY);
+                doAuthentications(EncryptionDialogOption.REMOVE_ENCRYPT_KEY, null);
             }
         });
 
@@ -103,23 +129,15 @@ public class ActivityBackupHome extends DropboxActivity {
             @Override
             public void onClick(View view) {
 
-                //Prefs.putBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, chkEncrypt.isChecked());
-
-                chkEncrypt.setChecked(false);
 
                 if (!BackupEncrypt.isThereEncryptKey(ActivityBackupHome.this)) {
 
-                    doEncryption(EncryptionDialogOption.NEW_PASSWORD);
+                    doAuthentications(EncryptionDialogOption.NEW_PASSWORD, null);
                 } else {
-                    doEncryption(EncryptionDialogOption.JUST_ENTER_PASS);
+                    doAuthentications(EncryptionDialogOption.JUST_ENTER_PASS, null);
                 }
 
-                //if(!chkEncrypt.isChecked())
-                //   {
-                // if(BackupEncrypt.isThereEncryptKey(ActivityBackupHome.this))
 
-
-                // }
             }
         });
 
@@ -160,16 +178,19 @@ public class ActivityBackupHome extends DropboxActivity {
             @Override
             public void onClick(View view) {
 
+                if (!chkExportAudioNotes.isChecked() && !chkExportPhoneCalls.isChecked() && !chkExmportTextNotes.isChecked() && !chkExportTodos.isChecked()) {
+                    Utility.showMessage("You should choose at least one type of note", "Note", ActivityBackupHome.this);
+                    return;
+                }
+
                 try {
-                    //System.out.println ();
 
                     if (chkEncrypt.isChecked()) {
-                        doEncryption(EncryptionDialogOption.AUTHENTICATE);
+                        doAuthentications(EncryptionDialogOption.AUTHENTICATE_ENCRYPT, null);
 
 
-                    }
-                    else{
-                        FileBackUpParameters fileBackUpParameters = new FileBackUpParameters(false,null);
+                    } else {
+                        FileBackUpParameters fileBackUpParameters = new FileBackUpParameters(false, null);
                         new LongFileBackupOperation().execute(fileBackUpParameters);
                     }
 
@@ -181,7 +202,23 @@ public class ActivityBackupHome extends DropboxActivity {
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        btnImportBackup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (!chkExportAudioNotes.isChecked() && !chkExportPhoneCalls.isChecked() && !chkExmportTextNotes.isChecked() && !chkExportTodos.isChecked()) {
+                    Utility.showMessage("You should choose at least one type of note", "Note", ActivityBackupHome.this);
+                    return;
+                }
+
+                Intent intent = new Intent(ActivityBackupHome.this, ActivityJurnalFiles.class);
+
+                startActivityForResult(intent, 333);
+            }
+        });
+
+        dropbox_login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!hasToken()) {
@@ -200,12 +237,53 @@ public class ActivityBackupHome extends DropboxActivity {
 
     }
 
-    enum EncryptionDialogOption {
-        NEW_PASSWORD, CHANGE_OLD_PASS, JUST_ENTER_PASS, REMOVE_ENCRYPT_KEY, AUTHENTICATE
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (Constants.CONST_DILAOG_CHOOSE_BACKUPFILE == requestCode)
+            if (resultCode == Activity.RESULT_OK) {
+                final String s = data.getStringExtra(Constants.EXTRA_BACKUP_FILENAME);
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+
+                                if (s.contains("_encrypted_")) {
+                                    doAuthentications(EncryptionDialogOption.AUTHENTICATE_ENCRYPT, s);
+                                } else {
+
+                                    FileBackUpDepackParameters fileBackUpDepackParameters = new FileBackUpDepackParameters(false, null, s,chkRestoreTextNotes.isChecked(),
+                                            chkRestoreAudioNotes.isChecked(),chkRestorPhonecalls.isChecked(),
+                                            chkRestoreTodos.isChecked(),chkMergeDestination.isChecked());
+
+                                    new LongFileBackupDepackOperation().execute(fileBackUpDepackParameters);
+
+                                }
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityBackupHome.this);
+                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
+
+            }
     }
 
-    private boolean doEncryption(final EncryptionDialogOption encryptionDialogOption) {
+    enum EncryptionDialogOption {
+        NEW_PASSWORD, CHANGE_OLD_PASS, JUST_ENTER_PASS, REMOVE_ENCRYPT_KEY, AUTHENTICATE_ENCRYPT, AUTHENTICATE_DECRYPT
+    }
 
+    private boolean doAuthentications(final EncryptionDialogOption encryptionDialogOption, final String fileNameToUnbackUpAndDecrypt) {
+        chkEncrypt.setChecked(false);
         boolean returnResult = false;
         LayoutInflater inflater = LayoutInflater.from(ActivityBackupHome.this);
 
@@ -243,7 +321,8 @@ public class ActivityBackupHome extends DropboxActivity {
         alert.setTitle("Enter Password");
 
         switch (encryptionDialogOption) {
-            case AUTHENTICATE:
+            case AUTHENTICATE_ENCRYPT:
+            case AUTHENTICATE_DECRYPT:
                 layoutOldPass.setVisibility(View.GONE);
                 layoutNewPassRepeat.setVisibility(View.GONE);
                 txtViewPassDialogComments.setVisibility(View.GONE);
@@ -312,7 +391,7 @@ public class ActivityBackupHome extends DropboxActivity {
                 String strOldPass = txtOldPassword.getText().toString().trim();
 
                 switch (encryptionDialogOption) {
-                    case AUTHENTICATE:
+                    case AUTHENTICATE_ENCRYPT:
                         if (empty(strFirstPass)) {
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
                             txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>"));
@@ -326,8 +405,36 @@ public class ActivityBackupHome extends DropboxActivity {
                             return;
 
                         }
-                            FileBackUpParameters fileBackUpParameters = new FileBackUpParameters(true,strFirstPass);
-                        new LongFileBackupOperation().execute(fileBackUpParameters);
+
+                        FileBackUpParameters fileBackUpParametersEncry = new FileBackUpParameters(true, strFirstPass);
+                        new LongFileBackupOperation().execute(fileBackUpParametersEncry);
+
+                        break;
+
+                    case AUTHENTICATE_DECRYPT:
+
+                        if (empty(strFirstPass)) {
+                            txtViewPassDialogComments.setVisibility(View.VISIBLE);
+                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>"));
+                            return;
+                        }
+
+                        if (strFirstPass.length() < Constants.MIN_PASSWORD_LENGTH || strFirstPass.length() > Constants.MAX_PASSWORD_LENGTH) {
+
+                            txtViewPassDialogComments.setVisibility(View.VISIBLE);
+                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>"));
+                            return;
+
+                        }
+
+                        FileBackUpDepackParameters fileBackUpDepackParameters = new FileBackUpDepackParameters(true, strFirstPass, fileNameToUnbackUpAndDecrypt,
+                                chkRestoreTextNotes.isChecked(), chkRestoreAudioNotes.isChecked(),
+                                chkRestorPhonecalls.isChecked(), chkRestoreTodos.isChecked(),
+                                chkMergeDestination.isChecked());
+
+                        new LongFileBackupDepackOperation().execute(fileBackUpDepackParameters);
+
+
                         break;
                     case REMOVE_ENCRYPT_KEY:
 
@@ -459,6 +566,114 @@ public class ActivityBackupHome extends DropboxActivity {
         return returnResult;
     }
 
+    private class FileBackUpDepackParameters {
+
+        private boolean doEncryption = false;
+        private String passWord = null;
+        private String fileName;
+
+        public FileBackUpDepackParameters(boolean doEncryption, String passWord, String fileName, boolean text_notes, boolean audio_notes, boolean phonecalls, boolean todo, boolean overwrite_localdb) {
+            this.doEncryption = doEncryption;
+            this.passWord = passWord;
+            this.fileName = fileName;
+
+        }
+
+        public boolean isDoEncryption() {
+            return doEncryption;
+        }
+
+        public String getPassWord() {
+            return passWord;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+    }
+
+    private class LongFileBackupDepackOperation extends AsyncTask<FileBackUpDepackParameters, Void, Boolean> {
+        ArrayList<BackUpNotesStruct> backUpNotesStructs = null;
+        private ProgressDialog dialog;
+
+        @Override
+        protected Boolean doInBackground(FileBackUpDepackParameters... fileBackUpDepackParameterses) {
+
+            File tmpFolder = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator);
+
+            if (!tmpFolder.exists())
+                tmpFolder.mkdir();
+
+
+            File tmpFile = new File(tmpFolder.getPath() + File.separator + "temp_decrypt" + Constants.CONST_BACKUPFILE_EXTENSION);
+
+            if (tmpFile.exists())
+                tmpFile.delete();
+
+            File outputFile = new File(fileBackUpDepackParameterses[0].getFileName());
+
+            try {
+
+                if (fileBackUpDepackParameterses[0].isDoEncryption()) {
+                    BackupEncrypt.decryptFile(fileBackUpDepackParameterses[0].getFileName(), fileBackUpDepackParameterses[0].getPassWord(), tmpFile.getPath());
+
+                    backUpNotesStructs = BackUpFileHelper.readBackUp(tmpFile);
+
+                } else {
+                    BackupEncrypt.decryptFile(fileBackUpDepackParameterses[0].getFileName(), null, tmpFile.getPath());
+
+                    backUpNotesStructs = BackUpFileHelper.readBackUp(tmpFile);
+                }
+
+                if (tmpFile.exists())
+                    tmpFile.delete();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+
+            if (aBoolean) {
+/*
+                for (int i = 0; i < backUpNotesStructs.size(); i++) {
+                    System.out.println(backUpNotesStructs.get(i).getTitle() + " lllllllllllllll");
+                    System.out.println("i = " + i);
+                }
+*/
+                realmNoteHelper.applyBackupToDB(backUpNotesStructs,chkRestoreTextNotes.isChecked(),chkRestoreAudioNotes.isChecked(),chkRestorPhonecalls.isChecked(),chkRestoreTodos.isChecked(),chkMergeDestination.isChecked());
+                dialog.cancel();
+
+                Utility.showMessage("Backup was successful.", "Info", ActivityBackupHome.this);
+            }
+            else {
+                dialog.cancel();
+                Utility.showMessage("Backup wasn't successful!", "Error", ActivityBackupHome.this);
+            }
+
+
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            dialog = ProgressDialog.show(ActivityBackupHome.this, "",
+                    "Loading. Please wait...", true);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
     private class FileBackUpParameters {
 
         private boolean doEncryption = false;
@@ -481,6 +696,7 @@ public class ActivityBackupHome extends DropboxActivity {
 
     private class LongFileBackupOperation extends AsyncTask<FileBackUpParameters, Void, Boolean> {
         ArrayList<BackUpNotesStruct> backUpNotesStructs = null;
+        private ProgressDialog dialog;
 
         @Override
         protected Boolean doInBackground(FileBackUpParameters... fileBackUpParameterses) {
@@ -490,11 +706,16 @@ public class ActivityBackupHome extends DropboxActivity {
 
             File outputFile;
 
-            File tmpFolder = new File(ExternalStorageManager.getWorkingDirectory() + File.separator + Constants.TEMP_FOLDER_NAME + File.separator);
-            if(!tmpFolder.exists())
-                tmpFolder.mkdir();
-            File tmpFile = new File(ExternalStorageManager.getWorkingDirectory() + File.separator + Constants.TEMP_FOLDER_NAME + File.separator + "temp" + Constants.CONST_BACKUPFILE_EXTENSION);
+            File tmpFolder = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator);
 
+            if (!tmpFolder.exists())
+                tmpFolder.mkdir();
+
+
+            File tmpFile = new File(tmpFolder.getPath() + File.separator + "temp" + Constants.CONST_BACKUPFILE_EXTENSION);
+
+            if (tmpFile.exists())
+                tmpFile.delete();
             //Constants.TEMP_FOLDER_NAME
             //BackUpFileHelper.writeBackUp(ExternalStorageManager.getWorkingDirectory() + "temp" +  Constants.CONST_BACKUPFILE_EXTENSION);
 
@@ -502,9 +723,9 @@ public class ActivityBackupHome extends DropboxActivity {
 
             if (fileBackUpParameterses[0].isDoEncryption()) {
                 try {
-                    outputFile = new File(Constants.CONST_BACKUPFILE_PREFIX + timeStamp + "_encrypted_" + Constants.CONST_BACKUPFILE_EXTENSION);
+                    outputFile = new File(ExternalStorageManager.getWorkingDirectory() + File.separator + Constants.CONST_BACKUPFILE_PREFIX + timeStamp + "_encrypted_" + Constants.CONST_BACKUPFILE_EXTENSION);
 
-                    BackupEncrypt.encryptFile(outputFile, fileBackUpParameterses[0].getPassWord(),tmpFile);
+                    BackupEncrypt.encryptFile(outputFile, fileBackUpParameterses[0].getPassWord(), tmpFile);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -517,8 +738,9 @@ public class ActivityBackupHome extends DropboxActivity {
                 }
             } else {
                 try {
-                    outputFile = new File(Constants.CONST_BACKUPFILE_PREFIX + timeStamp + Constants.CONST_BACKUPFILE_EXTENSION);
-                    BackupEncrypt.encryptFile(outputFile, null,tmpFile);
+                    outputFile = new File(ExternalStorageManager.getWorkingDirectory() + File.separator + Constants.CONST_BACKUPFILE_PREFIX + timeStamp + Constants.CONST_BACKUPFILE_EXTENSION);
+                    BackupEncrypt.encryptFile(outputFile, null, tmpFile);
+                    return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (NoSuchAlgorithmException e) {
@@ -538,13 +760,22 @@ public class ActivityBackupHome extends DropboxActivity {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
 
+            dialog.cancel();
+
+            if (aBoolean)
+                Utility.showMessage("Backup was successful.", "Info", ActivityBackupHome.this);
+            else
+                Utility.showMessage("Backup wasn't successful!", "Error", ActivityBackupHome.this);
+
         }
 
 
         @Override
         protected void onPreExecute() {
+            dialog = ProgressDialog.show(ActivityBackupHome.this, "",
+                    "Loading. Please wait...", true);
             try {
-                backUpNotesStructs = realmNoteHelper.backupNotes(true, true, true, true);
+                backUpNotesStructs = realmNoteHelper.backupNotes(chkExmportTextNotes.isChecked(), chkExportAudioNotes.isChecked(), chkExportPhoneCalls.isChecked(), chkExportTodos.isChecked());
             } catch (Exception e) {
                 e.printStackTrace();
             }

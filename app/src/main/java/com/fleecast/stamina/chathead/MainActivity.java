@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity
 private void testFucntions(){
 
     Intent intent = new Intent(MainActivity.this, ActivityBackupHome.class);
+
     startActivity(intent);
    // Realm realm = Realm.getDefaultInstance();
    // realm.writeCopyTo();

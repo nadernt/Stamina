@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -51,11 +52,11 @@ public class RealmNoteHelper {
      * @param description
      */
     public void addNote(int id, String title, String description, boolean has_audio,
-                        Date update_time,Date create_time_stamp, Date start_time,
+                        Date update_time, Date create_time_stamp, Date start_time,
                         Date end_time, int call_type, String phone_number, int tag,
                         int note_type) {
 
-        if(!isExist(id)) {
+        if (!isExist(id)) {
             NoteInfoRealmStruct noteInfoRealmStruct = new NoteInfoRealmStruct();
             noteInfoRealmStruct.setId(id);
             noteInfoRealmStruct.setTitle(title);
@@ -75,10 +76,8 @@ public class RealmNoteHelper {
             realm.copyToRealm(noteInfoRealmStruct);
             realm.commitTransaction();
             showLog("Added ; " + title);
-        }
-        else
-        {
-            updateNotes(id,title,description,update_time,tag,note_type);
+        } else {
+            updateNotes(id, title, description, update_time, tag, note_type);
         }
 
     }
@@ -110,7 +109,7 @@ public class RealmNoteHelper {
         return realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
     }
 
-    public void updateNotes(int id, String title, String description,  Date update_time, int tag,  int note_type) {
+    public void updateNotes(int id, String title, String description, Date update_time, int tag, int note_type) {
         realm.beginTransaction();
 
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
@@ -124,7 +123,7 @@ public class RealmNoteHelper {
 
 
     public void updateNotePhoneCallInfo(int id, Date start_time,
-                      Date end_time, int call_type, String phone_number) {
+                                        Date end_time, int call_type, String phone_number) {
         realm.beginTransaction();
 
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
@@ -161,7 +160,6 @@ public class RealmNoteHelper {
         }
 
 
-
         if (realmResult.size() > 0) {
 
             realmResult = filterQueryResults(realmResult);
@@ -194,7 +192,7 @@ public class RealmNoteHelper {
         return data;
     }
 
-    private  RealmResults<NoteInfoRealmStruct> filterQueryResults( RealmResults<NoteInfoRealmStruct> realmResult){
+    private RealmResults<NoteInfoRealmStruct> filterQueryResults(RealmResults<NoteInfoRealmStruct> realmResult) {
 
 // Filtering by text, audio or phone call
 
@@ -260,7 +258,7 @@ public class RealmNoteHelper {
             realmResult = realmResult.where().equalTo("call_type", fakeSkipQuery).findAll();
 
         // Sort values
-        if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION,Constants.CONST_NOTELIST_ACCEDING))
+        if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION, Constants.CONST_NOTELIST_ACCEDING))
             realmResult = realmResult.sort("id", Sort.ASCENDING);
         else
             realmResult = realmResult.sort("id", Sort.DESCENDING);
@@ -297,8 +295,8 @@ public class RealmNoteHelper {
      * @param s
      */
     private void showLog(String s) {
-        if(DEBUG)
-        Log.d(TAG, s);
+        if (DEBUG)
+            Log.d(TAG, s);
 
     }
 
@@ -329,11 +327,6 @@ public class RealmNoteHelper {
         RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
         RealmToDoHelper realmToDoHelper = new RealmToDoHelper(mContext);
 
-     //   if (audioNotes)
-    //realmAudioNoteHelper.
-       //     if (toDoNote) {
-
-
 
         RealmResults<NoteInfoRealmStruct> realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
 
@@ -349,13 +342,13 @@ public class RealmNoteHelper {
                             realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                             realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                             realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                            realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_TEXT,null,null,false));
+                            realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_TEXT, null, null, false));
                 }
 
                 if (noteType == Constants.CONST_NOTETYPE_AUDIO && audioNotes) {
 
                     RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realmAudioNoteHelper.findAllAudioNotesByParentId(realmResult.get(i).getId());
-                    for(int j=0; j < audioNoteInfoRealmStructs.size(); j++) {
+                    for (int j = 0; j < audioNoteInfoRealmStructs.size(); j++) {
 
                         backupNotes.add(new BackUpNotesStruct(realmResult.get(i).getId(), realmResult.get(i).getTitle(),
                                 realmResult.get(i).getDescription(), realmResult.get(i).getHasAudio(),
@@ -363,7 +356,7 @@ public class RealmNoteHelper {
                                 realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                                 realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
                                 realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_AUDIO,
-                                audioNoteInfoRealmStructs.get(j).getTitle(),audioNoteInfoRealmStructs.get(j).getDescription(),false));
+                                audioNoteInfoRealmStructs.get(j).getTitle(), audioNoteInfoRealmStructs.get(j).getDescription(), false));
                     }
                 }
 
@@ -374,13 +367,13 @@ public class RealmNoteHelper {
                             realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                             realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                             realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                            realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_PHONECALL,null,null,false));
+                            realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_PHONECALL, null, null, false));
                 }
 
                 if (noteType == Constants.CONST_NOTETYPE_TODO && toDoNote) {
 
                     ArrayList<TodoChildRealmStruct> todoChildRealmStructs = realmToDoHelper.getAllChildTodos(realmResult.get(i).getId());
-                    for(int j=0; j < todoChildRealmStructs.size(); j++) {
+                    for (int j = 0; j < todoChildRealmStructs.size(); j++) {
 
                         backupNotes.add(new BackUpNotesStruct(realmResult.get(i).getId(), realmResult.get(i).getTitle(),
                                 realmResult.get(i).getDescription(), realmResult.get(i).getHasAudio(),
@@ -388,7 +381,7 @@ public class RealmNoteHelper {
                                 realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                                 realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
                                 realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_TODO,
-                                todoChildRealmStructs.get(j).getTitle(),null,todoChildRealmStructs.get(j).getHasDone()));
+                                todoChildRealmStructs.get(j).getTitle(), null, todoChildRealmStructs.get(j).getHasDone()));
                     }
                 }
             }
@@ -399,10 +392,197 @@ public class RealmNoteHelper {
 
     }
 
+    public void applyBackupToDB(ArrayList<BackUpNotesStruct> backUpNotesStructs, boolean textNotes, boolean audioNotes, boolean PhoneCalls, boolean toDoNote, boolean overwrite_localdb) {
+
+        ArrayList<BackUpNotesStruct> backupNotes = new ArrayList<>();
+
+        RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
+        RealmToDoHelper realmToDoHelper = new RealmToDoHelper(mContext);
+
+        ArrayList<AudioNoteInfoRealmStruct> audioNoteChildRealmStruct = new ArrayList<>();
+        ArrayList<TodoChildRealmStruct> todoChildRealmStruct = new ArrayList<>();
+
+        ArrayList<NoteInfoRealmStruct> noteInfo = new ArrayList<>();
+
+
+        //RealmResults<NoteInfoRealmStruct> realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
+
+        // Remove the fiels we shouldn't overwrite (if user requested).
+        if (!overwrite_localdb) {
+            for (int j = 0; j < backUpNotesStructs.size(); j++) {
+                if (isExist(backUpNotesStructs.get(j).getId())) {
+                    backUpNotesStructs.remove(j);
+                    j = 0;
+                }
+            }
+        }
+        ArrayList<Integer> weDidProcessOfThisBefore = new ArrayList<>();
+        int index = 0;
+        int index_audio_child = 0;
+        int index_todo_child = 0;
+
+
+        for (int i = 0; i < backUpNotesStructs.size(); i++) {
+
+            int lookInFinished = 0;
+
+            boolean weDid = false;
+
+            if(weDidProcessOfThisBefore.size()>0) {
+                while (true) {
+
+                    if (weDidProcessOfThisBefore.get(lookInFinished) == backUpNotesStructs.get(i).getId() || weDidProcessOfThisBefore.size() == lookInFinished) {
+                        weDid = true;
+                        break;
+                    }
+
+                    if (weDidProcessOfThisBefore.size() == lookInFinished) {
+                        break;
+                    }
+                    lookInFinished++;
+
+                }
+            }
+
+            if (!weDid) {
+
+                weDidProcessOfThisBefore.add(backUpNotesStructs.get(i).getId());
+
+                int noteType = backUpNotesStructs.get(i).getNoteType();
+
+                if ((noteType == Constants.CONST_NOTETYPE_TEXT && textNotes) || (noteType == Constants.CONST_NOTETYPE_PHONECALL && PhoneCalls)) {
+
+                   // if (isExist(backUpNotesStructs.get(i).getId()) && overwrite_localdb)
+                        noteInfo.add(new NoteInfoRealmStruct());
+
+                    noteInfo.get(index).setId(backUpNotesStructs.get(i).getId());
+                    noteInfo.get(index).setTitle(backUpNotesStructs.get(i).getTitle());
+                    noteInfo.get(index).setDescription(backUpNotesStructs.get(i).getDescription());
+                    noteInfo.get(index).setHasAudio(backUpNotesStructs.get(i).getHasAudio());
+
+                    noteInfo.get(index).setUpdateTime(backUpNotesStructs.get(i).getUpdate_time());
+                    noteInfo.get(index).setCreateTimeStamp(backUpNotesStructs.get(i).getCreateTimeStamp());
+                    noteInfo.get(index).setStartTime(backUpNotesStructs.get(i).getStartTime());
+                    noteInfo.get(index).setEndTime(backUpNotesStructs.get(i).getEndTime());
+                    noteInfo.get(index).setCallType(backUpNotesStructs.get(i).getCallType());
+                    noteInfo.get(index).setPhoneNumber(backUpNotesStructs.get(i).getPhoneNumber());
+                    noteInfo.get(index).setTag(backUpNotesStructs.get(i).getTag());
+                    noteInfo.get(index).setNoteType(backUpNotesStructs.get(i).getNoteType());
+                    index++;
+
+                } else if (noteType == Constants.CONST_NOTETYPE_AUDIO && audioNotes) {
+
+                    int parent_id = backUpNotesStructs.get(i).getId();
+
+       /* RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realmAudioNoteHelper.findAllAudioNotesByParentId(realmResult.get(i).getId());*/
+
+                    noteInfo.add(new NoteInfoRealmStruct());
+
+                    noteInfo.get(index).setId(backUpNotesStructs.get(i).getId());
+                    noteInfo.get(index).setTitle(backUpNotesStructs.get(i).getTitle());
+                    noteInfo.get(index).setDescription(backUpNotesStructs.get(i).getDescription());
+                    noteInfo.get(index).setHasAudio(backUpNotesStructs.get(i).getHasAudio());
+
+                    noteInfo.get(index).setUpdateTime(backUpNotesStructs.get(i).getUpdate_time());
+                    noteInfo.get(index).setCreateTimeStamp(backUpNotesStructs.get(i).getCreateTimeStamp());
+                    noteInfo.get(index).setStartTime(backUpNotesStructs.get(i).getStartTime());
+                    noteInfo.get(index).setEndTime(backUpNotesStructs.get(i).getEndTime());
+                    noteInfo.get(index).setCallType(backUpNotesStructs.get(i).getCallType());
+                    noteInfo.get(index).setPhoneNumber(backUpNotesStructs.get(i).getPhoneNumber());
+                    noteInfo.get(index).setTag(backUpNotesStructs.get(i).getTag());
+                    noteInfo.get(index).setNoteType(backUpNotesStructs.get(i).getNoteType());
+
+                    index++;
+
+
+                    for (int k = 0; k < backUpNotesStructs.size(); k++) {
+                        if (backUpNotesStructs.get(k).getId() == parent_id) {
+                            audioNoteChildRealmStruct.add(new AudioNoteInfoRealmStruct());
+                            audioNoteChildRealmStruct.get(index_audio_child).setId(backUpNotesStructs.get(k).getId_child());
+                            audioNoteChildRealmStruct.get(index_audio_child).setDescription(backUpNotesStructs.get(k).getChildDescription());
+                            audioNoteChildRealmStruct.get(index_audio_child).setTitle(backUpNotesStructs.get(k).getChildTitle());
+                            audioNoteChildRealmStruct.get(index_audio_child).setTag(0);
+                            index_audio_child++;
+                        }
+                    }
 
 
 
+                } else if (noteType == Constants.CONST_NOTETYPE_TODO && toDoNote) {
 
+                    int parent_id = backUpNotesStructs.get(i).getId();
+
+       /* RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realmAudioNoteHelper.findAllAudioNotesByParentId(realmResult.get(i).getId());*/
+
+                    noteInfo.add(new NoteInfoRealmStruct());
+
+                    noteInfo.get(index).setId(backUpNotesStructs.get(i).getId());
+                    noteInfo.get(index).setTitle(backUpNotesStructs.get(i).getTitle());
+                    noteInfo.get(index).setDescription(backUpNotesStructs.get(i).getDescription());
+                    noteInfo.get(index).setHasAudio(backUpNotesStructs.get(i).getHasAudio());
+
+                    noteInfo.get(index).setUpdateTime(backUpNotesStructs.get(i).getUpdate_time());
+                    noteInfo.get(index).setCreateTimeStamp(backUpNotesStructs.get(i).getCreateTimeStamp());
+                    noteInfo.get(index).setStartTime(backUpNotesStructs.get(i).getStartTime());
+                    noteInfo.get(index).setEndTime(backUpNotesStructs.get(i).getEndTime());
+                    noteInfo.get(index).setCallType(backUpNotesStructs.get(i).getCallType());
+                    noteInfo.get(index).setPhoneNumber(backUpNotesStructs.get(i).getPhoneNumber());
+                    noteInfo.get(index).setTag(backUpNotesStructs.get(i).getTag());
+                    noteInfo.get(index).setNoteType(backUpNotesStructs.get(i).getNoteType());
+
+                    index++;
+
+
+                    for (int k = 0; k < backUpNotesStructs.size(); k++) {
+                        if (backUpNotesStructs.get(k).getId() == parent_id) {
+
+                            todoChildRealmStruct.add(new TodoChildRealmStruct());
+                            todoChildRealmStruct.get(index_todo_child).setId(backUpNotesStructs.get(k).getId_child());
+                            todoChildRealmStruct.get(index_todo_child).setParentId(parent_id);
+                            todoChildRealmStruct.get(index_todo_child).setTitle(backUpNotesStructs.get(k).getChildTitle());
+                            Date childCreateDate = new Date((long) backUpNotesStructs.get(k).getId_child() * 1000);
+                            todoChildRealmStruct.get(index_todo_child).setCreateTimeStamp(childCreateDate);
+                            todoChildRealmStruct.get(index_todo_child).setOrder(0);
+                            todoChildRealmStruct.get(index_todo_child).setHasDone(backUpNotesStructs.get(k).getTodoDone());
+
+                            index_todo_child++;
+                        }
+                    }
+
+
+
+                }
+
+            }
+        }
+
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(noteInfo);
+        realm.copyToRealmOrUpdate(todoChildRealmStruct);
+
+        realm.commitTransaction();
+
+        if (audioNotes) {
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(audioNoteChildRealmStruct);
+            realm.commitTransaction();
+        }
+
+        if (toDoNote) {
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(todoChildRealmStruct);
+            realm.commitTransaction();
+        }
+
+
+        //realmStructTextAudioPhoneNotes.
+
+       /* if(overwrite_localdb)
+        backUpNotesStructs
+*/
+        //realm.copyToRealmOrUpdate(realmResult);
+
+    }
 
 
 }

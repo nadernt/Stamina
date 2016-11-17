@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/fileEncryptType"
+        android:layout_width="70px"
+        android:layout_height="70px"
+        android:layout_marginLeft="5px"
+        android:layout_marginRight="20px"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_action_lock_closed"
+        android:background="@color/about_instagram_color">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/labelFile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@+id/label"
+        android:textSize="42px"
+        android:layout_gravity="center_vertical">
+    </TextView>
+
+</LinearLayout>

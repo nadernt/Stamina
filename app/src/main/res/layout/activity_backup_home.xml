@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Backup" />
+                android:text="Create Backup" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -57,75 +57,40 @@
             </LinearLayout>
 
             <com.fleecast.stamina.customgui.HorizontalDivider
-                android:id="@+id/view6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Backup process options" />
-
-            <Button
-                android:id="@+id/btnImportBackup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Import backup" />
-
-            <com.fleecast.stamina.customgui.HorizontalDivider
                 android:id="@+id/view4"
-                android:layout_width="match_parent"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Backup process options" />
+                android:text="Backup process options:" />
 
             <CheckBox
-                android:id="@+id/chkImportText"
+                android:id="@+id/chkExportTextNotes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="Text notes" />
+                android:text="Text notes"
+                android:checked="true" />
 
             <CheckBox
-                android:id="@+id/chkImportAudioNotes"
+                android:id="@+id/chkExportAudioNotes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="Audio notes" />
+                android:text="Audio notes"
+                android:checked="true" />
 
             <CheckBox
-                android:id="@+id/chkImportPhoneCalls"
+                android:id="@+id/chkExortPhoneCalls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="Phone calls" />
+                android:text="Phone calls"
+                android:checked="true" />
 
             <CheckBox
-                android:id="@+id/chkImportTodos"
+                android:id="@+id/chkExportTodos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="Todo lists" />
+                android:text="Todo lists"
+                android:checked="true" />
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/chkRepairDatastruct"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:clickable="false"
-                    android:text="Repair broken files in database." />
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:background="@color/amber"
-                    android:src="@drawable/ic_action_help" />
-            </LinearLayout>
 
             <com.fleecast.stamina.customgui.HorizontalDivider
                 android:id="@+id/view5"
@@ -134,6 +99,76 @@
 
                 android:layout_marginTop="10dp"
                 android:text="Cloud service to copy backup" />
+
+            <Button
+                android:id="@+id/btnImportBackup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Import backup" />
+
+            <com.fleecast.stamina.customgui.HorizontalDivider
+                android:id="@+id/horizontalDivider"
+                android:layout_width="178dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Restore options:" />
+
+            <CheckBox
+                android:id="@+id/chkRestoreTextNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Text notes"
+                android:checked="true" />
+
+            <CheckBox
+                android:id="@+id/chkRestoreAudioNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Audio notes"
+                android:checked="true" />
+
+            <CheckBox
+                android:id="@+id/chkRestorPhonecalls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone calls"
+                android:checked="true" />
+
+            <CheckBox
+                android:id="@+id/chkRestoreTodos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Todo lists"
+                android:checked="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <CheckBox
+                    android:id="@+id/chkMergeDestination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Overwrite similar local data with backup \n source data."
+                    android:checked="true"/>
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/amber"
+                    android:src="@drawable/ic_action_help"
+                    android:layout_marginLeft="8dp" />
+            </LinearLayout>
+
+            <com.fleecast.stamina.customgui.HorizontalDivider
+                android:id="@+id/view6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Restore Backup" />
 
             <Button
                 android:id="@+id/dropbox_login_button"

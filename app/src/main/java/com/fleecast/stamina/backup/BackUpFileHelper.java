@@ -31,9 +31,9 @@ public class BackUpFileHelper {
     }
 
 
-    public static ArrayList<BackUpNotesStruct> readBackUp(File inputFile, String encryptionKey) throws Exception {
+    public static ArrayList<BackUpNotesStruct> readBackUp(File inputFile) throws Exception {
         ArrayList<BackUpNotesStruct> q;
-
+        System.out.println(inputFile + "ddddddddddddddd");
         FileInputStream fis = null;
         ObjectInputStream in = null;
 

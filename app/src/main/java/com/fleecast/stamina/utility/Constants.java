@@ -29,6 +29,8 @@ public class Constants {
     public static final String CONST_BACKUPFILE_EXTENSION = ".journal";
     public static final Object CONST_BACKUPFILE_PREFIX = "backup_";
     public static final int CONST_EXTERNAL_STORAGE_REQUEST_CODE = 123;
+    public static final int CONST_DILAOG_CHOOSE_BACKUPFILE = 333;
+    public static final String EXTRA_BACKUP_FILENAME = "ExtraBackupFilename";
 
     public static String PREF_USER_HAS_MASTER_PASSWORD = "PrefUserHasMasterPassword";
 
