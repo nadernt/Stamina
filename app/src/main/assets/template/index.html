@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Stamina Report</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="js/site.js"></script>
+
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+</head>
+
+<body class="code-snippets-visible">
+
+<div class="container">
+    <div class="navbar-spacer"></div>
+    <nav class="navbar">
+        <div class="container">
+            <ul class="navbar-list">
+                {{#TEXT-NOTE-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="#text notes">Text Notes</a></li>}}
+                {{#AUDIO-NOTE-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="# Audio Notes">Audio Notes</a></li>}}
+                {{#PHONE-CALLS-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="#phone calls">Phone Calls</a></li>}}
+                {{#TODO-NOTE-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="#todo">Todo</a></li>}}
+            </ul>
+        </div>
+    </nav>
+    {{#TEXT-NOTE-CONTENTS#<h6 class="docs-header">TEXT NOTES</h6>*CONTENTS*}}
+    {{#AUDIO-NOTE-CONTENTS#<h6 class="docs-header">AUDIO NOTES</h6>*CONTENTS*}}
+    {{#PHONE-CALLS-CONTENTS#<h6 class="docs-header">PHONE CALLS</h6>*CONTENTS*}}
+    {{#TODO-NOTE-CONTENTS#<h6 class="docs-header">TODO</h6>*CONTENTS*}}
+</div>
+</body>
+</html>

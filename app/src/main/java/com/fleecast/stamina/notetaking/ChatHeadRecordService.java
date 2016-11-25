@@ -61,7 +61,7 @@ public class ChatHeadRecordService extends Service {
 	private RealmNoteHelper realmNoteHelper;
 	private String TAG = "ChatHeadRecordService";
 	private Intent intentOfCallForEdit;
-//	private boolean isEditActivityNotRun;
+	//	private boolean isEditActivityNotRun;
 	private boolean recordHasCanceled;
 	private boolean recordStoppedByUser;
 	private Date dateForStopByUser;
@@ -347,7 +347,7 @@ public class ChatHeadRecordService extends Service {
 					try {
 
 						/**
-                         * Delete the entry from database. Before we check note still exist because sometimes
+						 * Delete the entry from database. Before we check note still exist because sometimes
 						 * user is crazy and just deleted the note from db before stop the call.
 						 */
 
@@ -412,8 +412,8 @@ public class ChatHeadRecordService extends Service {
 				myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
 
 
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-				AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+					AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 					audioManager.setSpeakerphoneOn(true);
 					audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
@@ -421,9 +421,9 @@ public class ChatHeadRecordService extends Service {
 					recorder.recordMedia(true, MediaRecorder.AudioSource.MIC);
 					Log.e("GGGGGGGg", "Honglaaaaaaaaaaaaaaaaa");
 
-			}else{
-				recorder.recordMedia(true, MediaRecorder.AudioSource.VOICE_CALL);
-			}
+				}else{
+					recorder.recordMedia(true, MediaRecorder.AudioSource.VOICE_CALL);
+				}
 
 
 			}
@@ -473,13 +473,13 @@ public class ChatHeadRecordService extends Service {
 
 	}
 
-private void disableHandler(){
-	myHandler.removeCallbacks(myRunnable);
-	if(popupRecordDialogView != null){
-		popupRecordDialogView.setVisibility(View.GONE);
-	}
+	private void disableHandler(){
+		myHandler.removeCallbacks(myRunnable);
+		if(popupRecordDialogView != null){
+			popupRecordDialogView.setVisibility(View.GONE);
+		}
 
-}
+	}
 
 	Runnable myRunnable = new Runnable() {
 
@@ -491,7 +491,7 @@ private void disableHandler(){
 		}
 	};
 
-private void showPopUp(){
+	private void showPopUp(){
 
 		if(popupRecordDialogView != null && chatHeadRecord != null ){
 

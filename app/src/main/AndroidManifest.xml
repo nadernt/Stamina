@@ -16,7 +16,6 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -43,7 +42,7 @@
             android:name=".chathead.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".chathead.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -220,8 +219,13 @@
             android:name=".todo.MapsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme" />
-        <activity android:name=".backup.ActivityBackupHome"  android:screenOrientation="portrait" />
-        <activity android:name=".backup.ActivityJurnalFiles"  android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".backup.ActivityBackupHome"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".backup.ActivityJurnalFiles"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"

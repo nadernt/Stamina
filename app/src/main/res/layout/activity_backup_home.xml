@@ -27,32 +27,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Create Backup" />
+                android:text="Create Backup"
+                android:textColor="@color/bleu_de_france" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
                 <Button
                     android:id="@+id/btnCreateBackUp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Create backup" />
+                    android:background="@color/bleu_de_france"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Create backup"
+                    android:textColor="@color/milk_white" />
 
                 <CheckBox
-                    android:text="Encrypt backup"
+                    android:id="@+id/chkEncrypt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/chkEncrypt"/>
+                    android:text="Encrypt backup" />
 
                 <ImageView
                     android:id="@+id/imgBtnRemoveKey"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:background="@color/american_rose"
                     android:src="@drawable/ic_action_key"
-                    android:layout_gravity="center" />
+                    android:visibility="visible" />
 
             </LinearLayout>
 
@@ -67,44 +74,64 @@
                 android:id="@+id/chkExportTextNotes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Text notes"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Text notes" />
 
             <CheckBox
                 android:id="@+id/chkExportAudioNotes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Audio notes"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Audio notes" />
 
             <CheckBox
                 android:id="@+id/chkExortPhoneCalls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phone calls"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Phone calls" />
 
             <CheckBox
                 android:id="@+id/chkExportTodos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Todo lists"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Todo lists" />
 
 
             <com.fleecast.stamina.customgui.HorizontalDivider
-                android:id="@+id/view5"
+                android:id="@+id/view8"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_marginTop="10dp"
-                android:text="Cloud service to copy backup" />
+                android:text="Restore Backup"
+                android:textColor="@color/bleu_de_france" />
 
-            <Button
-                android:id="@+id/btnImportBackup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Import backup" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnImportBackup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bleu_de_france"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Import backup"
+                    android:textColor="@color/milk_white" />
+
+                <ImageView
+                    android:id="@+id/imgRestorHelp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
+                    android:background="@color/amber"
+                    android:src="@drawable/ic_action_help" />
+            </LinearLayout>
 
             <com.fleecast.stamina.customgui.HorizontalDivider
                 android:id="@+id/horizontalDivider"
@@ -117,58 +144,205 @@
                 android:id="@+id/chkRestoreTextNotes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Text notes"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Text notes" />
 
             <CheckBox
                 android:id="@+id/chkRestoreAudioNotes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Audio notes"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Audio notes" />
 
             <CheckBox
                 android:id="@+id/chkRestorPhonecalls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phone calls"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Phone calls" />
 
             <CheckBox
                 android:id="@+id/chkRestoreTodos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Todo lists"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Todo lists" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
                 <CheckBox
                     android:id="@+id/chkMergeDestination"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Overwrite similar local data with backup \n source data."
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="Overwrite similar local data with backup \n source data." />
 
-                <ImageView
-                    android:id="@+id/imageView3"
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/chkReplaceLocalDB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="Delete and replace local database." />
+
+            <com.fleecast.stamina.customgui.HorizontalDivider
+                android:id="@+id/horizontalDivider2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Create Report"
+                android:textColor="@color/bleu_de_france" />
+
+                <RadioGroup
+                    android:id="@+id/rdoReportOption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/amber"
-                    android:src="@drawable/ic_action_help"
-                    android:layout_marginLeft="8dp" />
+                    android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rdoHtmlReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="HTML Report"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/rdoCSVReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Separate Sheet Format(CSV)"
+                    android:textSize="10sp" />
+
+</RadioGroup>
+
+            <CheckBox
+                android:id="@+id/chkTabular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tabular html (makes html report in a table)." />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Title:" />
+
+            <EditText
+                android:id="@+id/editTxtReportTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:maxLines="1"
+                android:text="Title" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description (Optional):" />
+
+
+            <EditText
+                android:id="@+id/editTxtReportDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:inputType="textMultiLine" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
             </LinearLayout>
+
+            <com.fleecast.stamina.customgui.HorizontalDivider
+                android:id="@+id/horizontalDivider1"
+                android:layout_width="178dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Report options:" />
+
+            <CheckBox
+                android:id="@+id/chkReportTextNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Text notes" />
+
+            <CheckBox
+                android:id="@+id/chkReportAudioNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Audio notes" />
+
+            <CheckBox
+                android:id="@+id/chkReportPhonecalls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Phone calls" />
+
+            <CheckBox
+                android:id="@+id/chkReportTodos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Todo lists" />
+
+
+
+                <Button
+                    android:id="@+id/btnChooseReportPath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/beer"
+                    android:layout_weight=".2"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Report output folder\n(optional)" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCreateReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/bleu_de_france"
+                    android:text="Make Report"
+                    android:textColor="@color/milk_white" />
+
+                <CheckBox
+                    android:id="@+id/chkCompressToZip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Compress results in zip file." />
+
+            </LinearLayout>
+
 
             <com.fleecast.stamina.customgui.HorizontalDivider
                 android:id="@+id/view6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Restore Backup" />
+                android:text="Cloud service to copy backup" />
 
             <Button
                 android:id="@+id/dropbox_login_button"
@@ -178,10 +352,10 @@
                 android:text="Login with Dropbox" />
 
             <Button
-                android:text="Copy BackUp to DropBox"
+                android:id="@+id/btnCopyToCloud"
                 android:layout_width="171dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnCopyToCloud" />
+                android:text="Copy BackUp to DropBox" />
 
             <TextView
                 android:id="@+id/name_text"

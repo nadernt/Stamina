@@ -57,7 +57,7 @@ public class RecorderPhone {
         }
         //if(permissionCheck)
         Log.e(LOG_TAG, "Rec Init");
-      //  myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
+        //  myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(mediaRecorderSource);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -67,12 +67,13 @@ public class RecorderPhone {
 
         try {
             mRecorder.prepare();
-         //   Thread.sleep(1000);
+               Thread.sleep(1000);
             myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
             mRecorder.start();
             isRecordStarted=true;
         } catch (Exception e) {
             isRecordStarted=false;
+            //System.out.println(e.getMessage() + " ssssssssssss");
             Log.e(LOG_TAG, "prepare() failed");
             myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();

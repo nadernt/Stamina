@@ -9,6 +9,19 @@
 
 
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start\nRecord"
+        android:id="@+id/btnPopStartRecord"
+        android:textSize="12dp"
+        android:background="@color/blue_eyes"
+        android:textColor="@color/white"
+        android:padding="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:textStyle="bold" />
+
+    <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Add Note"

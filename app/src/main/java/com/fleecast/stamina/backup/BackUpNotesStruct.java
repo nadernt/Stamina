@@ -29,7 +29,7 @@ public class BackUpNotesStruct  implements Serializable {
     public BackUpNotesStruct(int id, String title, String description, boolean has_audio,
                              Date update_time, Date create_time_stamp, Date start_time,
                              Date end_time, int call_type, String phone_number, int tag,
-                             int order, int note_type, String child_title, String child_description, boolean todo_done) {
+                             int order, int note_type, int id_child, String child_title, String child_description,Date child_create_time_stamp, boolean todo_done,int child_order) {
         this.call_type = call_type;
         this.create_time_stamp = create_time_stamp;
         this.description = description;
@@ -46,6 +46,9 @@ public class BackUpNotesStruct  implements Serializable {
         this.child_title = child_title;
         this.child_description = child_description;
         this.todo_done = todo_done;
+        this.id_child = id_child;
+        this.child_order=child_order;
+        this.child_create_time_stamp=child_create_time_stamp;
 
     }
 
@@ -191,5 +194,12 @@ public class BackUpNotesStruct  implements Serializable {
         this.child_order = child_order;
     }
 
+    public Date getChild_create_time_stamp() {
+        return child_create_time_stamp;
+    }
+
+    public void setChild_create_time_stamp(Date child_create_time_stamp) {
+        this.child_create_time_stamp = child_create_time_stamp;
+    }
 }
 

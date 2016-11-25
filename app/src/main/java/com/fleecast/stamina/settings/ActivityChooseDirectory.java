@@ -60,7 +60,7 @@ public class ActivityChooseDirectory extends AppCompatActivity {
         txtCurrentPath = (TextView) findViewById(R.id.txtCurrentPath);
         btnSdCard  = (Button) findViewById(R.id.btnSdCard);
 
-        ExtStorageSearch();
+      //  ExtStorageSearch();
 
         btnNewDirectory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,16 +282,19 @@ public class ActivityChooseDirectory extends AppCompatActivity {
                 //return pathname.canRead();
             }
         });
-        Arrays.sort(fileTmp);
 
-        List <File> files = new ArrayList<>();
-    for (File inFile : fileTmp) {
-            if (inFile.isDirectory()) {
-                files.add(inFile);// is directory
+        if(fileTmp!=null && fileTmp.length >0) {
+            Arrays.sort(fileTmp);
+
+            List<File> files = new ArrayList<>();
+            for (File inFile : fileTmp) {
+                if (inFile.isDirectory()) {
+                    files.add(inFile);// is directory
+                }
             }
-        }
 
-        lvExplorer.setAdapter(new FolderChooseAdapter(this, files));
+            lvExplorer.setAdapter(new FolderChooseAdapter(this, files));
+        }
     }
 
     public void ExtStorageSearch(){

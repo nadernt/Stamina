@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,12 +35,13 @@ public class ArrayAdapterJournalBackups extends ArrayAdapter<File> {
 		View rowView = inflater.inflate(R.layout.activity_jurnal_files, parent, false);
 		TextView textView = (TextView) rowView.findViewById(R.id.labelFile);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.fileEncryptType);
+
 		textView.setText(values.get(position).getName().substring(0,values.get(position).getName().indexOf(".journal")));
 
 		String s = values.get(position).getName();
 
 		if (s.contains("encrypt")) {
-			imageView.setImageResource(R.drawable.ic_action_lock_closed);
+			imageView.setImageResource(R.drawable.ic_action_key);
 		} else {
 			imageView.setImageResource(R.drawable.ic_action_lock_open);
 		}

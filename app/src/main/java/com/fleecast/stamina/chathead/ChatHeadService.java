@@ -102,6 +102,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
     }
 
     private void handleStart(){
+
         windowManager = (WindowManager) this.getSystemService(WINDOW_SERVICE);
 
         userPowerPolicies = new UserPowerPolicies(windowManager);
@@ -110,6 +111,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         IntentFilter filter = new IntentFilter();
 
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
 
         mReceiver = new ScreenReceiver(this);
@@ -121,11 +123,9 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         startForeground(FOREGROUND_ID, notification);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             windowManager.getDefaultDisplay().getSize(szWindow);
         } else {
-
             int w = windowManager.getDefaultDisplay().getWidth();
             int h = windowManager.getDefaultDisplay().getHeight();
             szWindow.set(w, h);

@@ -23,7 +23,8 @@
         android:layout_height="match_parent"
         android:text="@+id/label"
         android:textSize="42px"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/about_github_color">
     </TextView>
 
 </LinearLayout>

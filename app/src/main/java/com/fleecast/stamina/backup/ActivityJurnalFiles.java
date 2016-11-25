@@ -20,20 +20,19 @@ import com.fleecast.stamina.utility.ExternalStorageManager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class ActivityJurnalFiles extends ListActivity {
     private File pathToWorkingDir;
     private ArrayList<File> fileList = new ArrayList<File>();
     private LinearLayout view;
-    static final String[] MOBILE_OS = new String[] { "Android", "iOS",
-            "WindowsMobile", "Blackberry"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_jurnal_files);
 
-        view = (LinearLayout) findViewById(R.id.view);
+        //view = (LinearLayout) findViewById(R.id.view);
 
 
         pathToWorkingDir = new File(ExternalStorageManager.getWorkingDirectory());
@@ -71,6 +70,22 @@ public class ActivityJurnalFiles extends ListActivity {
 
     public ArrayList<File> getFilesList(File dir) {
         File listFile[] = dir.listFiles();
+
+        Arrays.sort( listFile, new Comparator()
+        {
+            public int compare(Object o1, Object o2) {
+
+                if (((File)o1).lastModified() > ((File)o2).lastModified()) {
+                    return -1;
+                } else if (((File)o1).lastModified() < ((File)o2).lastModified()) {
+                    return +1;
+                } else {
+                    return 0;
+                }
+            }
+
+        });
+
         if (listFile != null && listFile.length > 0) {
 
             for (int i = 0; i < listFile.length; i++) {
@@ -86,5 +101,6 @@ public class ActivityJurnalFiles extends ListActivity {
         }
         return fileList;
     }
+
 
 }
