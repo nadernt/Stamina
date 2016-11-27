@@ -229,6 +229,29 @@
                 android:layout_height="wrap_content"
                 android:text="Tabular html (makes html report in a table)." />
 
+            <CheckBox
+                android:id="@+id/chkReportTimeStamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add timestamp."
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Author Name (Optional):" />
+
+            <EditText
+                android:id="@+id/editTxtReportAuthorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="Name"
+                android:maxLines="1"
+                android:text="Title" />
+
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
@@ -311,7 +334,8 @@
                     android:layout_weight=".2"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:text="Report output folder\n(optional)" />
+                    android:text="Report output folder\n(optional)"
+                    android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"

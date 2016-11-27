@@ -23,6 +23,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -229,7 +230,7 @@ public class Utility {
 
         Date date = new Date(unixSeconds*1000L); // *1000 is to convert seconds to milliseconds
         // E, dd MMM yyyy HH:mm:ss z
-        SimpleDateFormat sdf = new SimpleDateFormat("E, dd/MM/yyyy HH:mm:ss a"); // the format of your date
+        SimpleDateFormat sdf = new SimpleDateFormat("E, dd/MM/yyyy hh:mm:ss a"); // the format of your date
         //sdf.setTimeZone(TimeZone.getTimeZone("GMT-4")); // give a timezone reference for formating (see comment at the bottom
         String formattedDate = sdf.format(date);
         //System.out.println(formattedDate);
@@ -283,4 +284,30 @@ public static Spanned fixedHtmlFrom(String strHtml) {
         return Html.fromHtml(strHtml);
     }
 }
+
+    /**
+     *
+     * @param fileOrDirectory
+     * @param pathToSkip if null then deletes the parent directory
+     */
+    public static void deleteRecursive(File fileOrDirectory,File pathToSkip) {
+
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child,pathToSkip);
+            }
+        }
+        if((pathToSkip==null) || (fileOrDirectory.compareTo(pathToSkip)!=0))
+            fileOrDirectory.delete();
+    }
+
+    public static int getDbIdFromFileName(String file_name)
+    {
+
+        if(file_name==null || file_name.length()==0)
+            return -1;
+        else
+            return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
+    }
+
 }

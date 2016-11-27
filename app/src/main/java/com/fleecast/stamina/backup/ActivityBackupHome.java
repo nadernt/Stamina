@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.method.PasswordTransformationMethod;
@@ -22,11 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dropbox.core.android.Auth;
 import com.dropbox.core.v2.users.FullAccount;
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.models.NoteInfoRealmStruct;
 import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.settings.ActivityChooseDirectory;
 import com.fleecast.stamina.utility.Constants;
@@ -39,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -48,6 +48,7 @@ import java.util.Date;
 
 import javax.crypto.NoSuchPaddingException;
 
+import io.realm.RealmResults;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -96,6 +97,10 @@ public class ActivityBackupHome extends DropboxActivity {
     private EditText editTxtReportDescription;
     private RadioGroup rdoReportOption;
     private String strReportPath;
+    private CheckBox chkReportTimeStamp;
+    private EditText editTxtReportAuthorName;
+    private RadioButton rdoCSVReport;
+    private RadioButton rdoHtmlReport;
 
 
     @Override
@@ -132,6 +137,11 @@ public class ActivityBackupHome extends DropboxActivity {
         chkReportTodos = (CheckBox) findViewById(R.id.chkReportTodos);
         chkCompressToZip = (CheckBox) findViewById(R.id.chkCompressToZip);
         chkTabular = (CheckBox) findViewById(R.id.chkTabular);
+        chkReportTimeStamp= (CheckBox) findViewById(R.id.chkReportTimeStamp);
+
+
+        rdoCSVReport= (RadioButton) findViewById(R.id.rdoCSVReport);
+        rdoHtmlReport= (RadioButton) findViewById(R.id.rdoHtmlReport);
 
         imgBtnRemoveKey = (ImageView) findViewById(R.id.imgBtnRemoveKey);
         imgRestorHelp = (ImageView) findViewById(R.id.imgRestorHelp);
@@ -145,8 +155,10 @@ public class ActivityBackupHome extends DropboxActivity {
         rdoReportOption = (RadioButton) findViewById(selectedId);*/
 
         editTxtReportTitle = (EditText) findViewById(R.id.editTxtReportTitle);
-        editTxtReportDescription = (EditText) findViewById(R.id.editTxtReportDescription);
+        editTxtReportTitle.setText("Report");
 
+        editTxtReportDescription = (EditText) findViewById(R.id.editTxtReportDescription);
+        editTxtReportAuthorName = (EditText) findViewById(R.id.editTxtReportAuthorName);
 
         if (BackupEncrypt.isThereEncryptKey(ActivityBackupHome.this)) {
             chkEncrypt.setChecked(true);
@@ -175,6 +187,36 @@ public class ActivityBackupHome extends DropboxActivity {
             }
         });
 
+
+
+        rdoCSVReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(rdoCSVReport.isChecked()){
+                    chkTabular.setChecked(false);
+                    chkTabular.setEnabled(false);
+                    editTxtReportAuthorName.setEnabled(false);
+                    chkReportTimeStamp.setChecked(false);
+                    chkReportTimeStamp.setEnabled(false);
+                    editTxtReportTitle.setEnabled(false);
+                    editTxtReportDescription.setEnabled(false);
+                }
+            }
+        });
+
+        rdoHtmlReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(rdoHtmlReport.isChecked()){
+                    chkTabular.setEnabled(true);
+                    editTxtReportAuthorName.setEnabled(true);
+                    chkReportTimeStamp.setEnabled(true);
+                    editTxtReportTitle.setEnabled(true);
+                    editTxtReportDescription.setEnabled(true);
+                }
+            }
+        });
+
        /* imgBtnRemoveKey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -197,13 +239,10 @@ public class ActivityBackupHome extends DropboxActivity {
             public void onClick(View view) {
 
                 if (!BackupEncrypt.isThereEncryptKey(ActivityBackupHome.this)) {
-
                     doAuthentications(EncryptionDialogOption.NEW_PASSWORD, null);
                 } else {
                     doAuthentications(EncryptionDialogOption.JUST_ENTER_PASS, null);
                 }
-
-
             }
         });
 
@@ -305,6 +344,36 @@ public class ActivityBackupHome extends DropboxActivity {
             }
         });
 
+        btnCreateReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                int simpleHtmlTabularHTMLOrCSV = 0;
+
+                if(!chkTabular.isChecked() && rdoHtmlReport.isChecked())
+                    simpleHtmlTabularHTMLOrCSV = 0;
+                else if(chkTabular.isChecked() && rdoHtmlReport.isChecked())
+                simpleHtmlTabularHTMLOrCSV = 1;
+                else if(rdoCSVReport.isChecked())
+                    simpleHtmlTabularHTMLOrCSV = 2;
+
+                ReportParameters reportParameters = new ReportParameters(
+                        chkReportTextNotes.isChecked(),
+                        chkReportAudioNotes.isChecked(),
+                        chkReportPhonecalls.isChecked(),
+                        chkReportTodos.isChecked(),
+                        chkReportTimeStamp.isChecked(),
+                        editTxtReportAuthorName.getText().toString().trim(),
+                        editTxtReportTitle.getText().toString().trim(),
+                        editTxtReportDescription.getText().toString().trim(),
+                        simpleHtmlTabularHTMLOrCSV);
+
+                new LongReportOperation().execute(reportParameters);
+
+            }
+        });
+
+
         dropbox_login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -378,6 +447,153 @@ public class ActivityBackupHome extends DropboxActivity {
 
             }
     }
+
+    private class ReportParameters {
+
+        private boolean textNotes;
+        private boolean audioNotes;
+        private boolean phoneCalls;
+        private boolean toDoNote;
+        private boolean includeTimeStamp;
+        private String authorName;
+        private int simpleHtmlTabularHTMLOrCSV;
+        private String title;
+        private String description;
+
+
+
+        public ReportParameters(boolean textNotes, boolean audioNotes, boolean phoneCalls, boolean toDoNote, boolean includeTimeStamp, String authorName, String title, String description, int simpleHtmlTabularHTMLOrCSV) {
+            this.textNotes = textNotes;
+            this.audioNotes = audioNotes;
+            this.phoneCalls = phoneCalls;
+            this.toDoNote = toDoNote;
+            this.includeTimeStamp = includeTimeStamp;
+            this.authorName = authorName;
+            this.title = title;
+            this.description=description;
+            this.simpleHtmlTabularHTMLOrCSV = simpleHtmlTabularHTMLOrCSV;
+        }
+
+        public boolean isTextNotes() {
+            return textNotes;
+        }
+
+        public boolean isAudioNotes() {
+            return audioNotes;
+        }
+
+        public boolean isPhoneCalls() {
+            return phoneCalls;
+        }
+
+        public boolean isToDoNote() {
+            return toDoNote;
+        }
+
+        public boolean isIncludeTimeStamp() {
+            return includeTimeStamp;
+        }
+
+        public String getAuthorName() {
+            return authorName;
+        }
+
+        public int getSimpleHtmlTabularHTMLOrCSV() {
+            return simpleHtmlTabularHTMLOrCSV;
+        }
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
+
+
+    private class LongReportOperation extends AsyncTask<ReportParameters, Void, Boolean> {
+
+
+        private ProgressDialog dialog;
+        private String strOutPutReport = "";
+        private Report report;
+        private RealmResults<NoteInfoRealmStruct> allNotes;
+
+        @Override
+        protected Boolean doInBackground(ReportParameters... reportParameterses) {
+
+            String strOutFileDirectory = ExternalStorageManager.getWorkingDirectory() + Constants.CONST_REPORT_DIRECTORY_NAME;
+
+            File f = new File(strOutFileDirectory);
+
+            if(!f.exists()) {
+                f.mkdir();
+            }
+            else{
+                Utility.deleteRecursive(new File(strOutFileDirectory),new File(strOutFileDirectory));
+            }
+
+            try {
+                File root = new File(strOutFileDirectory);
+                if (!root.exists()) {
+                    root.mkdirs();
+                }
+                File gpxfile = new File(root, "index.html");
+                FileWriter writer = new FileWriter(gpxfile);
+                writer.append(strOutPutReport);
+                writer.flush();
+                writer.close();
+
+                report.copyAudioNoteFilesForReport(strOutPutReport,allNotes);
+
+                return true;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+
+
+            if (aBoolean) {
+
+                dialog.cancel();
+
+                Utility.showMessage("Report was successful.", "Info", ActivityBackupHome.this);
+            }
+            else {
+                dialog.cancel();
+                Utility.showMessage("Report wasn't successful!", "Error", ActivityBackupHome.this);
+            }
+
+
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            report = new Report(ActivityBackupHome.this);
+            dialog = ProgressDialog.show(ActivityBackupHome.this, "",
+                    "Loading. Please wait...", true);
+            allNotes = report.getAllNotes();
+            strOutPutReport = report.getReportFromDBSimpleHtml(chkReportTextNotes.isChecked(),
+                    chkReportAudioNotes.isChecked(),
+                    chkReportPhonecalls.isChecked(),
+                    chkReportPhonecalls.isChecked());
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
 
     enum EncryptionDialogOption {
         NEW_PASSWORD, CHANGE_OLD_PASS, JUST_ENTER_PASS, REMOVE_ENCRYPT_KEY, AUTHENTICATE_ENCRYPT, AUTHENTICATE_DECRYPT

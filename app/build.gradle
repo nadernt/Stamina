@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 25
@@ -26,8 +25,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "io.realm:realm-gradle-plugin:1.1.1"
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
+        classpath "io.realm:realm-gradle-plugin:2.2.0"
     }
 }
 
@@ -43,7 +41,6 @@ dependencies {
     compile 'com.github.medyo:android-about-page:1.0.9'
     compile 'com.google.android.gms:play-services-location:8.4.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.dropbox.core:dropbox-core-sdk:2.0.6'
     compile 'com.squareup.okhttp3:okhttp:3.3.1'
 }

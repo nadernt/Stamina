@@ -340,8 +340,6 @@ public class ActivityRecordsPlayList extends Activity {
         // fillTextNotesForUser();
 
         if (startAutoPlayOnStart) {
-            Log.e("DBG", "KKKKKKKKKKKKKKKKKKKK");
-
             handleIntents(null);
         }
 
@@ -967,7 +965,6 @@ public class ActivityRecordsPlayList extends Activity {
                 return;
             else
                 runPlayerForItem(position);
-            Log.e("BADEMJAN", "BADDDEERRRR");
         }
 
 

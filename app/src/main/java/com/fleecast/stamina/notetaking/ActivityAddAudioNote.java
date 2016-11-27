@@ -89,9 +89,6 @@ public class ActivityAddAudioNote extends AppCompatActivity {
         super.onNewIntent(intent);
 
         intentHandler(intent);
-
-        Log.e(TAG, "Magic " + dbId);
-
     }
 
     @Override

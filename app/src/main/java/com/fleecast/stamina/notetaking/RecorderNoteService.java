@@ -68,7 +68,7 @@ public class RecorderNoteService extends Service{
         Intent intent = new Intent(this, ActivityAddAudioNote.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         //intent.putExtra(Constants.EXTRA_TAKE_NEW_NOTE_AND_START_RECORD, true);
-        Log.e("DBGJJJJ",dbId+"");
+
         intent.putExtra(Constants.EXTRA_EDIT_NOTE_AND_RECORD,dbId);
 
         /***********************************************
@@ -108,12 +108,9 @@ public class RecorderNoteService extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
         if(action!=null) {
-
-            Log.e("DBG","LogMax1");
             stopRecordingByNotification();
         }
         if(intent!=null) {
-            Log.e("DBG","LogMax");
 
             if (intent.hasExtra(Constants.EXTRA_NEW_RECORD)) {
 

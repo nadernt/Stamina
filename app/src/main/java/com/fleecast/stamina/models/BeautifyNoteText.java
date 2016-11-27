@@ -183,6 +183,8 @@ public class BeautifyNoteText {
         RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
 
         List<AudioNoteInfoRealmStruct> audioNoteInfoStruct = new ArrayList<>(realmAudioNoteHelper.findAllAudioNotesByParentId(noteInfo.getId()));
+        System.out.println("Phung: " + audioNoteInfoStruct.size());
+
         String htmlComposed="";
 
         for (int i = 0; i < listOfFiles.length; i++) {
@@ -257,6 +259,7 @@ public class BeautifyNoteText {
         RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
 
         List<AudioNoteInfoRealmStruct> audioNoteInfoStruct = new ArrayList<>(realmAudioNoteHelper.findAllAudioNotesByParentId(noteInfo.getId()));
+
         String textComposed="";
 
         for (int i = 0; i < listOfFiles.length; i++) {

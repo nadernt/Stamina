@@ -235,6 +235,11 @@ public class AddNoteToAudio extends AppCompatActivity{
             adb.show();
 
         }
+        else
+        {
+            finish();
+
+        }
 
     }
 

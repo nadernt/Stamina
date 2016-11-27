@@ -55,7 +55,6 @@ class CreateFolderTask extends AsyncTask<String, Void, Void> {
 
             //mDbxClient.auth().
         } catch (DbxException e) {
-            Log.e("jjjj","hhhhhhh");
             e.printStackTrace();
         }
         return null;

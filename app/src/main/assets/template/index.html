@@ -27,17 +27,11 @@
     <nav class="navbar">
         <div class="container">
             <ul class="navbar-list">
-                {{#TEXT-NOTE-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="#text notes">Text Notes</a></li>}}
-                {{#AUDIO-NOTE-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="# Audio Notes">Audio Notes</a></li>}}
-                {{#PHONE-CALLS-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="#phone calls">Phone Calls</a></li>}}
-                {{#TODO-NOTE-CONTENTS#<li class="navbar-item"><a class="navbar-link" href="#todo">Todo</a></li>}}
+                #NAVBAR#
             </ul>
         </div>
     </nav>
-    {{#TEXT-NOTE-CONTENTS#<h6 class="docs-header">TEXT NOTES</h6>*CONTENTS*}}
-    {{#AUDIO-NOTE-CONTENTS#<h6 class="docs-header">AUDIO NOTES</h6>*CONTENTS*}}
-    {{#PHONE-CALLS-CONTENTS#<h6 class="docs-header">PHONE CALLS</h6>*CONTENTS*}}
-    {{#TODO-NOTE-CONTENTS#<h6 class="docs-header">TODO</h6>*CONTENTS*}}
+    #CONTENTS#
 </div>
 </body>
 </html>

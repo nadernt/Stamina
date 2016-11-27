@@ -84,9 +84,9 @@ public class MyApplication extends Application{
                 .setPrefsName(getPackageName())
                 .setUseDefaultSharedPreference(true)
                 .build();
-
+        Realm.init(this);
         //Realm configuration code
-        RealmConfiguration configRealm = new RealmConfiguration.Builder(this)
+        RealmConfiguration configRealm = new RealmConfiguration.Builder()
                 // Version of the database
                 .name("megan.realm")
                 .schemaVersion(1)

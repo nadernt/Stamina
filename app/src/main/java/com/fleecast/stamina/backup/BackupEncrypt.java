@@ -156,7 +156,7 @@ public class BackupEncrypt {
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
-        Log.e("HHHHHHHHHHHhhh","KKKKKKKKKKKkkk");
+
         return false;
     }
 

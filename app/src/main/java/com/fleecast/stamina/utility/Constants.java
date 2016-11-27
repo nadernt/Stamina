@@ -16,14 +16,18 @@ public class Constants {
     public static final String CONST_WORKING_DIRECTORY_NAME = "/stamina";
     public static final String CONST_RECYCLEBIN_DIRECTORY_NAME = "/trash";
     public static final String CONST_PHONE_CALLS_DIRECTORY_NAME = "/phonecalls"; // My birthday as folder name
+    public static String CONST_REPORT_DIRECTORY_NAME="/reports";
+
     public static final String CHATHEAD_X = "ChatHeadX";
     public static final String CHATHEAD_Y = "ChatHeadY";
     public static final String CONST_URL_HELPS = "http://stamina.help.s3-website-ap-southeast-2.amazonaws.com/index.html";
     public static final String CONST_URL_DROPBOX = "https://api.dropboxapi.com";
+
     public static final int CONST_NOTETYPE_TEXT = 0;
     public static final int CONST_NOTETYPE_AUDIO = 1;
     public static final int CONST_NOTETYPE_PHONECALL = 2;
     public static final int CONST_NOTETYPE_TODO = 3;
+
     public static final int MIN_PASSWORD_LENGTH = 3;
     public static final int MAX_PASSWORD_LENGTH = 10;
     public static final String CONST_BACKUPFILE_EXTENSION = ".journal";

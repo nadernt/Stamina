@@ -128,7 +128,7 @@ public final class PlayListHelper {
 
             boolean hasHitInDatabase = false;
 
-            int dbId = getDbIdFromFileName(listOfFiles[i].getName());
+            int dbId = Utility.getDbIdFromFileName(listOfFiles[i].getName());
 
             if (audioNoteInfoStruct.size() > 0) {
 
@@ -204,14 +204,7 @@ private int lookInsideListForDbKey(List<AudioNoteInfoRealmStruct> adNFo, int fil
 }
 
 
-    private int getDbIdFromFileName(String file_name)
-    {
 
-        if(file_name==null || file_name.length()==0)
-            return -1;
-        else
-           return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
-    }
 
 
 

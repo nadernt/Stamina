@@ -68,7 +68,7 @@ public class RealmAudioNoteHelper {
 
         realm.beginTransaction();
         AudioNoteInfoRealmStruct audioNoteInfoRealmStruct = realm.where(AudioNoteInfoRealmStruct.class).equalTo("id", id).findFirst();
-        audioNoteInfoRealmStruct.setId(id);
+//        audioNoteInfoRealmStruct.setId(id);
         audioNoteInfoRealmStruct.setTitle(title);
         audioNoteInfoRealmStruct.setDescription(description);
         realm.commitTransaction();
