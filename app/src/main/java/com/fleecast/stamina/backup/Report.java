@@ -125,12 +125,6 @@ public class Report {
         RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
         RealmToDoHelper realmToDoHelper = new RealmToDoHelper(mContext);
 
-        //RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realmAudioNoteHelper.findAllAudioNotesByParentId(realmResult.get(i).getId());
-        //RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realm.where(AudioNoteInfoRealmStruct.class).equalTo("parent_db_id", realmResult.get(i).getId()).findAll();
-        /*RealmResults<AudioNoteInfoRealmStruct> as = realm.where(AudioNoteInfoRealmStruct.class).findAll();
-
-        System.out.println("boooooooooooo == " + as.size());
-*/
         RealmResults<NoteInfoRealmStruct> realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
 
         if (realmResult.size() == 0) {
@@ -186,7 +180,7 @@ public class Report {
 
 
                         for (int b = 0; b < filesIds.size(); b++) {
-                            audioDatas.add(new AudioData(Constants.CONST_NULL_ZERO,
+                            audioDatas.add(new AudioData(filesIds.get(b),
                                     realmResult.get(i).getId(),
                                     "no title",
                                     "no description",
@@ -205,7 +199,7 @@ public class Report {
                         strAudioNotes += "<li>" +
                                 "<span class='sub_note_title'>" + audioDatas.get(j).getTitle() + "</span><br><span class='sub_note_body'>" + audioDatas.get(j).getDescription() + "</span>" +
                                 "<audio controls>" +
-                                "<source src='" + audioNoteFileName(audioDatas.get(j)) + "_" + "' type='audio/aac'>" +
+                                "<source src='" + audioNoteFileName(audioDatas.get(j)) + "' type='audio/aac'>" +
                                 "Browser does not support the audio element." +
                                 "</audio>" +
                                 "</li>";
@@ -224,10 +218,10 @@ public class Report {
 
                     strPhoneCalls +=
                             "<div class='item'>" +
-                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + "</div>" +
+                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + " (" + realmResult.get(i).getPhoneNumber() +  ")</div>" +
                                     "<div class='note_contents'>" + realmResult.get(i).getDescription() + "</div>" +
                                     "<audio controls>" +
-                                    "<source src='calls/" + realmResult.get(i).getId() + "_" + "' type='audio/aac'>" +
+                                    "<source src='phonecalls/" + realmResult.get(i).getId() + ".aac' type='audio/aac'>" +
                                     "Browser does not support the audio element." +
                                     "</audio>" +
                                     "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResult.get(i).getCreateTimeStamp().getTime() / 1000) + "</div>" +
@@ -320,7 +314,7 @@ public class Report {
 
     private String loadTemplate() {
         try {
-            InputStream is = mContext.getAssets().open("template/index.html");
+            InputStream is = mContext.getAssets().open(Constants.CONST_TEMPLATE_DIRECTORY + "/index.html");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
@@ -344,49 +338,5 @@ public class Report {
 
     }
 
-    public void copyAudioNoteFilesForReport(String strOutFileDirectory,RealmResults<NoteInfoRealmStruct> realmResult ) throws IOException {
-
-//        ArrayList<File> files = new ArrayList<>();
-
-        if (realmResult.size() == 0) {
-            throw new NegativeArraySizeException();
-        } else {
-
-            for (int i = 0; i < realmResult.size(); i++) {
-                int noteType = realmResult.get(i).getNoteType();
-                if ((noteType == Constants.CONST_NOTETYPE_AUDIO)) {
-                    File f = new File(String.valueOf(realmResult.get(i).getId()));
-                    File[] fl = f.listFiles();
-                    for (int j = 0; j < fl.length; j++) {
-
-                        if (fl[i].isFile()) {
-                                copy(fl[i],new File(strOutFileDirectory + "/audio/" + fl[i].getName()));
-                        }
-                    }
-
-                }
-            }
-        }
-    }
-
-
-    public void copy(File src, File dst) throws IOException {
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
-
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
-    }
-    public RealmResults<NoteInfoRealmStruct> getAllNotes()
-
-    {
-        return realm.where(NoteInfoRealmStruct.class).findAll();
-    }
 
 }

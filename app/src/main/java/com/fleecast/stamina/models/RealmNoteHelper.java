@@ -135,7 +135,7 @@ public class RealmNoteHelper {
         realm.beginTransaction();
 
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
-        noteInfoRealmStruct.setId(id);
+//        noteInfoRealmStruct.setId(id);
         noteInfoRealmStruct.setStartTime(start_time);
         noteInfoRealmStruct.setEndTime(end_time);
         noteInfoRealmStruct.setCallType(call_type);
@@ -583,6 +583,11 @@ public class RealmNoteHelper {
 
         realm.commitTransaction();
 
+    }
+    public RealmResults<NoteInfoRealmStruct> getAllNotes()
+
+    {
+        return realm.where(NoteInfoRealmStruct.class).findAll();
     }
 
 

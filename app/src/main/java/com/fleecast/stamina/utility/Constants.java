@@ -17,6 +17,8 @@ public class Constants {
     public static final String CONST_RECYCLEBIN_DIRECTORY_NAME = "/trash";
     public static final String CONST_PHONE_CALLS_DIRECTORY_NAME = "/phonecalls"; // My birthday as folder name
     public static String CONST_REPORT_DIRECTORY_NAME="/reports";
+    public static String TEMP_FOLDER_NAME ="temporary";
+    public static final String CONST_TEMPLATE_DIRECTORY = "template"; // My birthday as folder name
 
     public static final String CHATHEAD_X = "ChatHeadX";
     public static final String CHATHEAD_Y = "ChatHeadY";
@@ -262,7 +264,6 @@ public class Constants {
     public static int RECORD_STOP = 2;
     public static int RECORD_TAP_KEEP = 3;
 
-    public static String TEMP_FOLDER_NAME ="temporary";
 
     public static final int RESULT_CODE_REQUEST_MAP_ACTIVITY = 111;
     public static final String EXTRA_MAP_LNG = "ExtraMapLatlng";

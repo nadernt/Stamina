@@ -247,7 +247,7 @@ public class ChatHeadRecordService extends Service {
 						File phoneCallsFolder = new File(pathToWorkingDirectory + File.separator +  Constants.CONST_PHONE_CALLS_DIRECTORY_NAME);
 						phoneCallsFolder.mkdir();
 
-						file.renameTo(new File(phoneCallsFolder.getPath() + File.separator + String.valueOf(dbId) + Constants.RECORDER_AUDIO_FORMAT_AMR));
+						file.renameTo(new File(phoneCallsFolder.getPath() + File.separator + String.valueOf(dbId) + Constants.RECORDER_AUDIO_FORMAT_AAC));
 
 						Log.e(TAG, "End Record");
 
@@ -389,7 +389,7 @@ public class ChatHeadRecordService extends Service {
 
 					Log.e(TAG, phoneCallsFolder.getPath() + "  ddddd");
 
-					file.renameTo(new File(phoneCallsFolder.getPath() + File.separator + String.valueOf(dbId) + Constants.RECORDER_AUDIO_FORMAT_AMR));
+					file.renameTo(new File(phoneCallsFolder.getPath() + File.separator + String.valueOf(dbId) + Constants.RECORDER_AUDIO_FORMAT_AAC));
 
 					Log.e(TAG, "End Record");
 

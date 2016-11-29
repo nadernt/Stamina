@@ -38,8 +38,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -515,14 +519,16 @@ public class ActivityBackupHome extends DropboxActivity {
 
 
         private ProgressDialog dialog;
-        private String strOutPutReport = "";
+        private String strReportSimpleHtml = "";
         private Report report;
         private RealmResults<NoteInfoRealmStruct> allNotes;
+        private ArrayList<NotesForCopy> notesListForCopyFile;
+        private String strOutFileDirectory;
 
         @Override
         protected Boolean doInBackground(ReportParameters... reportParameterses) {
 
-            String strOutFileDirectory = ExternalStorageManager.getWorkingDirectory() + Constants.CONST_REPORT_DIRECTORY_NAME;
+
 
             File f = new File(strOutFileDirectory);
 
@@ -540,11 +546,21 @@ public class ActivityBackupHome extends DropboxActivity {
                 }
                 File gpxfile = new File(root, "index.html");
                 FileWriter writer = new FileWriter(gpxfile);
-                writer.append(strOutPutReport);
+                writer.append(strReportSimpleHtml);
                 writer.flush();
                 writer.close();
 
-                report.copyAudioNoteFilesForReport(strOutPutReport,allNotes);
+
+
+                if(reportParameterses[0].isAudioNotes())
+                    copyAudioNoteFilesForReport(strOutFileDirectory, notesListForCopyFile);
+
+                if(reportParameterses[0].isPhoneCalls())
+                    copyPhoneCallsFilesForReport(strOutFileDirectory);
+
+                //Copy asset files of html like css,js etc.
+                Utility.copyAssetFolder(ActivityBackupHome.this.getAssets(),Constants.CONST_TEMPLATE_DIRECTORY + File.separator + "assets",
+                        strOutFileDirectory + File.separator +  "assets");
 
                 return true;
 
@@ -561,11 +577,8 @@ public class ActivityBackupHome extends DropboxActivity {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
 
-
             if (aBoolean) {
-
                 dialog.cancel();
-
                 Utility.showMessage("Report was successful.", "Info", ActivityBackupHome.this);
             }
             else {
@@ -573,20 +586,33 @@ public class ActivityBackupHome extends DropboxActivity {
                 Utility.showMessage("Report wasn't successful!", "Error", ActivityBackupHome.this);
             }
 
-
         }
 
 
         @Override
         protected void onPreExecute() {
-            report = new Report(ActivityBackupHome.this);
             dialog = ProgressDialog.show(ActivityBackupHome.this, "",
                     "Loading. Please wait...", true);
-            allNotes = report.getAllNotes();
-            strOutPutReport = report.getReportFromDBSimpleHtml(chkReportTextNotes.isChecked(),
+
+            strOutFileDirectory = ExternalStorageManager.getWorkingDirectory() + Constants.CONST_REPORT_DIRECTORY_NAME;
+
+            report = new Report(ActivityBackupHome.this);
+
+            strReportSimpleHtml = report.getReportFromDBSimpleHtml(chkReportTextNotes.isChecked(),
                     chkReportAudioNotes.isChecked(),
                     chkReportPhonecalls.isChecked(),
                     chkReportPhonecalls.isChecked());
+
+            allNotes = realmNoteHelper.getAllNotes();
+
+            if(chkReportPhonecalls.isChecked() || chkReportAudioNotes.isChecked()) {
+                notesListForCopyFile = new ArrayList<>();
+
+                for (int i = 0; i < allNotes.size(); i++)
+                    notesListForCopyFile.add(new NotesForCopy(allNotes.get(i).getId(), allNotes.get(i).getNoteType()));
+            }
+
+
         }
 
         @Override
@@ -594,6 +620,30 @@ public class ActivityBackupHome extends DropboxActivity {
         }
     }
 
+
+
+    public void copyAudioNoteFilesForReport(String strOutFileDirectory,ArrayList<NotesForCopy> notesForCopies ) throws IOException {
+
+        if (notesForCopies.size() == 0) {
+            throw new NegativeArraySizeException();
+        } else {
+
+            for (int i = 0; i < notesForCopies.size(); i++) {
+                if ((notesForCopies.get(i).getNote_type() == Constants.CONST_NOTETYPE_AUDIO)) {
+                    File f = new File(String.valueOf(ExternalStorageManager.getWorkingDirectory() +
+                             File.separator  +   notesForCopies.get(i).getId()));
+                    Utility.copyDirectory(f,new File(strOutFileDirectory+File.separator + "audio" ));
+                }
+            }
+        }
+    }
+
+    public void copyPhoneCallsFilesForReport(String strOutFileDirectory ) throws IOException {
+                    File f = new File(String.valueOf(ExternalStorageManager.getWorkingDirectory() +
+                            File.separator  +   Constants.CONST_PHONE_CALLS_DIRECTORY_NAME));
+                    Utility.copyDirectory(f,new File(strOutFileDirectory + File.separator + "phonecalls" ));
+
+    }
 
     enum EncryptionDialogOption {
         NEW_PASSWORD, CHANGE_OLD_PASS, JUST_ENTER_PASS, REMOVE_ENCRYPT_KEY, AUTHENTICATE_ENCRYPT, AUTHENTICATE_DECRYPT

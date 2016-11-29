@@ -48,7 +48,8 @@ public class NoteDeleteHelper {
 
     private void movePhoneNoteToBin(String dbId){
 
-        File dir = new File(ExternalStorageManager.getWorkingDirectory() +  File.separator +  Constants.CONST_PHONE_CALLS_DIRECTORY_NAME + File.separator + dbId + Constants.RECORDER_AUDIO_FORMAT_AMR);
+        File dir = new File(ExternalStorageManager.getWorkingDirectory() +  File.separator +
+                Constants.CONST_PHONE_CALLS_DIRECTORY_NAME + File.separator + dbId + Constants.RECORDER_AUDIO_FORMAT_AAC);
 
         File createTrashFolder = new File(ExternalStorageManager.getWorkingDirectory()+
                 Constants.CONST_RECYCLEBIN_DIRECTORY_NAME,
@@ -56,7 +57,7 @@ public class NoteDeleteHelper {
 
         createTrashFolder.mkdirs();
 
-        dir.renameTo(new File(createTrashFolder + File.separator + dbId + Constants.RECORDER_AUDIO_FORMAT_AMR));
+        dir.renameTo(new File(createTrashFolder + File.separator + dbId + Constants.RECORDER_AUDIO_FORMAT_AAC));
         /*if (dir.isDirectory())
         {
             String[] children = dir.list();

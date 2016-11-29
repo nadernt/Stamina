@@ -569,7 +569,6 @@ private void testFucntions(){
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
-                        Log.e("HHHHHHHhhh", "GGGGGGGGGGGGGGG");
                         // Do something when collapsed
                         //contactsListAdapter.setFilter(mContactStruct);
                         return true; // Return true to collapse action view
@@ -577,7 +576,6 @@ private void testFucntions(){
 
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
-                        Log.e("HHHHHHHhhh", "LLLLLLLLLLLLLLLLL");
                         // Do something when expanded
                         return true; // Return true to expand action view
                     }
@@ -590,14 +588,11 @@ private void testFucntions(){
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        // setRecyclerView();
-        Log.e("HHHHHHHhhh", "JJJJJJJJJJJJJjj");
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.e("HHHHHHHhhh", "AAAAA");
         searchString = newText.trim().toLowerCase();
         setRecyclerView();
         return false;
@@ -612,7 +607,6 @@ private void testFucntions(){
                 noteInfoStructs = realmNoteHelper.findAllNotes(null, searchFilter);
             } else if (searchFilter == Constants.CONST_SEARCH_NOTE_CONTACTS) {
                 String strContactNumberByName = getContactNumberByName(searchString);
-                Log.e("BBBBBBBBBBB", strContactNumberByName);
 
                 if (!strContactNumberByName.isEmpty()) {
                     noteInfoStructs = realmNoteHelper.findAllNotes(strContactNumberByName, Constants.CONST_SEARCH_NOTE_CONTACTS);
@@ -703,8 +697,7 @@ private void testFucntions(){
                         intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
                         intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, item.getDescription());
 
-                        Log.e("EEEEEEE", filePath);
-                        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, filePath + Constants.RECORDER_AUDIO_FORMAT_AMR);
+                        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, filePath + Constants.RECORDER_AUDIO_FORMAT_AAC);
                         startActivity(intent);
 
                     } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -723,8 +716,7 @@ private void testFucntions(){
                         intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
                         intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, item.getDescription());
 
-                        Log.e("EEEEEEE", filePath);
-                        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, filePath + Constants.RECORDER_AUDIO_FORMAT_AMR);
+                        intent.putExtra(Constants.EXTRA_PLAY_MEDIA_FILE_PORTRAIT_PLAYER, filePath + Constants.RECORDER_AUDIO_FORMAT_AAC);
                         startActivity(intent);
 
                     }
@@ -774,8 +766,6 @@ private void testFucntions(){
 
                                 final Intent intent = new Intent(context, ActivityAddTextNote.class);
 
-                                Log.e("EEEEEEE", "A");
-
                                 if (myApplication.getCurrentOpenedTextNoteId() > 0) {
 
                                     android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(context);
@@ -816,8 +806,6 @@ private void testFucntions(){
 
                                 final Intent intent = new Intent(context, ActivityAddAudioNote.class);
 
-                                Log.e("EEEEEEE", "B");
-
                                 if (myApplication.isRecordUnderGoing() != Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
 
                                     if (myApplication.getCurrentRecordingAudioNoteId() > 0) {
@@ -843,7 +831,6 @@ private void testFucntions(){
 
 
                             } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
-                                Log.e("EEEEEEE", "B");
 
                                 Intent intent = new Intent(context, ActivityEditPhoneRecordNote.class);
 
@@ -883,12 +870,9 @@ private void testFucntions(){
                                 startActivityForResult(Intent.createChooser(sharingIntent, "Share Text Note"), Constants.SHARE_TO_MESSENGER_REQUEST_CODE);
 
                             } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
-                                Log.e("DBG", "A");
 
 
                                 String audioNotesFilesPath = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(item.getId()));
-
-                                Log.e("DBG", audioNotesFilesPath);
 
                                 File f = new File(audioNotesFilesPath);
 
@@ -971,7 +955,6 @@ private void testFucntions(){
 
 
                             } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
-                                Log.e("DBG", "‌B");
 
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
@@ -1026,9 +1009,7 @@ private void testFucntions(){
 
                                         String phoneCallFilePath = ExternalStorageManager.getWorkingDirectory() +
                                                 Constants.CONST_PHONE_CALLS_DIRECTORY_NAME +
-                                                File.separator + String.valueOf(item.getId()) + Constants.RECORDER_AUDIO_FORMAT_AMR;
-
-                                        Log.e("DBG", phoneCallFilePath);
+                                                File.separator + String.valueOf(item.getId()) + Constants.RECORDER_AUDIO_FORMAT_AAC;
 
                                         File f = new File(phoneCallFilePath);
 
@@ -1036,7 +1017,7 @@ private void testFucntions(){
 
                                         String tempFile = String.valueOf((int) (System.currentTimeMillis() / 1000));
 
-                                        File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + Constants.RECORDER_AUDIO_FORMAT_AMR);
+                                        File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + Constants.RECORDER_AUDIO_FORMAT_AAC);
                                         try {
                                             copy(f, tmp);
                                         } catch (IOException e) {
@@ -1496,6 +1477,15 @@ private void testFucntions(){
             }
 
         } else if (id == R.id.nav_phone_record) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getPackageName()));
+                    startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+                    return true;
+                }
+            }
 
             if (!Prefs.getBoolean(Constants.PREF_FIRST_QUESTION_PHONERECORDING, false)) {
                 String msg = "In some countries, even if both parties know about the recording the call " +

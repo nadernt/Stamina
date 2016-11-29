@@ -60,8 +60,12 @@ public class RecorderPhone {
         //  myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE);
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(mediaRecorderSource);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        //mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        //mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mRecorder.setAudioSamplingRate(22050);
+        mRecorder.setAudioEncodingBitRate(43000);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setOutputFile(mFileName);
 
 
