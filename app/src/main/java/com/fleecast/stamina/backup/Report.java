@@ -138,11 +138,11 @@ public class Report {
                     isTextNoteHit = true;
                         /*"<div class='note_contents'><span class='note_title'>" + realmResult.get(i).getTitle() + "</span><span class='note_body'>"+ realmResult.get(i).getDescription() +"</span></div>" +*/
                     strTextNotes +=
-                            "<div class='item'>" +
-                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + "</div>" +
-                                    "<div class='note_contents'>" + realmResult.get(i).getDescription() + "</div>" +
+                            "<div class='item'>\n" +
+                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + "</div>\n" +
+                                    "<div class='note_contents'>" + convertNewLineCharToBrHtml(realmResult.get(i).getDescription()) + "</div>\n" +
                                     "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResult.get(i).getCreateTimeStamp().getTime() / 1000) + "</div>" +
-                                    "</div>";
+                                    "</div>\n";
 
                 }
 
@@ -151,9 +151,9 @@ public class Report {
                     RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realmAudioNoteHelper.findAllAudioNotesByParentId(realmResult.get(i).getId());
 
                     strAudioNotes +=
-                            "<div class='item'>" +
-                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + "</div>" +
-                                    "<div class='note_contents'>" + realmResult.get(i).getDescription() + "</div>";
+                            "<div class='item'>\n" +
+                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + "</div>\n" +
+                                    "<div class='note_contents'>" + convertNewLineCharToBrHtml(realmResult.get(i).getDescription()) + "</div>\n";
 
                     // Each record doesn't have entry in Stamina. They just get entry if user wants to add a note to them. Here I scan the folder for files without database entry.
                     String pathToAudioFiles = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(realmResult.get(i).getId()));
@@ -171,7 +171,7 @@ public class Report {
                                     audioDatas.add(new AudioData(audioNoteInfoRealmStructs.get(a).getId(),
                                             audioNoteInfoRealmStructs.get(a).getParentDbId(),
                                             audioNoteInfoRealmStructs.get(a).getTitle(),
-                                            audioNoteInfoRealmStructs.get(a).getDescription(),
+                                            convertNewLineCharToBrHtml(audioNoteInfoRealmStructs.get(a).getDescription()),
                                             audioNoteInfoRealmStructs.get(a).getTag()));
                                     break;
                                 }
@@ -192,22 +192,22 @@ public class Report {
 
                     isAudioNoteHit = true;
 
-                    strAudioNotes += "<ul>";
+                    strAudioNotes += "<ul>\n";
 
                     for (int j = 0; j < audioDatas.size(); j++) {
 
-                        strAudioNotes += "<li>" +
-                                "<span class='sub_note_title'>" + audioDatas.get(j).getTitle() + "</span><br><span class='sub_note_body'>" + audioDatas.get(j).getDescription() + "</span>" +
+                        strAudioNotes += "<li>\n" +
+                                "<span class='sub_note_title'>" + audioDatas.get(j).getTitle() + "</span><br><span class='sub_note_body'>" + convertNewLineCharToBrHtml(audioDatas.get(j).getDescription()) + "</span>\n" +
                                 "<audio controls>" +
                                 "<source src='" + audioNoteFileName(audioDatas.get(j)) + "' type='audio/aac'>" +
                                 "Browser does not support the audio element." +
                                 "</audio>" +
-                                "</li>";
+                                "</li>\n";
                     }
 
-                    strAudioNotes += "</ul>" +
-                            "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResult.get(i).getCreateTimeStamp().getTime() / 1000) + "</div>" +
-                            "</div>";
+                    strAudioNotes += "</ul>\n" +
+                            "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResult.get(i).getCreateTimeStamp().getTime() / 1000) + "</div>\n" +
+                            "</div>\n";
 
 
                 }
@@ -217,15 +217,15 @@ public class Report {
                     isPhoneCallHit = true;
 
                     strPhoneCalls +=
-                            "<div class='item'>" +
-                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + " (" + realmResult.get(i).getPhoneNumber() +  ")</div>" +
-                                    "<div class='note_contents'>" + realmResult.get(i).getDescription() + "</div>" +
+                            "<div class='item'>\n" +
+                                    "<div class='note_title'>" + realmResult.get(i).getTitle() + " (" + realmResult.get(i).getPhoneNumber() +  ")</div>\n" +
+                                    "<div class='note_contents'>" + convertNewLineCharToBrHtml(realmResult.get(i).getDescription()) + "</div>\n" +
                                     "<audio controls>" +
                                     "<source src='phonecalls/" + realmResult.get(i).getId() + ".aac' type='audio/aac'>" +
                                     "Browser does not support the audio element." +
                                     "</audio>" +
-                                    "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResult.get(i).getCreateTimeStamp().getTime() / 1000) + "</div>" +
-                                    "</div>";
+                                    "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResult.get(i).getCreateTimeStamp().getTime() / 1000) + "</div>\n" +
+                                    "</div>\n";
                 }
 
             }
@@ -238,27 +238,27 @@ public class Report {
                 for (int i = 0; i < realmResultTodo.size(); i++) {
                     isTodoHit = true;
                     strTodo +=
-                            "<div class='item'>" +
-                                    "<div class='note_title'>" + realmResultTodo.get(i).getTitle() + "</div>";
+                            "<div class='item'>\n" +
+                                    "<div class='note_title'>" + realmResultTodo.get(i).getTitle() + "</div>\n";
 
                     ArrayList<TodoChildRealmStruct> todoChildRealmStructs = realmToDoHelper.getAllChildTodos(realmResultTodo.get(i).getId());
 
                     //If todo is just title and doesn't have any child.
                     if (todoChildRealmStructs.size() > 0) {
 
-                        strTodo += "<ul>";
+                        strTodo += "<ul>\n";
 
                         for (int j = 0; j < todoChildRealmStructs.size(); j++) {
                             strTodo += toDoBinder(todoChildRealmStructs.get(j));
                         }
 
-                        strTodo += "</ul>";
+                        strTodo += "</ul>\n";
 
                     }
 
                     strTodo +=
-                            "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResultTodo.get(i).getCreateTimeStamp().getTime()) + "</div>" +
-                                    "</div>";
+                            "<div class='note_timestamp'>" + Utility.unixTimeToReadable(realmResultTodo.get(i).getCreateTimeStamp().getTime()) + "</div>\n" +
+                                    "</div>\n";
 
                 }
             }
@@ -271,23 +271,23 @@ public class Report {
         String bodyContents = "";
 
         if (textNotes && isTextNoteHit) {
-            navBar += "<li class='navbar-item'><a class='navbar-link' href='#text notes'>Text Notes</a></li>";
-            bodyContents += "<h6 class='docs-header'>TEXT NOTES</h6>";
+            navBar += "<li class='navbar-item'><a class='navbar-link' href='#text_notes'>Text Notes</a></li>\n";
+            bodyContents += "<h6 class='docs-header' id='text_notes'>TEXT NOTES</h6>\n";
             bodyContents += strTextNotes;
         }
         if (audioNotes && isAudioNoteHit) {
-            navBar += "<li class='navbar-item'><a class='navbar-link' href='#audio notes'>Audio Notes</a></li>";
-            bodyContents += "<h6 class='docs-header'>AUDIO NOTES</h6>";
+            navBar += "<li class='navbar-item'><a class='navbar-link' href='#audio_notes'>Audio Notes</a></li>\n";
+            bodyContents += "<h6 class='docs-header' id='audio_notes'>AUDIO NOTES</h6>\n";
             bodyContents += strAudioNotes;
         }
         if (phoneCalls && isPhoneCallHit) {
-            navBar += "<li class='navbar-item'><a class='navbar-link' href='#phone calls'>Phone Calls</a></li>";
-            bodyContents += "<h6 class='docs-header'>PHONE CALLS</h6>";
+            navBar += "<li class='navbar-item'><a class='navbar-link' href='#phone_calls'>Phone Calls</a></li>\n";
+            bodyContents += "<h6 class='docs-header' id='phone_calls'>PHONE CALLS</h6>\n";
             bodyContents += strPhoneCalls;
         }
         if (toDoNote && isTodoHit) {
-            navBar += "<li class='navbar-item'><a class='navbar-link' href='#todo'>Todo</a></li>";
-            bodyContents += "<h6 class='docs-header'>Todo</h6>";
+            navBar += "<li class='navbar-item'><a class='navbar-link' href='#todo_notes'>Todo</a></li>\n";
+            bodyContents += "<h6 class='docs-header' id='todo_notes'>TODO</h6>\n";
             bodyContents += strTodo;
         }
 
@@ -332,10 +332,14 @@ public class Report {
 
     private String toDoBinder(TodoChildRealmStruct todoChildRealmStruct) {
         if (todoChildRealmStruct.getHasDone())
-            return "<li class='todo_done'>&#10003; " + todoChildRealmStruct.getTitle() + "</li>";
+            return "<li class='todo_done'>&#10003; " + todoChildRealmStruct.getTitle() + "</li>\n";
         else
-            return "<li> " + todoChildRealmStruct.getTitle() + "</li>";
+            return "<li> " + todoChildRealmStruct.getTitle() + "</li>\n";
 
+    }
+
+    private String convertNewLineCharToBrHtml(String input){
+        return input.replaceAll("(\r\n|\n)", "<br />");
     }
 
 

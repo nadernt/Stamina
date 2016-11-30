@@ -352,6 +352,12 @@ public class ActivityBackupHome extends DropboxActivity {
             @Override
             public void onClick(View view) {
 
+                if(editTxtReportTitle==null || editTxtReportTitle.getText().toString().trim().length() == 0)
+                {
+                    Utility.showMessage("Type a title for report!", "Note", ActivityBackupHome.this);
+                    return;
+                }
+
                 int simpleHtmlTabularHTMLOrCSV = 0;
 
                 if(!chkTabular.isChecked() && rdoHtmlReport.isChecked())
@@ -602,6 +608,46 @@ public class ActivityBackupHome extends DropboxActivity {
                     chkReportAudioNotes.isChecked(),
                     chkReportPhonecalls.isChecked(),
                     chkReportPhonecalls.isChecked());
+
+
+            if(editTxtReportTitle!=null || editTxtReportTitle.getText().toString().trim().length() >0)
+            {
+                String strTitle = "<h4 class='title_author'>" + editTxtReportTitle.getText().toString() + "</h4>";
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TITLE#\\B", strTitle);
+            }
+            else
+            {
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TITLE#\\B", "");
+            }
+
+            if(chkReportTimeStamp.isChecked()){
+                String strDateStamp = "<h4 class='title_timestamp'>" + Utility.unixTimeToReadable(new Date().getTime()/1000) + "</h4>";
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TIME_STAMP#\\B", strDateStamp);
+            }
+            else {
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TIME_STAMP#\\B", "");
+            }
+
+
+            if(editTxtReportAuthorName!=null || editTxtReportAuthorName.getText().toString().trim().length() >0)
+            {
+                String strAuthorName = "<h4 class='title_author'>" + editTxtReportAuthorName.getText().toString() + "</h4>";
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#AUTHOR#\\B", strAuthorName);
+            }
+            else
+            {
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#AUTHOR#\\B", "");
+            }
+
+            if(editTxtReportDescription!=null || editTxtReportDescription.getText().toString().trim().length() >0)
+            {
+                String strReportDescription = "<div class='title_description'>" + editTxtReportDescription.getText().toString() + "</div>";
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#DESCRIPTIONS#\\B", strReportDescription);
+            }
+            else
+            {
+                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#DESCRIPTIONS#\\B", "");
+            }
 
             allNotes = realmNoteHelper.getAllNotes();
 

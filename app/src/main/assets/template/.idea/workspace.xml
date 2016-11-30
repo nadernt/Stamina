@@ -2,24 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="800854cb-53b6-4ff6-affb-c78ca00ecc7e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/NotesForCopy.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/custom.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/normalize.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/skeleton.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/images/favicon.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/js/site.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/css/style.css" afterPath="$PROJECT_DIR$/assets/css/style.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ActivityBackupHome.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ActivityBackupHome.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/Report.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/Report.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/chathead/MainActivity.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/chathead/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/RealmNoteHelper.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/RealmNoteHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/ChatHeadRecordService.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/ChatHeadRecordService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/NoteDeleteHelper.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/NoteDeleteHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RecorderPhone.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RecorderPhone.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Constants.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Constants.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Utility.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Utility.java" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -40,21 +26,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="24" column="2" lean-forward="true" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../../../../../../../reports/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="824">
-              <caret line="64" column="0" lean-forward="false" selection-start-line="22" selection-start-column="36" selection-end-line="64" selection-end-column="0" />
+            <state relative-caret-position="180">
+              <caret line="12" column="34" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -63,8 +39,8 @@
       <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/assets/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-422">
-              <caret line="2" column="2" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="5" selection-end-column="3" />
+            <state relative-caret-position="-615">
+              <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -327,12 +303,12 @@
       <workItem from="1479990977310" duration="11309000" />
       <workItem from="1480088373998" duration="5100000" />
       <workItem from="1480338296554" duration="1726000" />
-      <workItem from="1480422195482" duration="3969000" />
+      <workItem from="1480422195482" duration="7910000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22693000" />
+    <option name="totallyTimeSpent" value="26634000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1920" height="1026" extended-state="6" />
@@ -525,26 +501,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../../../reports/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="960">
+          <caret line="64" column="0" lean-forward="false" selection-start-line="22" selection-start-column="36" selection-end-line="64" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../../../bbbb/reports/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="57" lean-forward="false" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/assets/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-422">
-          <caret line="2" column="2" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="5" selection-end-column="3" />
+        <state relative-caret-position="-615">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="2" lean-forward="true" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../../../../../reports/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="824">
-          <caret line="64" column="0" lean-forward="false" selection-start-line="22" selection-start-column="36" selection-end-line="64" selection-end-column="0" />
+        <state relative-caret-position="180">
+          <caret line="12" column="34" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="34" />
           <folding />
         </state>
       </provider>

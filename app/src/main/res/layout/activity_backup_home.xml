@@ -249,8 +249,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="Name"
-                android:maxLines="1"
-                android:text="Title" />
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -265,7 +264,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:maxLines="1"
-                android:text="Title" />
+                android:text="Report" />
 
             <TextView
                 android:id="@+id/textView13"
