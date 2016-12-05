@@ -159,6 +159,10 @@ public class ActivityChooseDirectory extends AppCompatActivity {
                                             showMessage("You can't make folder in this path!", "Note");
                                             return;
                                         }
+                                        else
+                                        {
+                                            directory.delete();
+                                        }
                                     }
                                 } catch (Exception e) {
                                     showMessage("You can't make folder in this path: " + e.getMessage(),"Note");

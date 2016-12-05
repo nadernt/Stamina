@@ -2,11 +2,15 @@ package com.fleecast.stamina.backup;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -100,7 +104,6 @@ public class ActivityBackupHome extends DropboxActivity {
     private EditText editTxtReportTitle;
     private EditText editTxtReportDescription;
     private RadioGroup rdoReportOption;
-    private String strReportPath;
     private CheckBox chkReportTimeStamp;
     private EditText editTxtReportAuthorName;
     private RadioButton rdoCSVReport;
@@ -141,11 +144,11 @@ public class ActivityBackupHome extends DropboxActivity {
         chkReportTodos = (CheckBox) findViewById(R.id.chkReportTodos);
         chkCompressToZip = (CheckBox) findViewById(R.id.chkCompressToZip);
         chkTabular = (CheckBox) findViewById(R.id.chkTabular);
-        chkReportTimeStamp= (CheckBox) findViewById(R.id.chkReportTimeStamp);
+        chkReportTimeStamp = (CheckBox) findViewById(R.id.chkReportTimeStamp);
 
 
-        rdoCSVReport= (RadioButton) findViewById(R.id.rdoCSVReport);
-        rdoHtmlReport= (RadioButton) findViewById(R.id.rdoHtmlReport);
+        rdoCSVReport = (RadioButton) findViewById(R.id.rdoCSVReport);
+        rdoHtmlReport = (RadioButton) findViewById(R.id.rdoHtmlReport);
 
         imgBtnRemoveKey = (ImageView) findViewById(R.id.imgBtnRemoveKey);
         imgRestorHelp = (ImageView) findViewById(R.id.imgRestorHelp);
@@ -180,7 +183,7 @@ public class ActivityBackupHome extends DropboxActivity {
         imgRestorHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utility.showMessage("Important notes:\n-Delete and replace will not keep your device database information.\n-Backup process ignores the empty todo and audio notes.","Note",ActivityBackupHome.this);
+                Utility.showMessage("Important notes:\n-Delete and replace will not keep your device database information.\n-Backup process ignores the empty todo and audio notes.", "Note", ActivityBackupHome.this);
             }
         });
 
@@ -192,11 +195,10 @@ public class ActivityBackupHome extends DropboxActivity {
         });
 
 
-
         rdoCSVReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(rdoCSVReport.isChecked()){
+                if (rdoCSVReport.isChecked()) {
                     chkTabular.setChecked(false);
                     chkTabular.setEnabled(false);
                     editTxtReportAuthorName.setEnabled(false);
@@ -211,7 +213,7 @@ public class ActivityBackupHome extends DropboxActivity {
         rdoHtmlReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(rdoHtmlReport.isChecked()){
+                if (rdoHtmlReport.isChecked()) {
                     chkTabular.setEnabled(true);
                     editTxtReportAuthorName.setEnabled(true);
                     chkReportTimeStamp.setEnabled(true);
@@ -254,10 +256,10 @@ public class ActivityBackupHome extends DropboxActivity {
         chkReplaceLocalDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(chkReplaceLocalDB.isChecked()) {
+                if (chkReplaceLocalDB.isChecked()) {
                     chkMergeDestination.setEnabled(false);
                     chkMergeDestination.setChecked(false);
-                }else {
+                } else {
                     chkMergeDestination.setEnabled(true);
                 }
             }
@@ -351,34 +353,21 @@ public class ActivityBackupHome extends DropboxActivity {
         btnCreateReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if(editTxtReportTitle==null || editTxtReportTitle.getText().toString().trim().length() == 0)
-                {
+ /*               Report report = new Report(ActivityBackupHome.this);
+                report.getReportCSV(chkReportTextNotes.isChecked(),
+                        chkReportAudioNotes.isChecked(),
+                        chkReportPhonecalls.isChecked(),
+                        chkReportPhonecalls.isChecked());
+                if(1<2)
+                    return;*/
+                if (editTxtReportTitle == null || editTxtReportTitle.getText().toString().trim().length() == 0) {
                     Utility.showMessage("Type a title for report!", "Note", ActivityBackupHome.this);
                     return;
                 }
 
-                int simpleHtmlTabularHTMLOrCSV = 0;
+                Intent intent = new Intent(ActivityBackupHome.this, ActivityChooseDirectory.class);
+                startActivityForResult(intent, Constants.RESULT_CODE_REQUEST_DIRECTORY);
 
-                if(!chkTabular.isChecked() && rdoHtmlReport.isChecked())
-                    simpleHtmlTabularHTMLOrCSV = 0;
-                else if(chkTabular.isChecked() && rdoHtmlReport.isChecked())
-                simpleHtmlTabularHTMLOrCSV = 1;
-                else if(rdoCSVReport.isChecked())
-                    simpleHtmlTabularHTMLOrCSV = 2;
-
-                ReportParameters reportParameters = new ReportParameters(
-                        chkReportTextNotes.isChecked(),
-                        chkReportAudioNotes.isChecked(),
-                        chkReportPhonecalls.isChecked(),
-                        chkReportTodos.isChecked(),
-                        chkReportTimeStamp.isChecked(),
-                        editTxtReportAuthorName.getText().toString().trim(),
-                        editTxtReportTitle.getText().toString().trim(),
-                        editTxtReportDescription.getText().toString().trim(),
-                        simpleHtmlTabularHTMLOrCSV);
-
-                new LongReportOperation().execute(reportParameters);
 
             }
         });
@@ -401,24 +390,47 @@ public class ActivityBackupHome extends DropboxActivity {
             }
         });
 
-        btnChooseReportPath.setOnClickListener(new View.OnClickListener() {
+      /*  btnChooseReportPath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ActivityBackupHome.this, ActivityChooseDirectory.class);
                 startActivityForResult(intent, Constants.RESULT_CODE_REQUEST_DIRECTORY);
             }
-        });
+        });*/
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (Constants.RESULT_CODE_REQUEST_DIRECTORY == requestCode){
-            if(data!=null) {
-                strReportPath = data.getStringExtra(Constants.EXTRA_RESULT_SELECTED_DIR);
+        if (Constants.RESULT_CODE_REQUEST_DIRECTORY == requestCode) {
+            if (data != null) {
+                String strReportPath = data.getStringExtra(Constants.EXTRA_RESULT_SELECTED_DIR);
+
+                int simpleHtmlTabularHTMLOrCSV = 0;
+
+                if (!chkTabular.isChecked() && rdoHtmlReport.isChecked())
+                    simpleHtmlTabularHTMLOrCSV = 0;
+                else if (chkTabular.isChecked() && rdoHtmlReport.isChecked())
+                    simpleHtmlTabularHTMLOrCSV = 1;
+                else if (rdoCSVReport.isChecked())
+                    simpleHtmlTabularHTMLOrCSV = 2;
+
+                ReportParameters reportParameters = new ReportParameters(strReportPath,
+                        chkReportTextNotes.isChecked(),
+                        chkReportAudioNotes.isChecked(),
+                        chkReportPhonecalls.isChecked(),
+                        chkReportTodos.isChecked(),
+                        chkReportTimeStamp.isChecked(),
+                        editTxtReportAuthorName.getText().toString().trim(),
+                        editTxtReportTitle.getText().toString().trim(),
+                        editTxtReportDescription.getText().toString().trim(),
+                        simpleHtmlTabularHTMLOrCSV, chkCompressToZip.isChecked());
+
+                new LongReportOperation().execute(reportParameters);
+
 /*
-                System.out.println(strReportPath + "  KKKKKKKKKK");
+                System.out.println(reportPath + "  KKKKKKKKKK");
 */
             }
         }
@@ -469,10 +481,12 @@ public class ActivityBackupHome extends DropboxActivity {
         private int simpleHtmlTabularHTMLOrCSV;
         private String title;
         private String description;
+        private String reportPath;
+        boolean makeZip;
 
 
-
-        public ReportParameters(boolean textNotes, boolean audioNotes, boolean phoneCalls, boolean toDoNote, boolean includeTimeStamp, String authorName, String title, String description, int simpleHtmlTabularHTMLOrCSV) {
+        public ReportParameters(String reportPath, boolean textNotes, boolean audioNotes, boolean phoneCalls, boolean toDoNote, boolean includeTimeStamp, String authorName, String title, String description, int simpleHtmlTabularHTMLOrCSV, boolean makeZip) {
+            this.reportPath = reportPath;
             this.textNotes = textNotes;
             this.audioNotes = audioNotes;
             this.phoneCalls = phoneCalls;
@@ -480,8 +494,9 @@ public class ActivityBackupHome extends DropboxActivity {
             this.includeTimeStamp = includeTimeStamp;
             this.authorName = authorName;
             this.title = title;
-            this.description=description;
+            this.description = description;
             this.simpleHtmlTabularHTMLOrCSV = simpleHtmlTabularHTMLOrCSV;
+            this.makeZip = makeZip;
         }
 
         public boolean isTextNotes() {
@@ -511,6 +526,7 @@ public class ActivityBackupHome extends DropboxActivity {
         public int getSimpleHtmlTabularHTMLOrCSV() {
             return simpleHtmlTabularHTMLOrCSV;
         }
+
         public String getTitle() {
             return title;
         }
@@ -518,10 +534,19 @@ public class ActivityBackupHome extends DropboxActivity {
         public String getDescription() {
             return description;
         }
+
+        public boolean isMakeZip() {
+            return makeZip;
+        }
+
+        public String getReportPath() {
+            return reportPath;
+        }
+
     }
 
 
-    private class LongReportOperation extends AsyncTask<ReportParameters, Void, Boolean> {
+    private class LongReportOperation extends AsyncTask<ReportParameters, String, Boolean> {
 
 
         private ProgressDialog dialog;
@@ -529,27 +554,29 @@ public class ActivityBackupHome extends DropboxActivity {
         private Report report;
         private RealmResults<NoteInfoRealmStruct> allNotes;
         private ArrayList<NotesForCopy> notesListForCopyFile;
-        private String strOutFileDirectory;
+        private String strTmpWorkingDir;
+        private String finalFilePath = "";
+        private ArrayList<String> csvReportArr = new ArrayList<>();
 
         @Override
         protected Boolean doInBackground(ReportParameters... reportParameterses) {
 
 
+            File f = new File(strTmpWorkingDir);
 
-            File f = new File(strOutFileDirectory);
-
-            if(!f.exists()) {
+            if (!f.exists()) {
                 f.mkdir();
-            }
-            else{
-                Utility.deleteRecursive(new File(strOutFileDirectory),new File(strOutFileDirectory));
+            } else {
+                Utility.deleteRecursive(new File(strTmpWorkingDir), new File(strTmpWorkingDir));
             }
 
             try {
-                File root = new File(strOutFileDirectory);
+                File root = new File(strTmpWorkingDir);
                 if (!root.exists()) {
-                    root.mkdirs();
+                    root.mkdir();
                 }
+
+                if (reportParameterses[0].getSimpleHtmlTabularHTMLOrCSV() != 2) {
                 File gpxfile = new File(root, "index.html");
                 FileWriter writer = new FileWriter(gpxfile);
                 writer.append(strReportSimpleHtml);
@@ -557,17 +584,59 @@ public class ActivityBackupHome extends DropboxActivity {
                 writer.close();
 
 
+                publishProgress("Copying files...");
 
-                if(reportParameterses[0].isAudioNotes())
-                    copyAudioNoteFilesForReport(strOutFileDirectory, notesListForCopyFile);
+                if (reportParameterses[0].isAudioNotes())
+                    copyAudioNoteFilesForReport(strTmpWorkingDir, notesListForCopyFile);
 
-                if(reportParameterses[0].isPhoneCalls())
-                    copyPhoneCallsFilesForReport(strOutFileDirectory);
+                if (reportParameterses[0].isPhoneCalls())
+                    copyPhoneCallsFilesForReport(strTmpWorkingDir);
 
                 //Copy asset files of html like css,js etc.
-                Utility.copyAssetFolder(ActivityBackupHome.this.getAssets(),Constants.CONST_TEMPLATE_DIRECTORY + File.separator + "assets",
-                        strOutFileDirectory + File.separator +  "assets");
+                Utility.copyAssetFolder(ActivityBackupHome.this.getAssets(), Constants.CONST_TEMPLATE_DIRECTORY + File.separator + "assets",
+                        strTmpWorkingDir + File.separator + "assets");
 
+                    if (reportParameterses[0].isMakeZip()) {
+                        publishProgress("Creating zip file...");
+
+                        Date date = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("E_dd_MM_yyyy hh_mm_ss a");
+
+                        String outputZipFileName = sdf.format(date) + "_report.zip";
+
+                        ZipFileHelper.zip(strTmpWorkingDir, reportParameterses[0].getReportPath(), outputZipFileName, false);
+
+                        Utility.deleteRecursive(new File(strTmpWorkingDir), new File(strTmpWorkingDir));
+
+                    } else {
+                        finalFilePath = reportParameterses[0].reportPath;
+                        moveFolder(new File(strTmpWorkingDir), new File(reportParameterses[0].reportPath));
+                    }
+                } else {
+
+
+                    Date date = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("E_dd_MM_yyyy hh_mm_ss a");
+
+                    String outputCSVFileName = sdf.format(date) + "_report.csv";
+
+                    File gpxfile = new File(reportParameterses[0].getReportPath(), outputCSVFileName);
+
+                    FileWriter writer = new FileWriter(gpxfile);
+                    System.out.println(csvReportArr.size() + "ffffffffffffffff");
+                    try {
+
+                        for(int i=0 ; i< csvReportArr.size(); i++ ){
+                            writer.write(csvReportArr.get(i));
+                        }
+
+                        writer.flush();
+                        writer.close();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 return true;
 
             } catch (IOException e) {
@@ -584,10 +653,53 @@ public class ActivityBackupHome extends DropboxActivity {
             super.onPostExecute(aBoolean);
 
             if (aBoolean) {
+
                 dialog.cancel();
-                Utility.showMessage("Report was successful.", "Info", ActivityBackupHome.this);
-            }
-            else {
+
+                if (!chkCompressToZip.isChecked() && !rdoCSVReport.isChecked()) {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+
+                                    Uri uri = Uri.fromFile(new File(finalFilePath + "/index.html"));
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    browserIntent.setClassName("com.android.chrome", "com.google.android.apps.chrome.Main");
+
+                                    try {
+                                        startActivity(browserIntent);
+                                    } catch (ActivityNotFoundException ex) {
+                                        try {
+                                            browserIntent.setPackage(null);
+                                            startActivity(browserIntent);
+                                        } catch (Exception e) {
+                                        }
+                                    }
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                                case DialogInterface.BUTTON_NEUTRAL:
+                                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                    Uri uri2 = Uri.parse(finalFilePath);
+                                    intent.setDataAndType(uri2, "*.*");
+                                    startActivity(Intent.createChooser(intent, "Open folder"));
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityBackupHome.this);
+                    builder.setMessage("Report was successful! Do you want view report in default browser?").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).setNeutralButton("Open Folder", dialogClickListener).show();
+                } else {
+                    Utility.showMessage("Report was successful.", "Info", ActivityBackupHome.this);
+                }
+
+            } else {
                 dialog.cancel();
                 Utility.showMessage("Report wasn't successful!", "Error", ActivityBackupHome.this);
             }
@@ -597,78 +709,133 @@ public class ActivityBackupHome extends DropboxActivity {
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(ActivityBackupHome.this, "",
-                    "Loading. Please wait...", true);
 
-            strOutFileDirectory = ExternalStorageManager.getWorkingDirectory() + Constants.CONST_REPORT_DIRECTORY_NAME;
+
+            strTmpWorkingDir = ExternalStorageManager.getWorkingDirectory() + Constants.CONST_REPORT_DIRECTORY_NAME;
 
             report = new Report(ActivityBackupHome.this);
 
-            strReportSimpleHtml = report.getReportFromDBSimpleHtml(chkReportTextNotes.isChecked(),
-                    chkReportAudioNotes.isChecked(),
-                    chkReportPhonecalls.isChecked(),
-                    chkReportPhonecalls.isChecked());
+            if (rdoHtmlReport.isChecked()) {
+                dialog = ProgressDialog.show(ActivityBackupHome.this, "",
+                        "Loading. Please wait...", true);
+
+                if (!chkTabular.isChecked()) {
+                    strReportSimpleHtml = report.getReportFromDBSimpleHtml(chkReportTextNotes.isChecked(),
+                            chkReportAudioNotes.isChecked(),
+                            chkReportPhonecalls.isChecked(),
+                            chkReportPhonecalls.isChecked());
+                } else {
+                    strReportSimpleHtml = report.getReportFromDBTabular(chkReportTextNotes.isChecked(),
+                            chkReportAudioNotes.isChecked(),
+                            chkReportPhonecalls.isChecked(),
+                            chkReportPhonecalls.isChecked());
+                }
 
 
-            if(editTxtReportTitle!=null || editTxtReportTitle.getText().toString().trim().length() >0)
-            {
-                String strTitle = "<h4 class='title_author'>" + editTxtReportTitle.getText().toString() + "</h4>";
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TITLE#\\B", strTitle);
+                if (editTxtReportTitle != null && editTxtReportTitle.getText().toString().trim().length() > 0) {
+                    String strTitle = "<h2 class='title_header_title'>" + editTxtReportTitle.getText().toString() + "</h2>";
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TITLE#\\B", strTitle);
+                } else {
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TITLE#\\B", "");
+                }
+
+                if (chkReportTimeStamp.isChecked()) {
+                    String strDateStamp = "<h6 class='title_timestamp'>" + Utility.unixTimeToReadable(new Date().getTime() / 1000L) + "</h6>";
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TIME_STAMP#\\B", strDateStamp);
+                } else {
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TIME_STAMP#\\B", "");
+                }
+
+
+                if (editTxtReportAuthorName != null && editTxtReportAuthorName.getText().toString().trim().length() > 0) {
+                    String strAuthorName = "<h6 class='title_author'>By: " + editTxtReportAuthorName.getText().toString() + "</h6>";
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#AUTHOR#\\B", strAuthorName);
+                } else {
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#AUTHOR#\\B", "");
+                }
+
+                if (editTxtReportDescription != null && editTxtReportDescription.getText().toString().trim().length() > 0) {
+                    String strReportDescription = "<div class='title_description'>" + editTxtReportDescription.getText().toString() + "</div>";
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#DESCRIPTIONS#\\B", strReportDescription);
+                } else {
+                    strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#DESCRIPTIONS#\\B", "");
+                }
+
+                allNotes = realmNoteHelper.getAllNotes();
+
+                if (chkReportPhonecalls.isChecked() || chkReportAudioNotes.isChecked()) {
+                    notesListForCopyFile = new ArrayList<>();
+
+                    for (int i = 0; i < allNotes.size(); i++)
+                        notesListForCopyFile.add(new NotesForCopy(allNotes.get(i).getId(), allNotes.get(i).getNoteType()));
+                }
             }
-            else
-            {
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TITLE#\\B", "");
-            }
+            else{
+                dialog = ProgressDialog.show(ActivityBackupHome.this, "",
+                        "Processing  database please wait...", true);
 
-            if(chkReportTimeStamp.isChecked()){
-                String strDateStamp = "<h4 class='title_timestamp'>" + Utility.unixTimeToReadable(new Date().getTime()/1000) + "</h4>";
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TIME_STAMP#\\B", strDateStamp);
+                csvReportArr = report.getReportCSV(chkReportTextNotes.isChecked(),
+                        chkReportAudioNotes.isChecked(),
+                        chkReportPhonecalls.isChecked(),
+                        chkReportPhonecalls.isChecked());
+               // cancel(true);
             }
-            else {
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#TIME_STAMP#\\B", "");
-            }
-
-
-            if(editTxtReportAuthorName!=null || editTxtReportAuthorName.getText().toString().trim().length() >0)
-            {
-                String strAuthorName = "<h4 class='title_author'>" + editTxtReportAuthorName.getText().toString() + "</h4>";
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#AUTHOR#\\B", strAuthorName);
-            }
-            else
-            {
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#AUTHOR#\\B", "");
-            }
-
-            if(editTxtReportDescription!=null || editTxtReportDescription.getText().toString().trim().length() >0)
-            {
-                String strReportDescription = "<div class='title_description'>" + editTxtReportDescription.getText().toString() + "</div>";
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#DESCRIPTIONS#\\B", strReportDescription);
-            }
-            else
-            {
-                strReportSimpleHtml = strReportSimpleHtml.replaceFirst("\\B#DESCRIPTIONS#\\B", "");
-            }
-
-            allNotes = realmNoteHelper.getAllNotes();
-
-            if(chkReportPhonecalls.isChecked() || chkReportAudioNotes.isChecked()) {
-                notesListForCopyFile = new ArrayList<>();
-
-                for (int i = 0; i < allNotes.size(); i++)
-                    notesListForCopyFile.add(new NotesForCopy(allNotes.get(i).getId(), allNotes.get(i).getNoteType()));
-            }
-
 
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
+        protected void onProgressUpdate(String... progress) {
+            super.onProgressUpdate(progress);
+            dialog.setMessage(progress[0]);
         }
     }
 
 
+    public static void moveFolder(File src, File dest)
+            throws IOException {
 
-    public void copyAudioNoteFilesForReport(String strOutFileDirectory,ArrayList<NotesForCopy> notesForCopies ) throws IOException {
+        if (src.isDirectory()) {
+
+            //if directory not exists, create it
+            if (!dest.exists()) {
+                dest.mkdir();
+              /*  System.out.println("Directory copied from "
+                        + src + "  to " + dest);*/
+            }
+
+            //list all the directory contents
+            String files[] = src.list();
+
+            for (String file : files) {
+                //construct the src and dest file structure
+                File srcFile = new File(src, file);
+                File destFile = new File(dest, file);
+                //recursive copy
+                moveFolder(srcFile, destFile);
+            }
+
+        } else {
+            //if file, then copy it
+            //Use bytes stream to support all file types
+            InputStream in = new FileInputStream(src);
+            OutputStream out = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[1024];
+
+            int length;
+            //copy the file content in bytes
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+
+            in.close();
+            out.close();
+            //System.out.println("File copied from " + src + " to " + dest);
+            src.delete();
+        }
+    }
+
+    public void copyAudioNoteFilesForReport(String strOutFileDirectory, ArrayList<NotesForCopy> notesForCopies) throws IOException {
 
         if (notesForCopies.size() == 0) {
             throw new NegativeArraySizeException();
@@ -677,17 +844,17 @@ public class ActivityBackupHome extends DropboxActivity {
             for (int i = 0; i < notesForCopies.size(); i++) {
                 if ((notesForCopies.get(i).getNote_type() == Constants.CONST_NOTETYPE_AUDIO)) {
                     File f = new File(String.valueOf(ExternalStorageManager.getWorkingDirectory() +
-                             File.separator  +   notesForCopies.get(i).getId()));
-                    Utility.copyDirectory(f,new File(strOutFileDirectory+File.separator + "audio" ));
+                            File.separator + notesForCopies.get(i).getId()));
+                    Utility.copyDirectory(f, new File(strOutFileDirectory + File.separator + "audio"));
                 }
             }
         }
     }
 
-    public void copyPhoneCallsFilesForReport(String strOutFileDirectory ) throws IOException {
-                    File f = new File(String.valueOf(ExternalStorageManager.getWorkingDirectory() +
-                            File.separator  +   Constants.CONST_PHONE_CALLS_DIRECTORY_NAME));
-                    Utility.copyDirectory(f,new File(strOutFileDirectory + File.separator + "phonecalls" ));
+    public void copyPhoneCallsFilesForReport(String strOutFileDirectory) throws IOException {
+        File f = new File(String.valueOf(ExternalStorageManager.getWorkingDirectory() +
+                File.separator + Constants.CONST_PHONE_CALLS_DIRECTORY_NAME));
+        Utility.copyDirectory(f, new File(strOutFileDirectory + File.separator + "phonecalls"));
 
     }
 
@@ -697,9 +864,9 @@ public class ActivityBackupHome extends DropboxActivity {
 
     private boolean doAuthentications(final EncryptionDialogOption encryptionDialogOption, final String fileNameToUnbackUpAndDecrypt) {
 
-        final boolean keepStateOfEncryptKeyOnCancel =  Prefs.getBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, false);
+        final boolean keepStateOfEncryptKeyOnCancel = Prefs.getBoolean(Constants.PREF_USER_HAS_MASTER_PASSWORD, false);
 
-       // chkEncrypt.setChecked(false);
+        // chkEncrypt.setChecked(false);
         boolean returnResult = false;
         LayoutInflater inflater = LayoutInflater.from(ActivityBackupHome.this);
 
@@ -778,7 +945,7 @@ public class ActivityBackupHome extends DropboxActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                if(!keepStateOfEncryptKeyOnCancel)
+                if (!keepStateOfEncryptKeyOnCancel)
                     chkEncrypt.setChecked(false);
                 else
                     chkEncrypt.setChecked(true);
@@ -872,7 +1039,6 @@ public class ActivityBackupHome extends DropboxActivity {
                             txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>"));
 
                         }
-
 
 
                         break;
@@ -1085,12 +1251,11 @@ public class ActivityBackupHome extends DropboxActivity {
 
             if (aBoolean) {
 
-                realmNoteHelper.applyBackupToDB(backUpNotesStructs,chkRestoreTextNotes.isChecked(),chkRestoreAudioNotes.isChecked(),chkRestorPhonecalls.isChecked(),chkRestoreTodos.isChecked(),chkMergeDestination.isChecked(),chkReplaceLocalDB.isChecked());
+                realmNoteHelper.applyBackupToDB(backUpNotesStructs, chkRestoreTextNotes.isChecked(), chkRestoreAudioNotes.isChecked(), chkRestorPhonecalls.isChecked(), chkRestoreTodos.isChecked(), chkMergeDestination.isChecked(), chkReplaceLocalDB.isChecked());
                 dialog.cancel();
 
                 Utility.showMessage("Restore was successful.", "Info", ActivityBackupHome.this);
-            }
-            else {
+            } else {
                 dialog.cancel();
                 Utility.showMessage("Restore wasn't successful!", "Error", ActivityBackupHome.this);
             }
@@ -1243,8 +1408,8 @@ public class ActivityBackupHome extends DropboxActivity {
 
                 displayIt(new File(ExternalStorageManager.getWorkingDirectory()));
 
-                for (int i = 0; i < backupFilesStruct.size(); i++)
-                    System.out.println(backupFilesStruct.get(i).getFilePath() + "*");
+               /* for (int i = 0; i < backupFilesStruct.size(); i++)
+                    System.out.println(backupFilesStruct.get(i).getFilePath() + "*");*/
             }
 
             @Override
@@ -1322,8 +1487,8 @@ public class ActivityBackupHome extends DropboxActivity {
 
                         backupFilesStruct = new ArrayList<>(tmpStr);
 
-                        for (int i = 0; i < backupFilesStruct.size(); i++)
-                            System.out.println(backupFilesStruct.get(i).getFilePath() + "#");
+                      /*  for (int i = 0; i < backupFilesStruct.size(); i++)
+                            System.out.println(backupFilesStruct.get(i).getFilePath() + "#");*/
 
                     } catch (JSONException e) {
                         e.printStackTrace();

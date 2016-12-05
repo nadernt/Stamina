@@ -409,5 +409,46 @@ public static Spanned fixedHtmlFrom(String strHtml) {
         }
     }
 
+    public  static String convertNewLineCharToBrHtml(String input){
+        return input.replaceAll("(\r\n|\n)", "<br />");
+    }
+    public static String calculateCallDuration(Date startDate, Date endDate){
 
+        long diff = endDate.getTime() - startDate.getTime();
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000);
+
+        String toReturn="";
+
+
+        if(diffHours==0)
+            toReturn += "00";
+        else if(diffHours<10)
+            toReturn += "0"+ String.valueOf(diffHours);
+        else
+            toReturn += String.valueOf(diffHours);
+
+        toReturn += ":";
+
+        if(diffMinutes==0)
+            toReturn += "00";
+        else if(diffMinutes<10)
+            toReturn += "0"+ String.valueOf(diffMinutes);
+        else
+            toReturn += String.valueOf(diffMinutes);
+
+        toReturn += ":";
+
+        if(diffSeconds==0)
+            toReturn += "00";
+        else if(diffSeconds<10)
+            toReturn += "0"+ String.valueOf(diffSeconds);
+        else
+            toReturn += String.valueOf(diffSeconds);
+
+
+        return toReturn;
+
+    }
 }

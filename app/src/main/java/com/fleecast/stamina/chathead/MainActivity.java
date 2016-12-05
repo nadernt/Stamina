@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -70,7 +71,7 @@ import com.fleecast.stamina.notetaking.NoteDeleteHelper;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
 import com.fleecast.stamina.notetaking.PlayerService;
 import com.fleecast.stamina.settings.ActivitySettings;
-import com.fleecast.stamina.todo.ActivityAddToEvent;
+import com.fleecast.stamina.settings.AppRating;
 import com.fleecast.stamina.todo.ActivityTodoParentRecyclerView;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
@@ -84,8 +85,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-
-import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
@@ -205,9 +204,8 @@ public class MainActivity extends AppCompatActivity
             ExternalStorageManager.ifWorkingDirIsNotExitMakeIt(this);
 
         }
+
         ExternalStorageManager.ifWorkingDirIsNotExitMakeIt(this);
-
-
 
     }
 
@@ -249,7 +247,7 @@ private void testFucntions(){
 
     }
    private void populateUI() {
-       testFucntions();
+       //testFucntions();
 
         setContentView(R.layout.activity_main);
 
@@ -340,9 +338,11 @@ private void testFucntions(){
         else
             navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
 
-//       testFucntions();
+       AppRating.app_launched(this);
 
-    }
+       //AppRating.showRateDialog(this, null);
+
+   }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -1663,6 +1663,19 @@ private void testFucntions(){
 
         } else if (id == R.id.nav_rate) {
 
+            Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+            // To count with Play market backstack, After pressing back button,
+            // to taken back to our application, we need to add following flags to intent.
+            goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            try {
+                startActivity(goToMarket);
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
+            }
 
         } else if (id == R.id.nav_help) {
             String url = Constants.CONST_URL_HELPS;

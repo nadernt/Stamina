@@ -290,7 +290,7 @@ public class ActivityViewTextNote extends AppCompatActivity {
         txtTitleViewTextNote.setText(title);
         txtTitleViewTextNote.setVisibility(View.VISIBLE);
 
-        txtDescriptionViewTextNote.setText(Html.fromHtml(beautifyNoteText.getDetailsHtmlFormatedAll()));
+        txtDescriptionViewTextNote.setText(Html.fromHtml(Utility.convertNewLineCharToBrHtml(beautifyNoteText.getDetailsHtmlFormatedAll())));
         txtDescriptionViewTextNote.setVisibility(View.VISIBLE);
 
     }

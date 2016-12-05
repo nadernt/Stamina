@@ -85,7 +85,7 @@ public class BeautifyNoteText {
                 detailsTextFormat += "Call Type: Called me." + "\n";
             }
 
-            detailsTextFormat += "Duration: " + calculateCallDuration(noteInfo.getStartTime(),noteInfo.getEndTime()) + "\n";
+            detailsTextFormat += "Duration: " + Utility.calculateCallDuration(noteInfo.getStartTime(),noteInfo.getEndTime()) + "\n";
 
         } else if (noteInfo.getHasAudio() && noteInfo.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
@@ -130,7 +130,7 @@ public class BeautifyNoteText {
                 detailsHtmlFormat += "<b>Call Type:</b> Called me." + "<br>";
             }
 
-            detailsHtmlFormat += "<b>Duration:</b> " + calculateCallDuration(noteInfo.getStartTime(),noteInfo.getEndTime()) + "<br>";
+            detailsHtmlFormat += "<b>Duration:</b> " + Utility.calculateCallDuration(noteInfo.getStartTime(),noteInfo.getEndTime()) + "<br>";
 
         } else if (noteInfo.getHasAudio() && noteInfo.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
@@ -183,7 +183,6 @@ public class BeautifyNoteText {
         RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
 
         List<AudioNoteInfoRealmStruct> audioNoteInfoStruct = new ArrayList<>(realmAudioNoteHelper.findAllAudioNotesByParentId(noteInfo.getId()));
-        System.out.println("Phung: " + audioNoteInfoStruct.size());
 
         String htmlComposed="";
 
@@ -325,45 +324,6 @@ public class BeautifyNoteText {
             return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
     }
 
-    private String calculateCallDuration(Date startDate, Date endDate){
 
-        long diff = endDate.getTime() - startDate.getTime();
-        long diffSeconds = diff / 1000 % 60;
-        long diffMinutes = diff / (60 * 1000) % 60;
-        long diffHours = diff / (60 * 60 * 1000);
-
-        Log.e("DBG", diffHours + ":" + diffMinutes + ":"  + diffSeconds);
-        String toReturn="";
-
-
-        if(diffHours==0)
-            toReturn += "00";
-        else if(diffHours<10)
-            toReturn += "0"+ String.valueOf(diffHours);
-        else
-            toReturn += String.valueOf(diffHours);
-
-        toReturn += ":";
-
-        if(diffMinutes==0)
-            toReturn += "00";
-        else if(diffMinutes<10)
-            toReturn += "0"+ String.valueOf(diffMinutes);
-        else
-            toReturn += String.valueOf(diffMinutes);
-
-        toReturn += ":";
-
-        if(diffSeconds==0)
-            toReturn += "00";
-        else if(diffSeconds<10)
-            toReturn += "0"+ String.valueOf(diffSeconds);
-        else
-            toReturn += String.valueOf(diffSeconds);
-
-
-        return toReturn;
-
-    }
 
 }

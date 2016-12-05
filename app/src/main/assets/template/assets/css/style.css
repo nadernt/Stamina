@@ -14,6 +14,7 @@
 }
 
 #nav {
+    z-index: 10000;
     background-color: #333;
     text-align: center;
 }
@@ -64,6 +65,7 @@ nav ul li:hover {
     border-right: none;
     border-top :none;
     display:inline-block;
+    margin-top: 20px;
 }
 .item{
     background-color: #F1F1F1;
@@ -79,8 +81,45 @@ nav ul li:hover {
 .note_contents{
     font-weight: lighter;
     padding-left: 10px;
+    color: #000000;
 }
+
 .note_timestamp{
     text-align: right;
     font-size: x-small;
+}
+
+.title_header_title{
+    font-weight:bold;
+    color: cornsilk;
+}
+
+.title_author{
+    color: white;
+    font-weight: bold;
+}
+
+.title_timestamp{
+    color: white;
+}
+.sub_note_body{
+    margin-left: 15px;
+}
+
+.todo_done:before{
+    content: '✔';
+    margin-left: -1em; margin-right: .100em;
+}
+.todo_notdone:before{
+    content: '-';
+    margin-left: -1em; margin-right: .100em;
+}
+
+.items_ul{
+
+    padding-left:20px;
+    text-indent:2px;
+    list-style: none;
+    list-style-position:outside;
+
 }
