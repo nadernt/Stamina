@@ -136,6 +136,8 @@ public class RecorderNoteService extends Service{
                     startRecording();
                 } catch (Exception e) {
                     Log.e(LOG_TAG, "prepare() failed");
+                    if(mNotifyManager!=null)
+                        mNotifyManager.cancel(idNotification);
                     myApplication.setCurrentRecordingAudioNoteId(Constants.CONST_NULL_ZERO);
                     myApplication.setIsRecordUnderGoing(Constants.CONST_RECORDER_SERVICE_IS_FREE);
                     recordStatus = true;
@@ -253,6 +255,8 @@ public class RecorderNoteService extends Service{
             sendBroadcastToActivity(Constants.REPORT_RECORDED_FILE_TO_ACTIVITY);
         }
         catch (Exception e){
+            if(mNotifyManager!=null)
+                mNotifyManager.cancel(idNotification);
             myApplication.setCurrentRecordingAudioNoteId(Constants.CONST_NULL_ZERO);
             sendBroadcastToActivity(Constants.REPORT_RECORD_ERROR_TO_ACTIVITY);
         }
@@ -315,6 +319,8 @@ public class RecorderNoteService extends Service{
                     intent.putExtra(Constants.EXTRA_RECORD_SERVICE_REPORTS, messageToActivity);
                 }
                 catch (Exception e) {
+                    if(mNotifyManager!=null)
+                        mNotifyManager.cancel(idNotification);
                     Log.e("Error:", e.getMessage());
                 }
                 break;

@@ -150,10 +150,11 @@ public class FragmentContactsList extends Fragment implements SearchView.OnQuery
         people.moveToFirst();
 
         List <ContactStruct> mList = new ArrayList<>();
-        do {
-            mList.add(new ContactStruct("0", people.getString(indexNumber), people.getString(indexName)));
-        } while (people.moveToNext());
-
+        if(mList.size()>0) {
+            do {
+                mList.add(new ContactStruct("0", people.getString(indexNumber), people.getString(indexName)));
+            } while (people.moveToNext());
+        }
         return mList;
     }
 

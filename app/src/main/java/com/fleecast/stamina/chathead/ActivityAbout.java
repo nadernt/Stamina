@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
+import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
 import java.io.BufferedReader;
@@ -47,8 +48,8 @@ public class ActivityAbout extends AppCompatActivity {
                 .addItem(new Element().setTitle("Version 1.0"))
                 .addGroup("Links")
                 .addEmail("fleecast@gmail.com")
-                .addWebsite("http://fleecast.com/stamina")
-                .addFacebook("Stamina")
+                .addWebsite(Constants.CONST_URL_HELPS)
+                .addFacebook(Constants.CONST_URL_FACEBOOK)
                 .addItem(Credits())
                 .addItem(getCopyRightsElement())
                 .create();

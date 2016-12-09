@@ -29,7 +29,7 @@ public class RecorderPhone {
 
     public RecorderPhone(Context context, String workingDirectory, String mFileName) {
         this.mFileName = workingDirectory + File.separator + mFileName;
-        Log.e(LOG_TAG,"Output file name: " +mFileName);
+      //  Log.e(LOG_TAG,"Output file name: " +mFileName);
         this.context = context;
 
         myApplication = (MyApplication) context.getApplicationContext();

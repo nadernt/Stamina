@@ -1019,7 +1019,7 @@ private void testFucntions(){
 
                                         File tmp = new File(ExternalStorageManager.getTempWorkingDirectory() + File.separator + tempFile + Constants.RECORDER_AUDIO_FORMAT_AAC);
                                         try {
-                                            copy(f, tmp);
+                                            ExternalStorageManager.copy(f, tmp);
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -1334,19 +1334,6 @@ private void testFucntions(){
         }
     }
 
-    public void copy(File src, File dst) throws IOException {
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
-
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

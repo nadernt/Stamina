@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 /**
  * Created by nnt on 7/05/16.
@@ -204,6 +205,21 @@ public class ExternalStorageManager {
 
         return pathToRecordingDirectory;
 
+    }
+
+    public static ArrayList<Integer> listAudioFilesInDirectoryByParentId(String pathToAudioFiles) {
+
+        File f = new File(pathToAudioFiles);
+        File[] fl = f.listFiles();
+        ArrayList<Integer> returnArray = new ArrayList<>();
+        for (int i = 0; i < fl.length; i++) {
+
+            if (fl[i].isFile()) {
+                returnArray.add(Utility.getDbIdFromFileName(String.valueOf(fl[i])));
+            }
+        }
+
+        return returnArray;
     }
 
     // If targetLocation does not exist, it will be created.

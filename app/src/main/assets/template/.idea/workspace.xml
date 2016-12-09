@@ -2,15 +2,188 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="800854cb-53b6-4ff6-affb-c78ca00ecc7e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/FileHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/assets/css/style.css" afterPath="$PROJECT_DIR$/assets/css/style.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/AudioData.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Add Monitor.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Alien.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Basketball Athlete.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Batman.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Battery Charging.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Box.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Burning Match.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Butterfly.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Canada.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Candy.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Chocolate.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Cloud Confirm.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Coffee.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Comb.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Cookies and Milk.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Download.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Drink.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Eggs and Bacon.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Eject.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Electronic Brain.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Fast Car.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Female Robot.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_File.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Film.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Fire.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Fireaid Box.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Flower.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Frankensteins Monster.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Gallery.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Hairdryer.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Heartful Care.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Heartrate.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Helicopter.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Hipster man.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Holland.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Home Browser.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Honey.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Leaf Shape One.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Leaf Shape Two.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Left.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Lightening Storm.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Lipstick.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Location.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Lock.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Logogram.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Marshmellow Roasting.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Mastercard.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Milk.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Monster.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Moon.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Music Girl.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Notification Browser.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Other Religion.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Panda.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Pause.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Paypal.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Pen.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Piggy Bank.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Police man.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Pollen.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Pregnant Belly.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Printer.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Rapper.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Record.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Remote Control.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Reverse Camera.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Right Side Up.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Robot.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Russia.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Sacred Geometry Two.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Safety Pin.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Scale.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Scared Geometry One.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Shape One.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Shape Two.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Shirt.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Smartphone.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Snowglobe.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Sonogram.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Soundcloud.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Sun.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Surfer.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Sweater.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Sword.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Teddy Bear.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Telescope.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Thirty Two Memory.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Traffic Light.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Treasure.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Triple Tap.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Twenty Four Hour Phone Line.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_USB Stick.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_USB.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Watch.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Wing.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Yin Yan.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Yoga Pose One.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Yoga Pose Three.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Yoga Pose Two.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/_Zoom Out.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__android.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__avatar.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__bathrooms.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__beer.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__billiard-balls.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__bookmark-image.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__chart-real-estate.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__chess.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__chili.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__coffee-container.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__corn.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__croissant.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__customer-service-agent.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__customer-service.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__diamond.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__ecology-lightbulb.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__eiffel-tower.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__finger-gesture.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__flashlight.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__grapes.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__ice-cream.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__lightening-storm.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__lighter.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__location.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__marshmellow.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__meal.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__money-cloud.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__money.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__motorcycle.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__night-scenery.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__no-junk-food.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__percentage-sticker.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__piggy-bank.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__pine-tree.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__plane.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__pyramids.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__rose.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__seaside.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__ship.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__shower.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__signature.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__snapchat.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__solar-panel.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__soundcloud.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__surf.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__sushi.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__tree.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__video.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__water-compound.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../group_images/__woman.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/CreateDropBoxFolderStruct.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/CreateFolderTask.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/DropboxActivity.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/DropboxClientFactory.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/GetCurrentAccountTask.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ListFileTask.javb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ListFolderTask.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/NotesForCopy.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/UploadFileTask.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../group_images/diamond.png" afterPath="$PROJECT_DIR$/../group_images/diamond.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../group_images/flashlight.png" afterPath="$PROJECT_DIR$/../group_images/flashlight.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../../../build.gradle" afterPath="$PROJECT_DIR$/../../../../build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../AndroidManifest.xml" afterPath="$PROJECT_DIR$/../../AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ActivityBackupHome.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ActivityBackupHome.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ActivityJurnalFiles.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ActivityJurnalFiles.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ArrayAdapterJournalBackups.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/ArrayAdapterJournalBackups.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/PopulateJurnalBackup.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/PopulateJurnalBackup.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/Report.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/backup/Report.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/chathead/ActivityAbout.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/chathead/ActivityAbout.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/chathead/MainActivity.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/chathead/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/BeautifyNoteText.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/BeautifyNoteText.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/ActivityViewTextNote.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/ActivityViewTextNote.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Utility.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Utility.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/PlayListHelper.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/PlayListHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/RealmNoteHelper.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/models/RealmNoteHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/ActivityRecordsPlayList.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/ActivityRecordsPlayList.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RecorderNoteService.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RecorderNoteService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RecorderPhone.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RecorderPhone.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RemoteControlReceiver.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/notetaking/RemoteControlReceiver.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Constants.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/Constants.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/ExternalStorageManager.java" afterPath="$PROJECT_DIR$/../../java/com/fleecast/stamina/utility/ExternalStorageManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/layout/activity_backup_home.xml" afterPath="$PROJECT_DIR$/../../res/layout/activity_backup_home.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../res/layout/popup_record_dialog_view.xml" afterPath="$PROJECT_DIR$/../../res/layout/popup_record_dialog_view.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -44,7 +217,7 @@
       <file leaf-file-name="style.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/assets/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1189">
+            <state relative-caret-position="15">
               <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
               <folding />
             </state>
@@ -313,11 +486,12 @@
       <workItem from="1480546976544" duration="989000" />
       <workItem from="1480597091437" duration="5866000" />
       <workItem from="1480741981025" duration="2413000" />
+      <workItem from="1481255213909" duration="20000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36783000" />
+    <option name="totallyTimeSpent" value="36803000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1920" height="1026" extended-state="6" />
@@ -352,6 +526,40 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/js/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="7" column="21" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding>
+            <marker date="1480385132000" expanded="true" signature="130:142" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/css/normalize.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2865">
+          <caret line="191" column="13" lean-forward="false" selection-start-line="191" selection-start-column="8" selection-end-line="191" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -480,7 +688,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="548">
           <caret line="228" column="16" lean-forward="false" selection-start-line="228" selection-start-column="16" selection-end-line="228" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -519,7 +726,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="57" lean-forward="false" selection-start-line="10" selection-start-column="50" selection-end-line="10" selection-end-column="57" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -551,7 +757,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/assets/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1189">
+        <state relative-caret-position="15">
           <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding />
         </state>

@@ -16,6 +16,7 @@ public class Constants {
     public static final String CONST_WORKING_DIRECTORY_NAME = "/stamina";
     public static final String CONST_RECYCLEBIN_DIRECTORY_NAME = "/trash";
     public static final String CONST_PHONE_CALLS_DIRECTORY_NAME = "/phonecalls"; // My birthday as folder name
+
     public static String CONST_REPORT_DIRECTORY_NAME="/reports";
     public static String TEMP_FOLDER_NAME ="temporary";
     public static final String CONST_TEMPLATE_DIRECTORY = "template"; // My birthday as folder name
@@ -23,6 +24,7 @@ public class Constants {
     public static final String CHATHEAD_X = "ChatHeadX";
     public static final String CHATHEAD_Y = "ChatHeadY";
     public static final String CONST_URL_HELPS = "http://stamina.help.s3-website-ap-southeast-2.amazonaws.com/index.html";
+    public static final String CONST_URL_FACEBOOK = "FleeCast-150012475024146";
     public static final String CONST_URL_DROPBOX = "https://api.dropboxapi.com";
 
     public static final int CONST_NOTETYPE_TEXT = 0;
@@ -50,6 +52,8 @@ public class Constants {
     public static final String EXTRA_CURRENT_DBID_RECORD_SERVICE = "ExtraCurrentDbidRecordService";
     public static final String INTENTFILTER_RECORD_SERVICE = "IntentfilterRecordService";
     public static final String EXTRA_RECORD_SERVICE_REPORTS = "ExtraRecordServiceError";
+    public static final String EXTRA_MANAGE_JOURNAL_FILES = "ExtraManageJurnalFiles";
+
     public static final int REPORT_RECORD_ERROR_TO_ACTIVITY = 0;
     public static final int REPORT_RECORDED_FILE_TO_ACTIVITY = 1;
     public static final int REPORT_RECORD_STOPPED_BY_NOTIFICATION_TO_ACTIVITY = 2;

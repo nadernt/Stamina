@@ -48,4 +48,8 @@ public class ArrayAdapterJournalBackups extends ArrayAdapter<File> {
 
 		return rowView;
 	}
+	public void myRemove(int position){
+		values.remove(position);
+		ArrayAdapterJournalBackups.super.notifyDataSetChanged();
+	}
 }

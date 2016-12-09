@@ -111,15 +111,10 @@ public class ActivityRecordsPlayList extends Activity {
 
             String mFolderDbUniqueToken = intent.getStringExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID);
 
-            //Log.e("ddddddddddddd",Prefs.getBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START,false) + "");
-
             loadPlayListForListViw(mFolderDbUniqueToken, Prefs.getBoolean(Constants.PREF_AUTO_RUN_PLAYER_ON_START, false));
-
-            //myApplication.setIndexSomethingIsPlaying(Constants.CONST_NULL_ZERO);
 
             parentDbId = Integer.valueOf(mFolderDbUniqueToken);
 
-            Log.e("DBG", "1465131201");
 
         }/*else {
             TitlesFragment.highlightSelectedNoteItem(notePointer);

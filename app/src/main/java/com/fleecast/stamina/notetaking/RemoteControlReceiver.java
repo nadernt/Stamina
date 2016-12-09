@@ -16,7 +16,6 @@ public class RemoteControlReceiver extends BroadcastReceiver {
             KeyEvent event = (KeyEvent)intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
             if (KeyEvent.KEYCODE_MEDIA_PLAY == event.getKeyCode()) {
                 // Handle key press.
-                Log.e("GOOOOOOOOOO","OOOOOOOOOOOO");
             }
         }
     }

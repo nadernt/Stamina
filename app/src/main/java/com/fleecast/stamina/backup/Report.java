@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -131,7 +132,7 @@ public class Report {
 
                     ArrayList<AudioData> audioDatas = new ArrayList<>();
 
-                    ArrayList<Integer> filesIds = listAudioFilesInDirectoryByParentId(pathToAudioFiles);
+                    ArrayList<Integer> filesIds =  ExternalStorageManager.listAudioFilesInDirectoryByParentId(pathToAudioFiles);
 
                     if (filesIds.size() > 0) {
                         for (int a = 0; a < audioNoteInfoRealmStructs.size(); a++) {
@@ -179,11 +180,19 @@ public class Report {
                 if ((noteType == Constants.CONST_NOTETYPE_PHONECALL) && phoneCalls) {
 
                     String incomOutCome = realmResult.get(i).getCallType() == Constants.RECORDS_IS_OUTGOING ? "Outgoing" : "Incoming";
-                    if (realmResult.get(i).getStartTime() != null && realmResult.get(i).getEndTime() != null && realmResult.get(i).getCreateTimeStamp() != null) {
+                    if (realmResult.get(i).getStartTime() != null && realmResult.get(i).getEndTime() != null ) {
                         addCSVline(realmResult.get(i).getNoteType(),
                                 realmResult.get(i).getTitle(), realmResult.get(i).getDescription(), realmResult.get(i).getCreateTimeStamp().getTime(), "",
                                 realmResult.get(i).getPhoneNumber(), realmResult.get(i).getStartTime().getTime(), realmResult.get(i).getEndTime().getTime(),
                                 Utility.calculateCallDuration(realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime()), incomOutCome, Constants.CONST_NULL_ZERO);
+                    }
+                    else{
+                        Date now = new Date();
+                        addCSVline(realmResult.get(i).getNoteType(),
+                                realmResult.get(i).getTitle(), realmResult.get(i).getDescription(), realmResult.get(i).getCreateTimeStamp().getTime(), "",
+                                realmResult.get(i).getPhoneNumber(), realmResult.get(i).getCreateTimeStamp().getTime(), now.getTime(),
+                                Utility.calculateCallDuration(realmResult.get(i).getCreateTimeStamp(),now), incomOutCome, Constants.CONST_NULL_ZERO);
+
                     }
                 }
 
@@ -220,64 +229,6 @@ public class Report {
         return CSVNotesStrings;
     }
 
-
-    private class AudioData {
-
-        private int id;
-        private int parent_db_id;
-        private String title;
-        private int tag;
-        private String description;
-
-        public AudioData(int id, int parent_db_id, String title, String description, int tag) {
-            this.id = id;
-            this.parent_db_id = parent_db_id;
-            this.title = title;
-            this.tag = tag;
-            this.description = description;
-        }
-
-        public int getTag() {
-            return tag;
-        }
-
-        public void setTag(int tag) {
-            this.tag = tag;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getParentDbId() {
-            return parent_db_id;
-        }
-
-        public void setParentDbId(int parent_db_id) {
-            this.parent_db_id = parent_db_id;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-    }
 
     public String getReportFromDBTabular(boolean textNotes, boolean audioNotes, boolean phoneCalls, boolean toDoNote) {
 
@@ -331,7 +282,7 @@ public class Report {
 
                     ArrayList<AudioData> audioDatas = new ArrayList<>();
 
-                    ArrayList<Integer> filesIds = listAudioFilesInDirectoryByParentId(pathToAudioFiles);
+                    ArrayList<Integer> filesIds = ExternalStorageManager.listAudioFilesInDirectoryByParentId(pathToAudioFiles);
 
                     if (filesIds.size() > 0) {
                         for (int a = 0; a < audioNoteInfoRealmStructs.size(); a++) {
@@ -523,7 +474,7 @@ public class Report {
 
                     ArrayList<AudioData> audioDatas = new ArrayList<>();
 
-                    ArrayList<Integer> filesIds = listAudioFilesInDirectoryByParentId(pathToAudioFiles);
+                    ArrayList<Integer> filesIds =  ExternalStorageManager.listAudioFilesInDirectoryByParentId(pathToAudioFiles);
 
                     if (filesIds.size() > 0) {
                         for (int a = 0; a < audioNoteInfoRealmStructs.size(); a++) {
@@ -660,20 +611,7 @@ public class Report {
         return strOutPutReport;
     }
 
-    private ArrayList<Integer> listAudioFilesInDirectoryByParentId(String pathToAudioFiles) {
 
-        File f = new File(pathToAudioFiles);
-        File[] fl = f.listFiles();
-        ArrayList<Integer> returnArray = new ArrayList<>();
-        for (int i = 0; i < fl.length; i++) {
-
-            if (fl[i].isFile()) {
-                returnArray.add(Utility.getDbIdFromFileName(String.valueOf(fl[i])));
-            }
-        }
-
-        return returnArray;
-    }
 
     private String loadTemplate() {
         try {

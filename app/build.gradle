@@ -2,20 +2,34 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
 android {
+    signingConfigs {
+        release_config {
+            keyAlias 'stamina_key'
+            keyPassword 'c:\\sahraravand@3'
+            storeFile file('/home/nnt/Dropbox/app_key/stamina_key.jks')
+            storePassword 'c:\\sahraravand@3'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId 'com.fleecast.stamina'
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0.1"
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release_config
         }
+        debug {
+            signingConfig signingConfigs.release_config
+        }
+    }
+    productFlavors {
     }
 }
 
@@ -25,7 +39,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "io.realm:realm-gradle-plugin:2.2.0"
+        classpath "io.realm:realm-gradle-plugin:2.2.1"
     }
 }
 
@@ -33,16 +47,14 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
-    compile 'com.android.support:support-v4:25.0.0'
-    compile 'com.android.support:cardview-v7:25.0.0'
+    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:cardview-v7:25.0.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile 'com.android.support:recyclerview-v7:25.0.0'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.github.medyo:android-about-page:1.0.9'
     compile 'com.google.android.gms:play-services-location:8.4.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.dropbox.core:dropbox-core-sdk:2.0.6'
-    compile 'com.squareup.okhttp3:okhttp:3.3.1'
 }
 
 

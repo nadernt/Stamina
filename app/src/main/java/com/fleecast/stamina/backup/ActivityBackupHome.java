@@ -26,8 +26,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.dropbox.core.android.Auth;
-import com.dropbox.core.v2.users.FullAccount;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.models.NoteInfoRealmStruct;
 import com.fleecast.stamina.models.RealmNoteHelper;
@@ -57,15 +55,9 @@ import java.util.Date;
 import javax.crypto.NoSuchPaddingException;
 
 import io.realm.RealmResults;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
-public class ActivityBackupHome extends DropboxActivity {
+
+public class ActivityBackupHome extends Activity {
     private RealmNoteHelper realmNoteHelper;
 
     private Button dropbox_login_button;
@@ -75,8 +67,7 @@ public class ActivityBackupHome extends DropboxActivity {
     private ArrayList<String> cloudPathsAudioFiles = new ArrayList<>();
     private ArrayList<String> cloudPathsJournalFiles = new ArrayList<>();
     private int indexFiles;
-    MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
+
     private Button btnCopyToCloud;
     private CheckBox chkEncrypt;
     private ImageView imgBtnRemoveKey;
@@ -108,6 +99,7 @@ public class ActivityBackupHome extends DropboxActivity {
     private EditText editTxtReportAuthorName;
     private RadioButton rdoCSVReport;
     private RadioButton rdoHtmlReport;
+    private Button btnManageBackupFiles;
 
 
     @Override
@@ -124,6 +116,7 @@ public class ActivityBackupHome extends DropboxActivity {
         btnCopyToCloud = (Button) findViewById(R.id.btnCopyToCloud);
         btnChooseReportPath = (Button) findViewById(R.id.btnChooseReportPath);
         btnCreateReport = (Button) findViewById(R.id.btnCreateReport);
+        btnManageBackupFiles = (Button) findViewById(R.id.btnManageBackupFiles);
 
         chkEncrypt = (CheckBox) findViewById(R.id.chkEncrypt);
         chkExmportTextNotes = (CheckBox) findViewById(R.id.chkExportTextNotes);
@@ -180,6 +173,7 @@ public class ActivityBackupHome extends DropboxActivity {
 
         }
 
+        //realmNoteHelper.updateNotePhoneCallInfo();
         imgRestorHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,7 +266,7 @@ public class ActivityBackupHome extends DropboxActivity {
             }
         });
 
-        btnCopyToCloud.setOnClickListener(new View.OnClickListener() {
+       /* btnCopyToCloud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OkHttpClient client = new OkHttpClient();
@@ -303,7 +297,7 @@ public class ActivityBackupHome extends DropboxActivity {
 
             }
         });
-
+*/
         btnCreateBackUp.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -373,7 +367,7 @@ public class ActivityBackupHome extends DropboxActivity {
         });
 
 
-        dropbox_login_button.setOnClickListener(new View.OnClickListener() {
+       /* dropbox_login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!hasToken()) {
@@ -388,7 +382,7 @@ public class ActivityBackupHome extends DropboxActivity {
                 }
 
             }
-        });
+        });*/
 
       /*  btnChooseReportPath.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -397,6 +391,15 @@ public class ActivityBackupHome extends DropboxActivity {
                 startActivityForResult(intent, Constants.RESULT_CODE_REQUEST_DIRECTORY);
             }
         });*/
+
+        btnManageBackupFiles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivityBackupHome.this, ActivityJurnalFiles.class);
+                intent.putExtra(Constants.EXTRA_MANAGE_JOURNAL_FILES,true);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -429,9 +432,6 @@ public class ActivityBackupHome extends DropboxActivity {
 
                 new LongReportOperation().execute(reportParameters);
 
-/*
-                System.out.println(reportPath + "  KKKKKKKKKK");
-*/
             }
         }
 
@@ -463,7 +463,7 @@ public class ActivityBackupHome extends DropboxActivity {
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityBackupHome.this);
-                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                builder.setMessage("Are you sure want to restor ? " + s).setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
 
 
@@ -589,8 +589,9 @@ public class ActivityBackupHome extends DropboxActivity {
                 if (reportParameterses[0].isAudioNotes())
                     copyAudioNoteFilesForReport(strTmpWorkingDir, notesListForCopyFile);
 
-                if (reportParameterses[0].isPhoneCalls())
+                if (reportParameterses[0].isPhoneCalls() ) {
                     copyPhoneCallsFilesForReport(strTmpWorkingDir);
+                }
 
                 //Copy asset files of html like css,js etc.
                 Utility.copyAssetFolder(ActivityBackupHome.this.getAssets(), Constants.CONST_TEMPLATE_DIRECTORY + File.separator + "assets",
@@ -623,7 +624,7 @@ public class ActivityBackupHome extends DropboxActivity {
                     File gpxfile = new File(reportParameterses[0].getReportPath(), outputCSVFileName);
 
                     FileWriter writer = new FileWriter(gpxfile);
-                    System.out.println(csvReportArr.size() + "ffffffffffffffff");
+
                     try {
 
                         for(int i=0 ; i< csvReportArr.size(); i++ ){
@@ -1392,7 +1393,7 @@ public class ActivityBackupHome extends DropboxActivity {
         return s == null || s.trim().isEmpty();
     }
 
-    private void populateDropBoxUploadList() {
+   /* private void populateDropBoxUploadList() {
         final OkHttpClient client = new OkHttpClient();
         //Headers headers = new Headers()
         final Request request = new Request.Builder()
@@ -1408,8 +1409,8 @@ public class ActivityBackupHome extends DropboxActivity {
 
                 displayIt(new File(ExternalStorageManager.getWorkingDirectory()));
 
-               /* for (int i = 0; i < backupFilesStruct.size(); i++)
-                    System.out.println(backupFilesStruct.get(i).getFilePath() + "*");*/
+               *//* for (int i = 0; i < backupFilesStruct.size(); i++)
+                    System.out.println(backupFilesStruct.get(i).getFilePath() + "*");*//*
             }
 
             @Override
@@ -1487,8 +1488,8 @@ public class ActivityBackupHome extends DropboxActivity {
 
                         backupFilesStruct = new ArrayList<>(tmpStr);
 
-                      /*  for (int i = 0; i < backupFilesStruct.size(); i++)
-                            System.out.println(backupFilesStruct.get(i).getFilePath() + "#");*/
+                      *//*  for (int i = 0; i < backupFilesStruct.size(); i++)
+                            System.out.println(backupFilesStruct.get(i).getFilePath() + "#");*//*
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -1501,7 +1502,7 @@ public class ActivityBackupHome extends DropboxActivity {
         asyncTask.execute();
 
     }
-
+*/
     private class LongOperation extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
@@ -1559,7 +1560,7 @@ public class ActivityBackupHome extends DropboxActivity {
     protected void onResume() {
         super.onResume();
 
-        if (hasToken()) {
+       /* if (hasToken()) {
 
             dropbox_login_button.setText("Unlink");
             findViewById(R.id.name_text).setVisibility(View.VISIBLE);
@@ -1568,10 +1569,10 @@ public class ActivityBackupHome extends DropboxActivity {
             dropbox_login_button.setText("Login with Dropbox");
             findViewById(R.id.name_text).setVisibility(View.GONE);
             //findViewById(R.id.files_button).setEnabled(false);
-        }
+        }*/
     }
 
-    @Override
+    /*@Override
     protected void loadData() {
         new GetCurrentAccountTask(DropboxClientFactory.getClient(), new GetCurrentAccountTask.Callback() {
             @Override
@@ -1584,7 +1585,7 @@ public class ActivityBackupHome extends DropboxActivity {
                 Log.e(getClass().getName(), "Failed to get account details.", e);
             }
         }).execute();
-    }
+    }*/
 }
 
 /*
