@@ -16,6 +16,7 @@ public class Constants {
     public static final String CONST_WORKING_DIRECTORY_NAME = "/stamina";
     public static final String CONST_RECYCLEBIN_DIRECTORY_NAME = "/trash";
     public static final String CONST_PHONE_CALLS_DIRECTORY_NAME = "/phonecalls"; // My birthday as folder name
+    public static final String PREF_IS_DEVICE_SMARTPHONE = "PrefIsDeviceSmartphone";
 
     public static String CONST_REPORT_DIRECTORY_NAME="/reports";
     public static String TEMP_FOLDER_NAME ="temporary";

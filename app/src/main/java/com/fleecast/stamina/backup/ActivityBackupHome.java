@@ -100,6 +100,7 @@ public class ActivityBackupHome extends Activity {
     private RadioButton rdoCSVReport;
     private RadioButton rdoHtmlReport;
     private Button btnManageBackupFiles;
+    private boolean isDeviceSmartPhone;
 
 
     @Override
@@ -109,6 +110,8 @@ public class ActivityBackupHome extends Activity {
         setContentView(R.layout.activity_backup_home);
 
         realmNoteHelper = new RealmNoteHelper(ActivityBackupHome.this);
+
+        isDeviceSmartPhone = Prefs.getBoolean(Constants.PREF_IS_DEVICE_SMARTPHONE,false);
 
         dropbox_login_button = (Button) findViewById(R.id.dropbox_login_button);
         btnImportBackup = (Button) findViewById(R.id.btnImportBackup);
@@ -139,6 +142,17 @@ public class ActivityBackupHome extends Activity {
         chkTabular = (CheckBox) findViewById(R.id.chkTabular);
         chkReportTimeStamp = (CheckBox) findViewById(R.id.chkReportTimeStamp);
 
+        if(!isDeviceSmartPhone)
+        {
+            chkExportPhoneCalls.setChecked(false);
+            chkExportPhoneCalls.setVisibility(View.GONE);
+
+            chkRestorPhonecalls.setChecked(false);
+            chkRestorPhonecalls.setVisibility(View.GONE);
+
+            chkReportPhonecalls.setChecked(false);
+            chkReportPhonecalls.setVisibility(View.GONE);
+        }
 
         rdoCSVReport = (RadioButton) findViewById(R.id.rdoCSVReport);
         rdoHtmlReport = (RadioButton) findViewById(R.id.rdoHtmlReport);
@@ -463,7 +477,7 @@ public class ActivityBackupHome extends Activity {
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ActivityBackupHome.this);
-                builder.setMessage("Are you sure want to restor ? " + s).setPositiveButton("Yes", dialogClickListener)
+                builder.setMessage("Are you sure want to restore ? " + new File(s).getName()).setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
 
 
@@ -1027,19 +1041,19 @@ public class ActivityBackupHome extends Activity {
                         }
 
 
-                        if (BackupEncrypt.testEncryptKey(ActivityBackupHome.this, strFirstPass)) {
+                        //if (BackupEncrypt.testEncryptKey(ActivityBackupHome.this, strFirstPass)) {
 
                             wantToCloseDialog = true;
 
                             FileBackUpDepackParameters fileBackUpDepackParameters = new FileBackUpDepackParameters(true, strFirstPass, fileNameToUnbackUpAndDecrypt);
                             new LongFileBackupDepackOperation().execute(fileBackUpDepackParameters);
 
-                        } else {
+//                        } else {
 
-                            txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>"));
+  //                          txtViewPassDialogComments.setVisibility(View.VISIBLE);
+    //                        txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>"));
 
-                        }
+//                        }
 
 
                         break;

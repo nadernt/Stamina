@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
@@ -290,7 +291,13 @@ public class ActivityViewTextNote extends AppCompatActivity {
         txtTitleViewTextNote.setText(title);
         txtTitleViewTextNote.setVisibility(View.VISIBLE);
 
-        txtDescriptionViewTextNote.setText(Html.fromHtml(Utility.convertNewLineCharToBrHtml(beautifyNoteText.getDetailsHtmlFormatedAll())));
+        String str = Utility.convertNewLineCharToBrHtml(beautifyNoteText.getDetailsHtmlFormatedAll());
+/*
+        str = str.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+*/
+
+            txtDescriptionViewTextNote.setText(Html.fromHtml(str));
+
         txtDescriptionViewTextNote.setVisibility(View.VISIBLE);
 
     }

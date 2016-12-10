@@ -1,0 +1,21 @@
+Hi,
+
+Thanks for downloading Stamina! To get started quickly, please visit the user guide from help menu.
+Your feedback is very important to us. If you have any question or suggestion regarding the Stamina app please contact us by Report Bug & Suggestion provided at the menu.
+
+What is Stamina?
+You can use it to manage daily tasks like making audio books and notes for your university, taking simple text notes, organising and remembering important things by task lists and record clients’ or friends’ phone calls.
+
+Here is the list of features the Stamina app offers:
+-Add new text notes.
+-Add Audio notes.
+-Making task lists with sub tasks.
+-Record phone conversations. This function also lets you add a note for later use.
+-Making ignore list for phone numbers. Selected numbers won’t be recorded.
+-A float control that helps access app’s options easier.
+-Access to all of the current installed apps at your device.
+    * Managing apps groups (add, remove and order) and sorting options.
+    * Searching in apps.
+
+Warm regards,
+Team Stamina

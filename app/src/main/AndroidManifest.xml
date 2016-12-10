@@ -203,11 +203,11 @@
             </intent-filter>
         </receiver>
 
-        <activity
+       <!-- <activity
             android:name=".notetaking.ActivityViewNoteContents"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_activity_view_note_contents"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme" />-->
         <activity
             android:name=".todo.ActivityAddToEvent"
             android:configChanges="keyboardHidden|orientation|screenSize"

@@ -31,6 +31,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -85,6 +86,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
@@ -110,12 +112,14 @@ public class MainActivity extends AppCompatActivity
     private MenuItem menuShowPhoneRecord;
     private MenuItem menuSearchFilter;
     private MyApplication myApplication;
-    private MainActivity context;
+    private MainActivity mContext;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private NotesAdapter adapter;
     //private String titleOfEmail = "";
     //private int reportType = 0;
     private CheckBox dontShowAgain;
+    private final int OVERLAY_PERMISSION_REQ_CODE = 1324;
+    private boolean isDeviceSmartPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +145,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void firstRunAppInitials() {
-
 
         //  if(1<2){
         if (!Prefs.getBoolean(Constants.PREF_FIRST_INITIAL_OF_APP, false)) {
@@ -203,7 +206,33 @@ public class MainActivity extends AppCompatActivity
 
             ExternalStorageManager.ifWorkingDirIsNotExitMakeIt(this);
 
-        }
+            Prefs.putBoolean(Constants.PREF_IS_DEVICE_SMARTPHONE, isCallingSupported(MainActivity.this));
+
+                Date updateTime = new Date();
+
+                Date createdTime = null;
+
+                int dbId = (int) (System.currentTimeMillis() / 1000);
+
+                String title = "Welcome to Stamina!";
+                String description= "";
+                InputStream is = null;
+
+                try {
+                    is = getAssets().open("user_guide/first_text_note.txt");
+                    int size = is.available();
+                    byte[] buffer = new byte[size];
+                    is.read(buffer);
+                    is.close();
+                    description = new String(buffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                realmNoteHelper = new RealmNoteHelper(MainActivity.this);
+
+                realmNoteHelper.addNote(dbId, title, description, false, updateTime, createdTime, null, null, Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL, null, 0, Constants.CONST_NOTETYPE_TEXT);
+            }
 
         ExternalStorageManager.ifWorkingDirIsNotExitMakeIt(this);
 
@@ -219,6 +248,16 @@ private void testFucntions(){
 
 }
 
+    private static boolean isCallingSupported(Context context) {
+
+        TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        if(manager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
     public static boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
@@ -255,7 +294,9 @@ private void testFucntions(){
 
         myApplication.setLauncherDialogNotVisible(false);
 
-        context = MainActivity.this;
+        mContext = MainActivity.this;
+
+       isDeviceSmartPhone = Prefs.getBoolean(Constants.PREF_IS_DEVICE_SMARTPHONE,false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarNoteTakingList);
         toolbar.setTitle("Notes");
@@ -264,10 +305,10 @@ private void testFucntions(){
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params.setScrollFlags(0);
 
-       //startTheChatHead();
-        Log.e(TAG, "ActivityTakenNotesList");
         noteInfoStructs = new ArrayList<>();
-        realmNoteHelper = new RealmNoteHelper(context);
+        realmNoteHelper = new RealmNoteHelper(mContext);
+
+
 
        setPermisions();
 
@@ -286,7 +327,7 @@ private void testFucntions(){
 
                 if(swipeDir == ItemTouchHelper.LEFT) {
                     NoteInfoStruct noteInfoStruct = adapter.getItemAtPosition(viewHolder.getAdapterPosition());
-                    Intent intent = new Intent(context, ActivityViewTextNote.class);
+                    Intent intent = new Intent(mContext, ActivityViewTextNote.class);
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, noteInfoStruct.getId());
 
                     if (!noteInfoStruct.getHasAudio()) {
@@ -333,10 +374,16 @@ private void testFucntions(){
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (Prefs.getBoolean(Constants.RECORDER_PHONE_IS_RECORD, false))
-            navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls  ✔");
-        else
-            navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
+
+       if(!isDeviceSmartPhone) {
+           navigationView.getMenu().findItem(R.id.nav_phone_record).setVisible(false);
+           navigationView.getMenu().findItem(R.id.nav_phone_ignorelist).setVisible(false);
+       }else {
+           if (Prefs.getBoolean(Constants.RECORDER_PHONE_IS_RECORD, false))
+               navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls  ✔");
+           else
+               navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
+       }
 
        AppRating.app_launched(this);
 
@@ -409,7 +456,7 @@ private void testFucntions(){
 
         return false;
     }
-    public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
+
     private void startTheChatHead() {
 
         if (!blIsAlreadyAChatheadRequested) {
@@ -543,6 +590,12 @@ private void testFucntions(){
         menuShowTextNote = menu.findItem(R.id.action_show_text_notes);
         menuShowAudioNote = menu.findItem(R.id.action_show_audio_notes);
         menuShowPhoneRecord = menu.findItem(R.id.action_show_phone_records);
+        if(!isDeviceSmartPhone)
+        {
+            menuShowPhoneRecord.setVisible(false);
+            menuShowPhoneRecord.setChecked(false);
+
+        }
 
         if (Prefs.getInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION) == Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION) {
             menuSearchFilter.setIcon(R.drawable.ic_action_news);
@@ -623,13 +676,13 @@ private void testFucntions(){
         } catch (Exception e) {
             e.printStackTrace();
         }
-        adapter = new NotesAdapter(context, noteInfoStructs, new NotesAdapter.OnItemClickListener() {
+        adapter = new NotesAdapter(mContext, noteInfoStructs, new NotesAdapter.OnItemClickListener() {
             @Override
             public void onClick(NoteInfoStruct item) {
 
                 if (!item.getHasAudio()) {
 
-                    Intent intent = new Intent(context, ActivityViewTextNote.class);
+                    Intent intent = new Intent(mContext, ActivityViewTextNote.class);
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
 
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
@@ -648,27 +701,27 @@ private void testFucntions(){
                                 // your code using RemoteControlClient API here - is between 14-20
 
                                 if (myApplication.isPlaying() || myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED) {
-                                    Intent intent = new Intent(context, PlayerServiceLegacy.class);
+                                    Intent intent = new Intent(mContext, PlayerServiceLegacy.class);
                                     intent.setAction(Constants.ACTION_STOP_LEGACY);
                                     startService(intent);
                                 }
 
                                 myApplication.setIndexSomethingIsPlaying(0);
 
-                                Intent intent = new Intent(context, ActivityLegacyPlayer.class);
+                                Intent intent = new Intent(mContext, ActivityLegacyPlayer.class);
                                 intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, item.getId());
                                 startActivity(intent);
 
                             } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                                 if (myApplication.isPlaying()) {
-                                    Intent intent = new Intent(context, PlayerService.class);
+                                    Intent intent = new Intent(mContext, PlayerService.class);
                                     intent.setAction(Constants.ACTION_STOP);
                                     startService(intent);
                                 }
                                 myApplication.setPlaylistHasLoaded(false);
 
-                                Intent intent = new Intent(context, ActivityRecordsPlayList.class);
+                                Intent intent = new Intent(mContext, ActivityRecordsPlayList.class);
                                 intent.putExtra(Constants.EXTRA_FOLDER_TO_PLAY_ID, String.valueOf(item.getId()));
                                 startActivity(intent);
 
@@ -684,12 +737,12 @@ private void testFucntions(){
                         // your code using RemoteControlClient API here - is between 14-20
 
                         if (myApplication.isPlaying() || myApplication.getPlayerServiceCurrentState() == Constants.CONST_PLAY_SERVICE_STATE_PAUSED) {
-                            Intent intent = new Intent(context, PlayerServiceLegacy.class);
+                            Intent intent = new Intent(mContext, PlayerServiceLegacy.class);
                             intent.setAction(Constants.ACTION_STOP_LEGACY);
                             startService(intent);
                         }
 
-                        Intent intent = new Intent(context, ActivityLegacyPlayerPhone.class);
+                        Intent intent = new Intent(mContext, ActivityLegacyPlayerPhone.class);
                         intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
                         String filePath = ExternalStorageManager.getWorkingDirectory() +
                                 Constants.CONST_PHONE_CALLS_DIRECTORY_NAME +
@@ -703,12 +756,12 @@ private void testFucntions(){
                     } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                         if (myApplication.isPlaying()) {
-                            Intent intent = new Intent(context, PlayerService.class);
+                            Intent intent = new Intent(mContext, PlayerService.class);
                             intent.setAction(Constants.ACTION_STOP);
                             startService(intent);
                         }
 
-                        Intent intent = new Intent(context, ActivityPlayerPhone.class);
+                        Intent intent = new Intent(mContext, ActivityPlayerPhone.class);
                         intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
                         String filePath = ExternalStorageManager.getWorkingDirectory() +
                                 Constants.CONST_PHONE_CALLS_DIRECTORY_NAME +
@@ -736,7 +789,7 @@ private void testFucntions(){
             public void onLongClick(final NoteInfoStruct item) {
 
                 String[] items;
-                final RealmContactHelper realmContactHelper = new RealmContactHelper(context);
+                final RealmContactHelper realmContactHelper = new RealmContactHelper(mContext);
                 if (!item.getHasAudio()) {
                     items = new String[]{"Edit", "Delete", "Share"};
                 } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
@@ -752,7 +805,7 @@ private void testFucntions(){
                 AlertDialog myDialog;
 
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
                 builder.setTitle(Utility.ellipsize(item.getTitle(), 50));
                 builder.setIcon(R.drawable.ic_sun);
@@ -764,11 +817,11 @@ private void testFucntions(){
 
                             if (!item.getHasAudio()) {
 
-                                final Intent intent = new Intent(context, ActivityAddTextNote.class);
+                                final Intent intent = new Intent(mContext, ActivityAddTextNote.class);
 
                                 if (myApplication.getCurrentOpenedTextNoteId() > 0) {
 
-                                    android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(context);
+                                    android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(mContext);
 
                                     adb.setMessage("Another not saved note is open. Do you want close it and edit this one?");
 
@@ -804,7 +857,7 @@ private void testFucntions(){
 
                             } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
-                                final Intent intent = new Intent(context, ActivityAddAudioNote.class);
+                                final Intent intent = new Intent(mContext, ActivityAddAudioNote.class);
 
                                 if (myApplication.isRecordUnderGoing() != Constants.CONST_RECORDER_SERVICE_WORKS_FOR_PHONE) {
 
@@ -826,13 +879,13 @@ private void testFucntions(){
                                     // If we do not have any on going record.
 
                                 } else {
-                                    Toast.makeText(context, "Note: A phone recording is in progress. You can not take audio note.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(mContext, "Note: A phone recording is in progress. You can not take audio note.", Toast.LENGTH_LONG).show();
                                 }
 
 
                             } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
 
-                                Intent intent = new Intent(context, ActivityEditPhoneRecordNote.class);
+                                Intent intent = new Intent(mContext, ActivityEditPhoneRecordNote.class);
 
                                 //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -878,7 +931,7 @@ private void testFucntions(){
 
 
                                 if (f.listFiles().length == Constants.CONST_NULL_ZERO) {
-                                    Toast.makeText(context, "No file to share.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, "No file to share.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -956,9 +1009,9 @@ private void testFucntions(){
 
                             } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
 
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
 
-                                LinearLayout layout = new LinearLayout(context);
+                                LinearLayout layout = new LinearLayout(mContext);
                                 LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                 layout.setOrientation(LinearLayout.VERTICAL);
                                 layout.setLayoutParams(parms);
@@ -966,15 +1019,15 @@ private void testFucntions(){
                                 layout.setGravity(Gravity.CLIP_VERTICAL);
                                 layout.setPadding(2, 2, 2, 2);
 
-                                TextView tv = new TextView(context);
+                                TextView tv = new TextView(mContext);
                                 tv.setText("You are sharing " + Utility.ellipsize(item.getTitle(), 50) + " phone call!");
                                 tv.setPadding(40, 40, 40, 40);
                                 tv.setGravity(Gravity.LEFT);
                                 tv.setTextSize(20);
 
-                                final EditText et = new EditText(context);
+                                final EditText et = new EditText(mContext);
                                 String etStr = et.getText().toString();
-                                TextView tv1 = new TextView(context);
+                                TextView tv1 = new TextView(mContext);
                                 tv1.setPadding(20, 10, 20, 10);
                                 tv1.setText(Html.fromHtml("Type <font color='RED'>ASD</font> (case insensitive)"));
 
@@ -1000,7 +1053,7 @@ private void testFucntions(){
                                     public void onClick(DialogInterface dialog, int which) {
                                         if (!et.getText().toString().trim().toLowerCase().contains("asd")) {
 
-                                            Toast.makeText(context, "Wrong text!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "Wrong text!", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
 
@@ -1075,7 +1128,7 @@ private void testFucntions(){
 
                         } else if (which == 3) { // Call
                             try {
-                                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+                                if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_CONTACTS)
                                         == PackageManager.PERMISSION_GRANTED) {
 
                                     String uri = "tel:" + item.getPhoneNumber().trim();
@@ -1087,19 +1140,19 @@ private void testFucntions(){
                             }
                         } else if (which == 4) { //Add to ignore
 
-                            String strContactName = Utility.getContactName(context, item.getPhoneNumber().trim());
+                            String strContactName = Utility.getContactName(mContext, item.getPhoneNumber().trim());
 
                             if (!realmContactHelper.checkIfExistsInIgnoreList(item.getPhoneNumber().trim())) {
                                 realmContactHelper.addIgnoreList(
                                         item.getPhoneNumber().trim(),
                                         strContactName);
 
-                                Toast.makeText(context, "Number added to ignore list.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(mContext, "Number added to ignore list.", Toast.LENGTH_LONG).show();
                             } else {
                                 realmContactHelper.deleteContactFromIgnoreList(
                                         item.getPhoneNumber().trim()
                                 );
-                                Toast.makeText(context, "Number removed from ignore list.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(mContext, "Number removed from ignore list.", Toast.LENGTH_LONG).show();
 
                             }
 
@@ -1121,7 +1174,7 @@ private void testFucntions(){
 
     private void deleteItem(final NoteInfoStruct item, final boolean isItFromSwipeFunction) {
         if (myApplication.getCurrentOpenedTextNoteId() == item.getId() || myApplication.getCurrentRecordingAudioNoteId() == item.getId()) {
-            Utility.showMessage("This note is already open. Close it and try again.", "Note", context);
+            Utility.showMessage("This note is already open. Close it and try again.", "Note", mContext);
             return;
         }
 
@@ -1137,13 +1190,13 @@ private void testFucntions(){
                             && ((Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP))) {
                         // your code using RemoteControlClient API here - is between 14-20
 
-                            Intent intent = new Intent(context, PlayerServiceLegacy.class);
+                            Intent intent = new Intent(mContext, PlayerServiceLegacy.class);
                             intent.setAction(Constants.ACTION_STOP_LEGACY);
                             startService(intent);
 
                     } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-                            Intent intent = new Intent(context, PlayerService.class);
+                            Intent intent = new Intent(mContext, PlayerService.class);
                             intent.setAction(Constants.ACTION_STOP);
                             startService(intent);
 
@@ -1154,18 +1207,18 @@ private void testFucntions(){
                 }
 
 /*
-                                Utility.showMessage("This is playing. Stop it and try again.", "Note", context);
+                                Utility.showMessage("This is playing. Stop it and try again.", "Note", mContext);
                                 return;
 */
             }
 
         }
-        android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(context);
+        android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(mContext);
 
         adb.setMessage(Html.fromHtml("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?"));
 
         adb.setTitle("Note");
-        final NoteDeleteHelper noteDeleteHelper = new NoteDeleteHelper(context);
+        final NoteDeleteHelper noteDeleteHelper = new NoteDeleteHelper(mContext);
 
         //adb.setIcon(android.R.drawable.ic_dialog_alert);
 
@@ -1176,17 +1229,17 @@ private void testFucntions(){
                 if (!item.getHasAudio()) {
 
                     noteDeleteHelper.deleteTextNote(item.getId());
-                    Toast.makeText(context, "Item deleted!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Item deleted!", Toast.LENGTH_SHORT).show();
 
                 } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
                     noteDeleteHelper.deleteAudioNoteAndItsFiles(item.getId());
-                    Toast.makeText(context, "Item deleted. Contents moved to trash folder.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Item deleted. Contents moved to trash folder.", Toast.LENGTH_SHORT).show();
 
                 } else if (item.getHasAudio() && (item.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
 
                     noteDeleteHelper.deletePhoneNoteAndItsFiles(item.getId());
-                    Toast.makeText(context, "Item deleted. Contents moved to trash folder.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Item deleted. Contents moved to trash folder.", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -1312,7 +1365,7 @@ private void testFucntions(){
             return true;
         } else {
 
-            android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(context);
+            android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(mContext);
 
 
             adb.setMessage("You don't have enough empty space!");
@@ -1382,7 +1435,7 @@ private void testFucntions(){
                 items[0] = "     " + items[0];
             }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
             builder.setTitle("Search Filters:");
             //builder.setIcon(R.drawable.audio_wave);
@@ -1524,9 +1577,9 @@ private void testFucntions(){
 
         } else if (id == R.id.nav_emptytrash) {
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
 
-            LinearLayout layout = new LinearLayout(context);
+            LinearLayout layout = new LinearLayout(mContext);
             LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layout.setOrientation(LinearLayout.VERTICAL);
             layout.setLayoutParams(parms);
@@ -1534,16 +1587,16 @@ private void testFucntions(){
             layout.setGravity(Gravity.CLIP_VERTICAL);
             layout.setPadding(2, 2, 2, 2);
 
-            TextView tv = new TextView(context);
+            TextView tv = new TextView(mContext);
             tv.setText("You are deleting all of trash files. This operation does not revert back!");
             tv.setPadding(40, 40, 40, 40);
             tv.setGravity(Gravity.LEFT);
             tv.setTextSize(20);
 
-            final EditText et = new EditText(context);
+            final EditText et = new EditText(mContext);
             String etStr = et.getText().toString();
 
-            TextView tv1 = new TextView(context);
+            TextView tv1 = new TextView(mContext);
             tv1.setPadding(20, 10, 20, 10);
 
             tv1.setText(Html.fromHtml("Type <font color='RED'>ASD</font> (case insensitive)"));
@@ -1569,7 +1622,7 @@ private void testFucntions(){
                 public void onClick(DialogInterface dialog, int which) {
                     if (!et.getText().toString().trim().toLowerCase().contains("asd")) {
 
-                        Toast.makeText(context, "Wrong text!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Wrong text!", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -1581,7 +1634,7 @@ private void testFucntions(){
 
                     removeDirectory(tempDir);
 
-                    Toast.makeText(context, "Trash is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Trash is empty", Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -1600,7 +1653,7 @@ private void testFucntions(){
 
         } else if (id == R.id.nav_report_bug) {
 
-            android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(context);
+            android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(mContext);
 
             adb.setMessage("Your reports and suggestions help me to make this application better for you. Please explain simple and clear the problem or the feature you like.\n\nThank you!");
 
@@ -1650,7 +1703,7 @@ private void testFucntions(){
 
         } else if (id == R.id.nav_rate) {
 
-            Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+            Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
             // To count with Play market backstack, After pressing back button,
             // to taken back to our application, we need to add following flags to intent.
@@ -1661,7 +1714,7 @@ private void testFucntions(){
                 startActivity(goToMarket);
             } catch (ActivityNotFoundException e) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://play.google.com/store/apps/details?id=" + context.getPackageName())));
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + mContext.getPackageName())));
             }
 
         } else if (id == R.id.nav_help) {
@@ -1671,7 +1724,7 @@ private void testFucntions(){
             startActivity(i);
         } else if (id == R.id.nav_about) {
 
-            Intent intent = new Intent(context, ActivityAbout.class);
+            Intent intent = new Intent(mContext, ActivityAbout.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_settings) {
