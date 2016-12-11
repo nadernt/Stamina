@@ -31,6 +31,7 @@ import com.fleecast.stamina.R;
 import com.fleecast.stamina.models.NoteInfoRealmStruct;
 import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.settings.ActivityChooseDirectory;
+import com.fleecast.stamina.todo.TodoParentRealmStruct;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
@@ -56,6 +57,7 @@ import java.util.Date;
 import javax.crypto.NoSuchPaddingException;
 
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 
 public class ActivityBackupHome extends Activity {
@@ -102,6 +104,7 @@ public class ActivityBackupHome extends Activity {
     private RadioButton rdoHtmlReport;
     private Button btnManageBackupFiles;
     private boolean isDeviceSmartPhone;
+    private NoteTypesAreInDatabase analyseDatabase;
 
 
     @Override
@@ -111,6 +114,8 @@ public class ActivityBackupHome extends Activity {
         setContentView(R.layout.activity_backup_home);
 
         realmNoteHelper = new RealmNoteHelper(ActivityBackupHome.this);
+
+        analyseDatabase =  realmNoteHelper.analyseDatabaseForTypeOfNotesWeHave();
 
         isDeviceSmartPhone = Prefs.getBoolean(Constants.PREF_IS_DEVICE_SMARTPHONE,false);
 
@@ -318,6 +323,11 @@ public class ActivityBackupHome extends Activity {
             @Override
             public void onClick(View view) {
 
+                if(!analyseDatabase.doWeHaveAudio() && !analyseDatabase.doWeHavePhoneCall() && !analyseDatabase.doWeHaveText() && !analyseDatabase.doWeHaveTodo())
+                {
+                    Utility.showMessage("It looks your device doesn't have any types of note therefore you can't get backup.", "Note", ActivityBackupHome.this);
+                    return;
+                }
 
                 if (!chkExportAudioNotes.isChecked() && !chkExportPhoneCalls.isChecked() && !chkExmportTextNotes.isChecked() && !chkExportTodos.isChecked()) {
                     Utility.showMessage("You should choose at least one type of note", "Note", ActivityBackupHome.this);
@@ -347,8 +357,7 @@ public class ActivityBackupHome extends Activity {
             @Override
             public void onClick(View view) {
 
-
-                if (!chkRestoreAudioNotes.isChecked() && !chkRestorPhonecalls.isChecked() && !chkRestoreTextNotes.isChecked() && !chkRestoreTodos.isChecked()) {
+                if (!chkExportAudioNotes.isChecked() && !chkExportPhoneCalls.isChecked() && !chkExmportTextNotes.isChecked() && !chkExportTodos.isChecked()) {
                     Utility.showMessage("You should choose at least one type of note", "Note", ActivityBackupHome.this);
                     return;
                 }
@@ -362,13 +371,12 @@ public class ActivityBackupHome extends Activity {
         btnCreateReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
- /*               Report report = new Report(ActivityBackupHome.this);
-                report.getReportCSV(chkReportTextNotes.isChecked(),
-                        chkReportAudioNotes.isChecked(),
-                        chkReportPhonecalls.isChecked(),
-                        chkReportPhonecalls.isChecked());
-                if(1<2)
-                    return;*/
+                if(!analyseDatabase.doWeHaveAudio() && !analyseDatabase.doWeHavePhoneCall() && !analyseDatabase.doWeHaveText() && !analyseDatabase.doWeHaveTodo())
+                {
+                    Utility.showMessage("It looks your device doesn't have any types of note therefore you can't get backup.", "Note", ActivityBackupHome.this);
+                    return;
+                }
+
                 if (editTxtReportTitle == null || editTxtReportTitle.getText().toString().trim().length() == 0) {
                     Utility.showMessage("Type a title for report!", "Note", ActivityBackupHome.this);
                     return;

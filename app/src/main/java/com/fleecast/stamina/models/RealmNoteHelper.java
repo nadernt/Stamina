@@ -605,7 +605,7 @@ public class RealmNoteHelper {
         return realm.where(NoteInfoRealmStruct.class).findAll();
     }
 
-    public NoteTypesAreInDatabase analyseDatabaseForTypeOfNotesWeHave(int id) {
+    public NoteTypesAreInDatabase analyseDatabaseForTypeOfNotesWeHave() {
 
         RealmResults<NoteInfoRealmStruct> realmResultsNotes = realm.where(NoteInfoRealmStruct.class).findAll();
         RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();

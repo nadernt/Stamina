@@ -65,12 +65,12 @@ public class Report {
 
         String strStartTime;
         String strEndTime;
-        String strtimeOfCreateParent;
+        String strTimeOfCreateParent;
 
         if (timeOfCreateParent == Constants.CONST_NULL_ZERO)
-            strtimeOfCreateParent = "";
+            strTimeOfCreateParent = "";
         else
-            strtimeOfCreateParent = CsvEscape.escapeCsv(Utility.unixTimeToReadable(startTime / 1000L));
+            strTimeOfCreateParent = CsvEscape.escapeCsv(Utility.unixTimeToReadable(startTime / 1000L));
 
         if (startTime == Constants.CONST_NULL_ZERO)
             strStartTime = "";
@@ -85,22 +85,21 @@ public class Report {
 
         CSVNotesStrings.add(String.format("%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d\n",
                 typeNumber + 1, getTypeAsString(typeNumber), CsvEscape.escapeCsv(titleParent),
-                CsvEscape.escapeCsv(descriptionParent), strtimeOfCreateParent, CsvEscape.escapeCsv(childText),
+                CsvEscape.escapeCsv(descriptionParent), strTimeOfCreateParent, CsvEscape.escapeCsv(childText),
                 CsvEscape.escapeCsv(phoneNumber), strStartTime, strEndTime,
                 duration, incomingOutcoming, totalSubNotes));
     }
 
     public ArrayList<String> getReportCSV(boolean textNotes, boolean audioNotes, boolean phoneCalls, boolean toDoNote) {
 
-
-        String strOutPutReport = "";
-
-
         RealmAudioNoteHelper realmAudioNoteHelper = new RealmAudioNoteHelper(mContext);
         RealmToDoHelper realmToDoHelper = new RealmToDoHelper(mContext);
 
         RealmResults<NoteInfoRealmStruct> realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
         realmResult = realmResult.sort("id", Sort.DESCENDING);
+
+        RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
+        realmResultTodo = realmResultTodo.sort("id", Sort.DESCENDING);
 
         String strHeader = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", "Type Number",
                 "Type in Text", "Title Parent", "Description Parent", "Time of Create Parent",
@@ -109,7 +108,7 @@ public class Report {
 
         CSVNotesStrings.add(strHeader);
 
-        if (realmResult.size() == 0) {
+        if ((realmResult.size() == 0) && (realmResultTodo.size()==0) ) {
             throw new NegativeArraySizeException();
         } else {
 
@@ -125,7 +124,6 @@ public class Report {
                 if ((noteType == Constants.CONST_NOTETYPE_AUDIO) && audioNotes) {
 
                     RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realmAudioNoteHelper.findAllAudioNotesByParentId(realmResult.get(i).getId());
-
 
                     // Each record doesn't have entry in Stamina. They just get entry if user wants to add a note to them. Here I scan the folder for files without database entry.
                     String pathToAudioFiles = ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(realmResult.get(i).getId()));
@@ -200,9 +198,6 @@ public class Report {
 
             if (toDoNote) {
 
-                RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
-
-                realmResultTodo = realmResultTodo.sort("id", Sort.DESCENDING);
                 String strSubTodoNotes = "";
 
                 for (int i = 0; i < realmResultTodo.size(); i++) {
@@ -250,12 +245,15 @@ public class Report {
 
         RealmResults<NoteInfoRealmStruct> realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
         realmResult = realmResult.sort("id", Sort.DESCENDING);
+        RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
+        realmResultTodo = realmResultTodo.sort("id", Sort.DESCENDING);
+
         String strTextNotes = "<table class='u-full-width'><thead><tr><th></th><th>Title</th><th>Description</th><th>Created</th></tr></thead><tbody>\n";
         String strAudioNotes = "<table class='u-full-width'><thead><tr><th></th><th>Title</th><th>Description</th><th>Audio</th><th>Created</th></tr></thead><tbody>\n";
         String strPhoneCalls = "<table class='u-full-width'><thead><tr><th></th><th>Contact</th><th>Title</th><th>Description</th><th>Audio</th><th>Created</th></tr></thead><tbody>\n";
         String strTodo = "<table class='u-full-width'><thead><tr><th></th><th>Todo</th><th>Tasks</th><th>Created</th></tr></thead><tbody>\n";
 
-        if (realmResult.size() == 0) {
+        if ((realmResult.size() == 0) && (realmResultTodo.size()==0) ) {
             throw new NegativeArraySizeException();
         } else {
 
@@ -352,10 +350,6 @@ public class Report {
 
             if (toDoNote) {
 
-                RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
-
-                realmResultTodo = realmResultTodo.sort("id", Sort.DESCENDING);
-
                 for (int i = 0; i < realmResultTodo.size(); i++) {
                     isTodoHit = true;
                     intTodo++;
@@ -441,7 +435,10 @@ public class Report {
         RealmResults<NoteInfoRealmStruct> realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
         realmResult = realmResult.sort("id", Sort.DESCENDING);
 
-        if (realmResult.size() == 0) {
+        RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
+        realmResultTodo = realmResultTodo.sort("id", Sort.DESCENDING);
+
+        if ((realmResult.size() == 0) && (realmResultTodo.size()==0) ) {
             throw new NegativeArraySizeException();
         } else {
 
@@ -545,9 +542,6 @@ public class Report {
             }
 
             if (toDoNote) {
-
-                RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
-
 
                 for (int i = 0; i < realmResultTodo.size(); i++) {
                     isTodoHit = true;
