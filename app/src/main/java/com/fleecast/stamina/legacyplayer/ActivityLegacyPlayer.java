@@ -557,7 +557,7 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
             TextView tv1 = new TextView(mContext);
             tv1.setPadding(20, 10, 20, 10);
 
-            tv1.setText(Html.fromHtml("Type <font color='BLUE'>ASD</font> (case insensitive)"));
+            tv1.setText(Utility.fromHTMLVersionCompat("Type <font color='BLUE'>ASD</font> (case insensitive)",Html.FROM_HTML_MODE_LEGACY));
 
             LinearLayout.LayoutParams tv1Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             tv1Params.bottomMargin = 5;
@@ -730,7 +730,7 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
             imgNoNotePlaceHolder.setVisibility(View.GONE);
         }
 
-        txtTitlePlayer.setText(Html.fromHtml(txtTitl));
+        txtTitlePlayer.setText(Utility.fromHTMLVersionCompat(txtTitl,Html.FROM_HTML_MODE_LEGACY));
 
         String txtDescr  = myApplication.stackPlaylist.get(notePointer).getDescription();
 
@@ -747,7 +747,7 @@ public class ActivityLegacyPlayer extends Activity implements OnClickListener {
                     "</font></small><br>" + "<font color='" + getHexStringFromInt(R.color.black_cat) + "'>" + txtDescr + "</font>";
         }
 
-        txtDetailsPlayer.setText(Html.fromHtml(txtDescr));
+        txtDetailsPlayer.setText(Utility.fromHTMLVersionCompat(txtDescr,Html.FROM_HTML_MODE_LEGACY));
 
         txtDetailsPlayer.setMovementMethod(new ScrollingMovementMethod());
 

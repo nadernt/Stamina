@@ -67,7 +67,7 @@ import com.fleecast.stamina.notetaking.ActivityEditPhoneRecordNote;
 import com.fleecast.stamina.notetaking.ActivityIgnoreListManager;
 import com.fleecast.stamina.notetaking.ActivityPlayerPhone;
 import com.fleecast.stamina.notetaking.ActivityRecordsPlayList;
-import com.fleecast.stamina.notetaking.ActivityViewTextNote;
+import com.fleecast.stamina.notetaking.ActivityViewNotes;
 import com.fleecast.stamina.notetaking.NoteDeleteHelper;
 import com.fleecast.stamina.notetaking.PhonecallReceiver;
 import com.fleecast.stamina.notetaking.PlayerService;
@@ -327,7 +327,7 @@ private void testFucntions(){
 
                 if(swipeDir == ItemTouchHelper.LEFT) {
                     NoteInfoStruct noteInfoStruct = adapter.getItemAtPosition(viewHolder.getAdapterPosition());
-                    Intent intent = new Intent(mContext, ActivityViewTextNote.class);
+                    Intent intent = new Intent(mContext, ActivityViewNotes.class);
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, noteInfoStruct.getId());
 
                     if (!noteInfoStruct.getHasAudio()) {
@@ -682,7 +682,7 @@ private void testFucntions(){
 
                 if (!item.getHasAudio()) {
 
-                    Intent intent = new Intent(mContext, ActivityViewTextNote.class);
+                    Intent intent = new Intent(mContext, ActivityViewNotes.class);
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, item.getId());
 
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, item.getTitle());
@@ -1029,7 +1029,7 @@ private void testFucntions(){
                                 String etStr = et.getText().toString();
                                 TextView tv1 = new TextView(mContext);
                                 tv1.setPadding(20, 10, 20, 10);
-                                tv1.setText(Html.fromHtml("Type <font color='RED'>ASD</font> (case insensitive)"));
+                                tv1.setText(Utility.fromHTMLVersionCompat("Type <font color='RED'>ASD</font> (case insensitive)",Html.FROM_HTML_MODE_LEGACY));
 
                                 LinearLayout.LayoutParams tv1Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                 tv1Params.bottomMargin = 5;
@@ -1215,7 +1215,7 @@ private void testFucntions(){
         }
         android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(mContext);
 
-        adb.setMessage(Html.fromHtml("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?"));
+        adb.setMessage(Utility.fromHTMLVersionCompat("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?",Html.FROM_HTML_MODE_LEGACY));
 
         adb.setTitle("Note");
         final NoteDeleteHelper noteDeleteHelper = new NoteDeleteHelper(mContext);
@@ -1599,7 +1599,7 @@ private void testFucntions(){
             TextView tv1 = new TextView(mContext);
             tv1.setPadding(20, 10, 20, 10);
 
-            tv1.setText(Html.fromHtml("Type <font color='RED'>ASD</font> (case insensitive)"));
+            tv1.setText(Utility.fromHTMLVersionCompat("Type <font color='RED'>ASD</font> (case insensitive)",Html.FROM_HTML_MODE_LEGACY));
 
             LinearLayout.LayoutParams tv1Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             tv1Params.bottomMargin = 5;

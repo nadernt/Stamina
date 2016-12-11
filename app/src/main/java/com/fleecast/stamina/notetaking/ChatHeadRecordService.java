@@ -31,6 +31,7 @@ import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
+import com.fleecast.stamina.utility.Utility;
 
 import java.io.File;
 import java.util.Date;
@@ -460,7 +461,7 @@ public class ChatHeadRecordService extends Service {
 
 		windowManager.addView(layoutSnackMessageToUser, paramsErrorShowWindow);
 
-		txtSnackMessageToUser.setText(Html.fromHtml(errorMessage));
+		txtSnackMessageToUser.setText(Utility.fromHTMLVersionCompat(errorMessage,Html.FROM_HTML_MODE_LEGACY));
 
 		txtViewCloseErrorWin.setOnTouchListener(new View.OnTouchListener() {
 			@Override

@@ -1,8 +1,6 @@
 package com.fleecast.stamina.notetaking;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,26 +8,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,18 +25,12 @@ import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
 import com.fleecast.stamina.models.BeautifyNoteText;
 import com.fleecast.stamina.models.NoteInfoRealmStruct;
-import com.fleecast.stamina.models.PlayListHelper;
-import com.fleecast.stamina.models.RealmAudioNoteHelper;
 import com.fleecast.stamina.models.RealmContactHelper;
 import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.utility.Constants;
-import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Utility;
 
-import java.io.File;
-import java.io.IOException;
-
-public class ActivityViewTextNote extends AppCompatActivity {
+public class ActivityViewNotes extends AppCompatActivity {
 
     private TextView txtTitleViewTextNote;
     private TextView txtDescriptionViewTextNote;
@@ -80,17 +62,17 @@ public class ActivityViewTextNote extends AppCompatActivity {
                 AlertDialog myDialog;
 
                 String[] items;
-                final RealmContactHelper realmContactHelper = new RealmContactHelper(ActivityViewTextNote.this);
+                final RealmContactHelper realmContactHelper = new RealmContactHelper(ActivityViewNotes.this);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityViewTextNote.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ActivityViewNotes.this);
 
-                if (!realmNoteItem.getHasAudio()) {
+                if (realmNoteItem.getNoteType() == Constants.CONST_NOTETYPE_TEXT) {
                     builder.setIcon(R.drawable.text);
                     items = new String[]{"Details", "Copy details", "Copy all", "Edit"};
-                } else if (realmNoteItem.getHasAudio() && realmNoteItem.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+                } else if (realmNoteItem.getNoteType() == Constants.CONST_NOTETYPE_AUDIO) {
                     builder.setIcon(R.drawable.audio_wave);
                     items = new String[]{"Details", "Copy details", "Copy all", "Edit"};
-                } else {
+                } else  {
 
                     if (realmNoteItem.getCallType() == Constants.RECORDS_IS_OUTGOING) {
                         builder.setIcon(R.drawable.outcoming_call);
@@ -114,31 +96,31 @@ public class ActivityViewTextNote extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
-                            Utility.showMessage(beautifyNoteText.getHtmlFormatDetails(), "Details", ActivityViewTextNote.this, false, "OK");
+                            Utility.showMessage(beautifyNoteText.getHtmlFormatDetails(), "Details", ActivityViewNotes.this, false, "OK");
 
                         } else if (which == 1) {
 
                             ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                             ClipData clip = ClipData.newPlainText("Details", beautifyNoteText.getTextFormatDetails());
                             clipboard.setPrimaryClip(clip);
-                            Toast.makeText(ActivityViewTextNote.this, "Details copied", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ActivityViewNotes.this, "Details copied", Toast.LENGTH_LONG).show();
 
                         } else if (which == 2) {
                             ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                             ClipData clip = ClipData.newPlainText("Descriptions", beautifyNoteText.getTextFormatedAll());
                             clipboard.setPrimaryClip(clip);
-                            Toast.makeText(ActivityViewTextNote.this, "Descriptions copied", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ActivityViewNotes.this, "Descriptions copied", Toast.LENGTH_LONG).show();
                         } else if (which == 3) {
 
-                            if (!realmNoteItem.getHasAudio()) {
+                            if (realmNoteItem.getNoteType() == Constants.CONST_NOTETYPE_TEXT) {
 
-                                final Intent intent = new Intent(ActivityViewTextNote.this, ActivityAddTextNote.class);
+                                final Intent intent = new Intent(ActivityViewNotes.this, ActivityAddTextNote.class);
 
                                 Log.e("EEEEEEE", "A");
 
                                 if (myApplication.getCurrentOpenedTextNoteId() > 0) {
 
-                                    android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(ActivityViewTextNote.this);
+                                    android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(ActivityViewNotes.this);
 
                                     adb.setMessage("Another not saved note is open. Do you want close it and edit this one?");
 
@@ -174,9 +156,9 @@ public class ActivityViewTextNote extends AppCompatActivity {
                                 }
 
 
-                            } else if (realmNoteItem.getHasAudio() && realmNoteItem.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+                            } else if (realmNoteItem.getNoteType() == Constants.CONST_NOTETYPE_AUDIO) {
 
-                                final Intent intent = new Intent(ActivityViewTextNote.this, ActivityAddAudioNote.class);
+                                final Intent intent = new Intent(ActivityViewNotes.this, ActivityAddAudioNote.class);
 
                                 Log.e("EEEEEEE", "B");
 
@@ -202,14 +184,14 @@ public class ActivityViewTextNote extends AppCompatActivity {
                                     // If we do not have any on going record.
 
                                 } else {
-                                    Toast.makeText(ActivityViewTextNote.this, "Note: A phone recording is in progress. You can not take audio note.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ActivityViewNotes.this, "Note: A phone recording is in progress. You can not take audio note.", Toast.LENGTH_LONG).show();
                                 }
 
 
-                            } else if (realmNoteItem.getHasAudio() && (realmNoteItem.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
+                            } else if (realmNoteItem.getNoteType() == Constants.CONST_NOTETYPE_PHONECALL) {
                                 Log.e("EEEEEEE", "B");
 
-                                Intent intent = new Intent(ActivityViewTextNote.this, ActivityEditPhoneRecordNote.class);
+                                Intent intent = new Intent(ActivityViewNotes.this, ActivityEditPhoneRecordNote.class);
 
                                 //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -221,7 +203,7 @@ public class ActivityViewTextNote extends AppCompatActivity {
 
                         } else if (which == 4) {
                             try {
-                                if (ContextCompat.checkSelfPermission(ActivityViewTextNote.this, Manifest.permission.READ_CONTACTS)
+                                if (ContextCompat.checkSelfPermission(ActivityViewNotes.this, Manifest.permission.READ_CONTACTS)
                                         == PackageManager.PERMISSION_GRANTED) {
 
                                     String uri = "tel:" + realmNoteItem.getPhoneNumber().trim();
@@ -243,19 +225,19 @@ public class ActivityViewTextNote extends AppCompatActivity {
                             startActivity(intent);
                         } else if (which == 6) {
 
-                            String strContactName = Utility.getContactName(ActivityViewTextNote.this, realmNoteItem.getPhoneNumber().trim());
+                            String strContactName = Utility.getContactName(ActivityViewNotes.this, realmNoteItem.getPhoneNumber().trim());
 
                             if (!realmContactHelper.checkIfExistsInIgnoreList(realmNoteItem.getPhoneNumber().trim())) {
                                 realmContactHelper.addIgnoreList(
                                         realmNoteItem.getPhoneNumber().trim(),
                                         strContactName);
 
-                                Toast.makeText(ActivityViewTextNote.this, "Number added to ignore list.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ActivityViewNotes.this, "Number added to ignore list.", Toast.LENGTH_LONG).show();
                             } else {
                                 realmContactHelper.deleteContactFromIgnoreList(
                                         realmNoteItem.getPhoneNumber().trim()
                                 );
-                                Toast.makeText(ActivityViewTextNote.this, "Number removed from ignore list.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(ActivityViewNotes.this, "Number removed from ignore list.", Toast.LENGTH_LONG).show();
 
                             }
                         }
@@ -279,7 +261,7 @@ public class ActivityViewTextNote extends AppCompatActivity {
 
         realmNoteItem = realmNoteHelper.getNoteById(dbId);
 
-        beautifyNoteText = new BeautifyNoteText(ActivityViewTextNote.this, realmNoteItem);
+        beautifyNoteText = new BeautifyNoteText(ActivityViewNotes.this, realmNoteItem);
 
         String title = realmNoteItem.getTitle();
 
@@ -296,7 +278,7 @@ public class ActivityViewTextNote extends AppCompatActivity {
         str = str.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 */
 
-            txtDescriptionViewTextNote.setText(Html.fromHtml(str));
+            txtDescriptionViewTextNote.setText(Utility.fromHTMLVersionCompat(str,Html.FROM_HTML_MODE_LEGACY));
 
         txtDescriptionViewTextNote.setVisibility(View.VISIBLE);
 

@@ -24,10 +24,7 @@ import android.widget.TextView;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.chathead.MyApplication;
-import com.fleecast.stamina.models.NoteInfoStruct;
 import com.fleecast.stamina.models.RealmToDoHelper;
-import com.fleecast.stamina.notetaking.ActivityViewTextNote;
-import com.fleecast.stamina.todo.logger.Log;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
 
@@ -99,7 +96,7 @@ public class ActivityTodoParentRecyclerView extends AppCompatActivity {
 
         android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(mContext);
 
-        adb.setMessage(Html.fromHtml("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?"));
+        adb.setMessage(Utility.fromHTMLVersionCompat("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?",Html.FROM_HTML_MODE_LEGACY));
 
         adb.setTitle("Delete Todo List");
 

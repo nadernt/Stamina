@@ -282,15 +282,6 @@ public class Utility {
             return Integer.valueOf(file_name.substring(file_name.lastIndexOf("_") + 1));
     }
 
-public static Spanned fixedHtmlFrom(String strHtml) {
-
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        return Html.fromHtml(strHtml, Html.FROM_HTML_MODE_LEGACY);
-    } else {
-        return Html.fromHtml(strHtml);
-    }
-}
-
     /**
      *
      * @param fileOrDirectory
@@ -451,4 +442,13 @@ public static Spanned fixedHtmlFrom(String strHtml) {
         return toReturn;
 
     }
+
+    public static Spanned fromHTMLVersionCompat(String stringToHtml, int HtmlVersionFlag){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            return Html.fromHtml(stringToHtml,HtmlVersionFlag);
+        } else {
+            return Html.fromHtml(stringToHtml);
+        }
+    }
+
 }

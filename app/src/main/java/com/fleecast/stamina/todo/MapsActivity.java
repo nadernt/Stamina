@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Constants;
+import com.fleecast.stamina.utility.Utility;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -300,7 +301,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String tmp = res.getString(R.string.place_details, name, address, phoneNumber,
                 websiteUri);
 
-        return Html.fromHtml(tmp);
+        return Utility.fromHTMLVersionCompat(tmp,Html.FROM_HTML_MODE_LEGACY);
 
     }
     @Override

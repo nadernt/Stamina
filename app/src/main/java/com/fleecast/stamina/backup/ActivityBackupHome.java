@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -994,14 +995,14 @@ public class ActivityBackupHome extends Activity {
 
                         if (empty(strFirstPass)) {
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>",Html.FROM_HTML_MODE_LEGACY));
                             return;
                         }
 
                         if (strFirstPass.length() < Constants.MIN_PASSWORD_LENGTH || strFirstPass.length() > Constants.MAX_PASSWORD_LENGTH) {
 
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>",Html.FROM_HTML_MODE_LEGACY));
                             return;
 
                         }
@@ -1015,7 +1016,7 @@ public class ActivityBackupHome extends Activity {
                         } else {
 
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>",Html.FROM_HTML_MODE_LEGACY));
 
                         }
 
@@ -1028,14 +1029,14 @@ public class ActivityBackupHome extends Activity {
 
                         if (empty(strFirstPass)) {
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>", Html.FROM_HTML_MODE_LEGACY));
                             return;
                         }
 
                         if (strFirstPass.length() < Constants.MIN_PASSWORD_LENGTH || strFirstPass.length() > Constants.MAX_PASSWORD_LENGTH) {
 
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>",Html.FROM_HTML_MODE_LEGACY));
                             return;
 
                         }
@@ -1061,14 +1062,14 @@ public class ActivityBackupHome extends Activity {
 
                         if (empty(strFirstPass)) {
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>",Html.FROM_HTML_MODE_LEGACY));
                             return;
                         }
 
                         if (strFirstPass.length() < Constants.MIN_PASSWORD_LENGTH || strFirstPass.length() > Constants.MAX_PASSWORD_LENGTH) {
 
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>",Html.FROM_HTML_MODE_LEGACY));
                             return;
 
                         }
@@ -1083,7 +1084,7 @@ public class ActivityBackupHome extends Activity {
                         } else {
 
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>",Html.FROM_HTML_MODE_LEGACY));
 
                         }
 
@@ -1099,12 +1100,12 @@ public class ActivityBackupHome extends Activity {
 
                         if (empty(strFirstPass)) {
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Empty field!</font>",Html.FROM_HTML_MODE_LEGACY));
                             break;
                         }
                         if (strFirstPass.length() < Constants.MIN_PASSWORD_LENGTH || strFirstPass.length() > Constants.MAX_PASSWORD_LENGTH) {
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Password must not be more than 10 and less than 3 characters!</font>",Html.FROM_HTML_MODE_LEGACY));
                             break;
                         }
 
@@ -1128,7 +1129,7 @@ public class ActivityBackupHome extends Activity {
                             wantToCloseDialog = true;
                         } else {
                             txtViewPassDialogComments.setVisibility(View.VISIBLE);
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Wrong password!</font>",Html.FROM_HTML_MODE_LEGACY));
                         }
 
                         break;
@@ -1144,17 +1145,17 @@ public class ActivityBackupHome extends Activity {
 
 
                         if (empty(strFirstPass) || empty(strSecondPass)) {
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Empty fields!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Empty fields!</font>",Html.FROM_HTML_MODE_LEGACY));
                             break;
                         }
 
                         if (!strFirstPass.contentEquals(strSecondPass)) {
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Passwords are not equal!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Passwords are not equal!</font>",Html.FROM_HTML_MODE_LEGACY));
                             break;
                         }
 
                         if (strFirstPass.length() < Constants.MIN_PASSWORD_LENGTH || strSecondPass.length() < Constants.MIN_PASSWORD_LENGTH || strFirstPass.length() > Constants.MAX_PASSWORD_LENGTH || strSecondPass.length() > Constants.MAX_PASSWORD_LENGTH) {
-                            txtViewPassDialogComments.setText(Utility.fixedHtmlFrom("<font color='RED'>Error:</font><br><font color='black'>Passwords must not be more than 10 and less than 3 characters!</font>"));
+                            txtViewPassDialogComments.setText(Utility.fromHTMLVersionCompat("<font color='RED'>Error:</font><br><font color='black'>Passwords must not be more than 10 and less than 3 characters!</font>",Html.FROM_HTML_MODE_LEGACY));
                             break;
                         }
 

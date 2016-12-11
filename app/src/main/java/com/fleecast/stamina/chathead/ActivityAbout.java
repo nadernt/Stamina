@@ -147,7 +147,7 @@ public class ActivityAbout extends AppCompatActivity {
         Linkify.addLinks(s, Linkify.ALL);
         message.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         message.setPadding(16,25,16,25);
-        message.setText(Html.fromHtml(dialogMessage));
+        message.setText(Utility.fromHTMLVersionCompat(dialogMessage,Html.FROM_HTML_MODE_LEGACY));
         message.setMovementMethod(LinkMovementMethod.getInstance());
 
         new AlertDialog.Builder(context)

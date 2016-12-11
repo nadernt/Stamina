@@ -52,10 +52,10 @@ public class BeautifyNoteText {
          detailsTextFormat = "Title: " + noteInfo.getTitle() +"\n";
 
         if (noteInfo.getDescription() == null) {
-            detailsTextDescriptions = "No description in note headline";
+            detailsTextDescriptions = "No description in note.";
         }
         else if (noteInfo.getDescription().isEmpty()) {
-            detailsTextDescriptions = "No description in note headline";
+            detailsTextDescriptions = "No description in note.";
         }
         else {
             detailsTextDescriptions = noteInfo.getDescription();
@@ -73,7 +73,7 @@ public class BeautifyNoteText {
 
         detailsTextFormat += "Created at: " + noteInfo.getCreateTimeStamp() +"\n";
 
-        if (noteInfo.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+        if (noteInfo.getNoteType() == Constants.CONST_NOTETYPE_PHONECALL) {
 
             detailsTextFormat += "Call Name: " + Utility.getContactName(mContext,noteInfo.getPhoneNumber() ) +"\n";
 
@@ -87,13 +87,15 @@ public class BeautifyNoteText {
 
             detailsTextFormat += "Duration: " + Utility.calculateCallDuration(noteInfo.getStartTime(),noteInfo.getEndTime()) + "\n";
 
-        } else if (noteInfo.getHasAudio() && noteInfo.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+        } else if (noteInfo.getNoteType() == Constants.CONST_NOTETYPE_AUDIO) {
 
 
             File file = new File(ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(noteInfo.getId())));
 
-            detailsTextFormat += "Number of Records: " + String.valueOf(file.listFiles().length) + "\n";
-
+            if(file.listFiles() != null)
+                detailsTextFormat += "Number of Records: " + String.valueOf(file.listFiles().length) + "\n";
+            else
+                detailsTextFormat += "Number of Records: 0\n";
         }
     }
 
@@ -118,7 +120,7 @@ public class BeautifyNoteText {
         detailsHtmlFormat = "<b>Title:</b> " + noteInfo.getTitle() +"<br>";
         detailsHtmlFormat += "<b>Created at:</b> " + noteInfo.getCreateTimeStamp() +"<br>";
 
-        if (noteInfo.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+        if (noteInfo.getNoteType() == Constants.CONST_NOTETYPE_PHONECALL) {
 
             detailsHtmlFormat += "<b>Call Name:</b> " + Utility.getContactName(mContext,noteInfo.getPhoneNumber()) +"<br>";
 
@@ -132,17 +134,21 @@ public class BeautifyNoteText {
 
             detailsHtmlFormat += "<b>Duration:</b> " + Utility.calculateCallDuration(noteInfo.getStartTime(),noteInfo.getEndTime()) + "<br>";
 
-        } else if (noteInfo.getHasAudio() && noteInfo.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+        } else if (noteInfo.getNoteType() == Constants.CONST_NOTETYPE_AUDIO) {
 
             File file = new File(ExternalStorageManager.getPathToAudioFilesFolderById(String.valueOf(noteInfo.getId())));
 
-            detailsHtmlFormat += "<b>Number of Records:</b> " + String.valueOf(file.listFiles().length) + "<br>";
+
+            if(file.listFiles() != null)
+                detailsHtmlFormat += "<b>Number of Records:</b> " + String.valueOf(file.listFiles().length) + "<br>";
+            else
+                detailsHtmlFormat += "<b>Number of Records:</b> 0 <br>";
         }
 
     }
 
     public Spanned getHtmlFormatDetails(){
-            return  Html.fromHtml(detailsHtmlFormat);
+        return Utility.fromHTMLVersionCompat(detailsHtmlFormat,Html.FROM_HTML_MODE_LEGACY);
     }
 
     public  String loadAudioNoteDetailsInHtml(NoteInfoRealmStruct noteInfo) {

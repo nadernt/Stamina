@@ -108,7 +108,7 @@
             android:name=".notetaking.AddNoteToAudio"
             android:label="@string/title_activity_add_note_to_audio"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".notetaking.ActivityViewTextNote" />
+        <activity android:name=".notetaking.ActivityViewNotes" />
         <activity android:name=".chathead.ActivityAbout" />
         <activity
             android:name=".legacyplayer.ActivityLegacyPlayer"

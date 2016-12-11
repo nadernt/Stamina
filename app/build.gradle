@@ -16,7 +16,7 @@ android {
         applicationId 'com.fleecast.stamina'
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 3
+        versionCode 4
         versionName "2.0.1"
     }
     buildTypes {

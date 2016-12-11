@@ -100,7 +100,7 @@ public final class PlayListHelper {
         });
 
         if (listOfFiles == null)
-            return new Spanned[] {Html.fromHtml(Constants.CONST_STRING_NO_DESCRIPTION)};
+            return new Spanned[] {Utility.fromHTMLVersionCompat(Constants.CONST_STRING_NO_DESCRIPTION,Html.FROM_HTML_MODE_LEGACY)};
 
 
         Arrays.sort(listOfFiles,new Comparator<File>() {
@@ -146,7 +146,7 @@ public final class PlayListHelper {
                 htmlComposeListView = "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>"+Utility.ellipsize(audioNoteInfoStruct.get(indexInDbStruct).getTitle(),Constants.CONST_PLAYER_LIST_TEXT_ELLLIPSIZE)+ "</font><br>"+
                         "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + Utility.unixTimeToReadable((long) dbId) + "</font></small>" ;
 
-                htmlArrayForList[i] = Html.fromHtml(htmlComposeListView);
+                htmlArrayForList[i] = Utility.fromHTMLVersionCompat(htmlComposeListView,Html.FROM_HTML_MODE_LEGACY);
 
                 tmpStackPlaylist.add(i,new AudioNoteInfoStruct(
                         dbId,
@@ -166,7 +166,7 @@ public final class PlayListHelper {
                 htmlComposeListView = "<font color='" + getHexStringFromInt(R.color.gray_asparagus) + "'>"+Constants.CONST_STRING_NO_TITLE + "</font><br>"+
                         "<small><font color='" + getHexStringFromInt(R.color.air_force_blue) + "'>" + Utility.unixTimeToReadable((long) dbId) + "</font></small>" ;
 
-                htmlArrayForList[i] = Html.fromHtml(htmlComposeListView);
+                htmlArrayForList[i] = Utility.fromHTMLVersionCompat(htmlComposeListView,Html.FROM_HTML_MODE_LEGACY);
 
                 tmpStackPlaylist.add(i,new AudioNoteInfoStruct(
                         dbId,
@@ -209,10 +209,5 @@ private int lookInsideListForDbKey(List<AudioNoteInfoRealmStruct> adNFo, int fil
     return foundedDbIdKeyIndex ;
 
 }
-
-
-
-
-
 
 }

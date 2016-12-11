@@ -123,7 +123,7 @@ public class ActivityTodoChildRecyclerView extends AppCompatActivity {
                         if (!todoChildRealmStruct.getHasDone()) {
                             realmToDoHelper.updateChildTodo(todoChildRealmStruct.getId(), todoChildRealmStruct.getTitle(), todoChildRealmStruct.getOrder(), true);
                             todoChildRealmStruct.setHasDone(true);
-                            Snackbar.make(recyclerView, Html.fromHtml("<font color='red'>" + Utility.ellipsize(todoChildRealmStruct.getTitle(),30)  + "</font>" + " task done!"), Snackbar.LENGTH_LONG)
+                            Snackbar.make(recyclerView, Utility.fromHTMLVersionCompat("<font color='red'>" + Utility.ellipsize(todoChildRealmStruct.getTitle(),30)  + "</font>" + " task done!",Html.FROM_HTML_MODE_LEGACY), Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                         } else {
                             realmToDoHelper.updateChildTodo(todoChildRealmStruct.getId(), todoChildRealmStruct.getTitle(), todoChildRealmStruct.getOrder(), false);
@@ -379,7 +379,7 @@ private void updateRecyclerView(){
 
         android.support.v7.app.AlertDialog.Builder adb = new android.support.v7.app.AlertDialog.Builder(mContext);
 
-        adb.setMessage(Html.fromHtml("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?"));
+        adb.setMessage(Utility.fromHTMLVersionCompat("Are you sure want to delete " + "<strong>" + Utility.ellipsize(item.getTitle(), 50) + "</strong>" + "?",Html.FROM_HTML_MODE_LEGACY));
 
         adb.setTitle("Delete Todo");
 
