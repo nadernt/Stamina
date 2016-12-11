@@ -325,7 +325,7 @@ public class ActivityBackupHome extends Activity {
 
                 if(!analyseDatabase.doWeHaveAudio() && !analyseDatabase.doWeHavePhoneCall() && !analyseDatabase.doWeHaveText() && !analyseDatabase.doWeHaveTodo())
                 {
-                    Utility.showMessage("It looks your device doesn't have any types of note therefore you can't get backup.", "Note", ActivityBackupHome.this);
+                    Utility.showMessage("It looks your device doesn't have any note therefore you can't get backup.", "Note", ActivityBackupHome.this);
                     return;
                 }
 
@@ -357,14 +357,14 @@ public class ActivityBackupHome extends Activity {
             @Override
             public void onClick(View view) {
 
-                if (!chkExportAudioNotes.isChecked() && !chkExportPhoneCalls.isChecked() && !chkExmportTextNotes.isChecked() && !chkExportTodos.isChecked()) {
+                if (!chkRestoreAudioNotes.isChecked() && !chkRestorPhonecalls.isChecked() && !chkRestoreTextNotes.isChecked() && !chkRestoreTodos.isChecked()) {
                     Utility.showMessage("You should choose at least one type of note", "Note", ActivityBackupHome.this);
                     return;
                 }
 
                 Intent intent = new Intent(ActivityBackupHome.this, ActivityJurnalFiles.class);
 
-                startActivityForResult(intent, 333);
+                startActivityForResult(intent, Constants.CONST_DILAOG_CHOOSE_BACKUPFILE);
             }
         });
 
@@ -373,7 +373,12 @@ public class ActivityBackupHome extends Activity {
             public void onClick(View view) {
                 if(!analyseDatabase.doWeHaveAudio() && !analyseDatabase.doWeHavePhoneCall() && !analyseDatabase.doWeHaveText() && !analyseDatabase.doWeHaveTodo())
                 {
-                    Utility.showMessage("It looks your device doesn't have any types of note therefore you can't get backup.", "Note", ActivityBackupHome.this);
+                    Utility.showMessage("It looks your device doesn't have any note therefore you can't make report.", "Note", ActivityBackupHome.this);
+                    return;
+                }
+
+                if (!chkReportAudioNotes.isChecked() && !chkReportPhonecalls.isChecked() && !chkReportTextNotes.isChecked() && !chkReportTodos.isChecked()) {
+                    Utility.showMessage("You should choose at least one type of note", "Note", ActivityBackupHome.this);
                     return;
                 }
 
@@ -609,10 +614,10 @@ public class ActivityBackupHome extends Activity {
 
                 publishProgress("Copying files...");
 
-                if (reportParameterses[0].isAudioNotes())
+                if (reportParameterses[0].isAudioNotes() && analyseDatabase.doWeHaveAudio() && notesListForCopyFile!=null)
                     copyAudioNoteFilesForReport(strTmpWorkingDir, notesListForCopyFile);
 
-                if (reportParameterses[0].isPhoneCalls() ) {
+                if (reportParameterses[0].isPhoneCalls() && analyseDatabase.doWeHavePhoneCall()) {
                     copyPhoneCallsFilesForReport(strTmpWorkingDir);
                 }
 
@@ -747,12 +752,12 @@ public class ActivityBackupHome extends Activity {
                     strReportSimpleHtml = report.getReportFromDBSimpleHtml(chkReportTextNotes.isChecked(),
                             chkReportAudioNotes.isChecked(),
                             chkReportPhonecalls.isChecked(),
-                            chkReportPhonecalls.isChecked());
+                            chkReportTodos.isChecked());
                 } else {
                     strReportSimpleHtml = report.getReportFromDBTabular(chkReportTextNotes.isChecked(),
                             chkReportAudioNotes.isChecked(),
                             chkReportPhonecalls.isChecked(),
-                            chkReportPhonecalls.isChecked());
+                            chkReportTodos.isChecked());
                 }
 
 

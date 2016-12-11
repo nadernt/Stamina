@@ -338,8 +338,9 @@ public class RealmNoteHelper {
 
 
         RealmResults<NoteInfoRealmStruct> realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
+        RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
 
-        if (realmResult.size() == 0) {
+        if ((realmResult.size() == 0) && (realmResultTodo.size()==0) ) {
             throw new NegativeArraySizeException();
         } else {
 
@@ -400,8 +401,6 @@ public class RealmNoteHelper {
             }
 
             if (toDoNote) {
-
-                RealmResults<TodoParentRealmStruct> realmResultTodo = realm.where(TodoParentRealmStruct.class).findAll();
 
                 for (int i = 0; i < realmResultTodo.size(); i++) {
 

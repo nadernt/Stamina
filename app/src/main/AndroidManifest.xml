@@ -219,7 +219,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".backup.ActivityBackupHome"
+            android:name=".backup.ActivityBackupHome" android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".backup.ActivityJurnalFiles"

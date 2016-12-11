@@ -349,7 +349,7 @@ public class Report {
             }
 
             if (toDoNote) {
-
+                System.out.println("Slurrrrrrrrrrrrrrrrrrrrrrrrrrrrrrp");
                 for (int i = 0; i < realmResultTodo.size(); i++) {
                     isTodoHit = true;
                     intTodo++;
