@@ -210,6 +210,8 @@ public class ExternalStorageManager {
     public static ArrayList<Integer> listAudioFilesInDirectoryByParentId(String pathToAudioFiles) {
 
         File f = new File(pathToAudioFiles);
+        if(f.listFiles()==null)
+            return null;
         File[] fl = f.listFiles();
         ArrayList<Integer> returnArray = new ArrayList<>();
         for (int i = 0; i < fl.length; i++) {

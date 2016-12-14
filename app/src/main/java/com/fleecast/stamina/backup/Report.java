@@ -349,7 +349,7 @@ public class Report {
             }
 
             if (toDoNote) {
-                System.out.println("Slurrrrrrrrrrrrrrrrrrrrrrrrrrrrrrp");
+
                 for (int i = 0; i < realmResultTodo.size(); i++) {
                     isTodoHit = true;
                     intTodo++;
@@ -473,7 +473,7 @@ public class Report {
 
                     ArrayList<Integer> filesIds =  ExternalStorageManager.listAudioFilesInDirectoryByParentId(pathToAudioFiles);
 
-                    if (filesIds.size() > 0) {
+                    if (filesIds!= null && filesIds.size() > 0) {
                         for (int a = 0; a < audioNoteInfoRealmStructs.size(); a++) {
                             int intId = audioNoteInfoRealmStructs.get(a).getId();
                             for (int b = 0; b < filesIds.size(); b++) {

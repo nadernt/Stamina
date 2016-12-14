@@ -206,7 +206,7 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                 myApplication.tmpCurrentAudioNoteInfoStruct.setId(dbId);
                 myApplication.tmpCurrentAudioNoteInfoStruct.setDescription(noteInfoRealmStruct.getDescription());
                 myApplication.tmpCurrentAudioNoteInfoStruct.setTitle(noteInfoRealmStruct.getTitle());
-                myApplication.tmpCurrentAudioNoteInfoStruct.setTag(noteInfoRealmStruct.getTag());
+                myApplication.tmpCurrentAudioNoteInfoStruct.setTag(noteInfoRealmStruct.getColor());
 
 
                 txtTitle.setText(noteInfoRealmStruct.getTitle());
@@ -295,7 +295,7 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                      myApplication.tmpCurrentAudioNoteInfoStruct.setId(dbId);
                      myApplication.tmpCurrentAudioNoteInfoStruct.setDescription(noteInfoRealmStruct.getDescription());
                      myApplication.tmpCurrentAudioNoteInfoStruct.setTitle(noteInfoRealmStruct.getTitle());
-                     myApplication.tmpCurrentAudioNoteInfoStruct.setTag(noteInfoRealmStruct.getTag());
+                     myApplication.tmpCurrentAudioNoteInfoStruct.setTag(noteInfoRealmStruct.getColor());
 
                      txtTitle.setText(noteInfoRealmStruct.getTitle());
                      txtDescription.setText(noteInfoRealmStruct.getDescription());

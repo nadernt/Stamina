@@ -3,6 +3,7 @@ package com.fleecast.stamina.chathead;
 import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.util.Log;
 
 import com.fleecast.stamina.models.MostUsedAndRecentAppsStruct;
@@ -89,7 +90,7 @@ public class MyApplication extends Application{
         RealmConfiguration configRealm = new RealmConfiguration.Builder()
                 // Version of the database
                 .name("megan.realm")
-                .schemaVersion(1)
+                .schemaVersion(2)
                 .migration(new DataMigration())
                 .build();
 
@@ -342,7 +343,17 @@ public class MyApplication extends Application{
 
                 RealmObjectSchema personSchema = schema.get("NoteInfoRealmStruct");
                 personSchema
-                        .addField("extras", String.class);
+                        .renameField("tag", "color");
+                personSchema
+                        .addField("group", String.class);
+                personSchema
+                        .addField("order", int.class);
+              /*  */
+                personSchema
+                        .addField("del", boolean.class);
+               /* personSchema
+                        .setNullable("del", false);*/
+
 
                 oldVersion++;
             }

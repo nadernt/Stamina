@@ -16,14 +16,20 @@ public class NoteInfoStruct {
     private Date start_time;
     private Date end_time;
     private int call_type;
-    private int tag;
+    private int color;
     private String phone_number;
+    private int note_type;
+    private String extras;
+    private String group;
+    private boolean del;
     private int order;
+
 
     public NoteInfoStruct(int id, String title, String description, boolean has_audio,
                           Date update_time,Date create_time_stamp, Date start_time,
-                          Date end_time, int call_type, String phone_number, int tag,
-                          int order) {
+                          Date end_time, int call_type, String phone_number, int color,
+                          int order,int note_type,String extras, String group, boolean del) {
+
         this.call_type = call_type;
         this.create_time_stamp = create_time_stamp;
         this.description = description;
@@ -33,11 +39,47 @@ public class NoteInfoStruct {
         this.order = order;
         this.phone_number = phone_number;
         this.start_time = start_time;
-        this.tag = tag;
+        this.color = color;
         this.title = title;
         this.update_time = update_time;
+        this.note_type = note_type;
+        this.extras = extras;
+        this.group=group;
+        this.del=del;
+
     }
 
+    public int getNoteType() {
+        return note_type;
+    }
+
+    public void setNotetype(int note_type) {
+        this.note_type = note_type;
+    }
+
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public boolean isDel() {
+        return del;
+    }
+
+    public void setDel(boolean del) {
+        this.del = del;
+    }
 
     public int getCallType() {
         return call_type;
@@ -71,12 +113,12 @@ public class NoteInfoStruct {
         this.start_time = start_time;
     }
 
-    public int getTag() {
-        return tag;
+    public int getColor() {
+        return color;
     }
 
-    public void setTag(int tag) {
-        this.tag = tag;
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public Date getEndTime() {

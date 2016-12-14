@@ -6,26 +6,18 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.backup.BackUpNotesStruct;
 import com.fleecast.stamina.backup.NoteTypesAreInDatabase;
-import com.fleecast.stamina.chathead.ActivityAbout;
 import com.fleecast.stamina.todo.TodoChildRealmStruct;
 import com.fleecast.stamina.todo.TodoParentRealmStruct;
 import com.fleecast.stamina.utility.Constants;
-import com.fleecast.stamina.utility.ExternalStorageManager;
 import com.fleecast.stamina.utility.Prefs;
-import com.fleecast.stamina.utility.Utility;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.realm.Case;
 import io.realm.Realm;
-import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -79,7 +71,7 @@ public class RealmNoteHelper {
             noteInfoRealmStruct.setEndTime(null);
             noteInfoRealmStruct.setCallType(call_type);
             noteInfoRealmStruct.setPhoneNumber(phone_number);
-            noteInfoRealmStruct.setTag(0);
+            noteInfoRealmStruct.setColor(0);
             noteInfoRealmStruct.setNoteType(note_type);
             realm.beginTransaction();
             realm.copyToRealm(noteInfoRealmStruct);
@@ -125,7 +117,7 @@ public class RealmNoteHelper {
         noteInfoRealmStruct.setTitle(title);
         noteInfoRealmStruct.setDescription(description);
         noteInfoRealmStruct.setUpdateTime(update_time);
-        noteInfoRealmStruct.setTag(tag);
+        noteInfoRealmStruct.setColor(tag);
         noteInfoRealmStruct.setNoteType(note_type);
         realm.commitTransaction();
     }
@@ -188,7 +180,12 @@ public class RealmNoteHelper {
                     Date update_time = realmResult.get(i).getUpdateTime();
                     String phoneNumber = realmResult.get(i).getPhoneNumber();
                     //if(phoneNumber==null)Log.e("GGG",phoneNumber);
-                    data.add(i, new NoteInfoStruct(id, title, description, has_audio, update_time, create_time_stamp, realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(), realmResult.get(i).getCallType(), phoneNumber, 0, 0));
+                    data.add(i, new NoteInfoStruct(id, title, description, has_audio, update_time,
+                            create_time_stamp, realmResult.get(i).getStartTime(),
+                            realmResult.get(i).getEndTime(), realmResult.get(i).getCallType(),
+                            phoneNumber, 0, 0,realmResult.get(i).getNoteType(),
+                            realmResult.get(i).getExtras(),realmResult.get(i).getGroup(),
+                            realmResult.get(i).isDel()));
                 } catch (Exception e) {
                     Log.e("Err: ", e.getMessage());
                 }
@@ -225,46 +222,39 @@ public class RealmNoteHelper {
         else if (Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true) && Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true) && !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true))
             realmResult = realmResult.where().
                     beginGroup().
-                    equalTo("has_audio", false).
-                    equalTo("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).
+                    equalTo("note_type", Constants.CONST_NOTETYPE_TEXT).
                     endGroup().
                     or().
                     beginGroup().
-                    equalTo("has_audio", true).
-                    equalTo("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).
+                    equalTo("note_type", Constants.CONST_NOTETYPE_AUDIO).
                     endGroup().
                     findAll();
         else if (Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true) && !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true) && Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true))
             realmResult = realmResult.where().
                     beginGroup().
-                    equalTo("has_audio", false).
-                    equalTo("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).
+                    equalTo("note_type", Constants.CONST_NOTETYPE_TEXT).
                     endGroup().
                     or().
                     beginGroup().
-                    equalTo("has_audio", true).
-                    greaterThan("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).
+                    equalTo("note_type", Constants.CONST_NOTETYPE_PHONECALL).
                     endGroup().
                     findAll();
         else if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true) && Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true) && Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true))
             realmResult = realmResult.where().
                     beginGroup().
-                    equalTo("has_audio", true).
-                    equalTo("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).
+                    equalTo("note_type", Constants.CONST_NOTETYPE_AUDIO).
                     endGroup().
                     or().
                     beginGroup().
-                    equalTo("has_audio", true).
-                    greaterThan("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).
+                    equalTo("note_type", Constants.CONST_NOTETYPE_PHONECALL).
                     endGroup().
                     findAll();
         else if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true) && !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true) && Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true))
-            realmResult = realmResult.where().equalTo("has_audio", true).greaterThan("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).findAll();
-
+            realmResult = realmResult.where().equalTo("note_type", Constants.CONST_NOTETYPE_PHONECALL).findAll();
         else if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true) && Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true) && !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true))
-            realmResult = realmResult.where().equalTo("has_audio", true).equalTo("call_type", Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL).findAll();
+            realmResult = realmResult.where().equalTo("note_type", Constants.CONST_NOTETYPE_AUDIO).findAll();
         else if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_TEXT_NOTE, true) && !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_AUDIO_NOTE, true) && !Prefs.getBoolean(Constants.PREF_NOTELIST_SHOW_PHONE_RECORD, true))
-            realmResult = realmResult.where().equalTo("call_type", fakeSkipQuery).findAll();
+            realmResult = realmResult.where().equalTo("note_type", fakeSkipQuery).findAll();
 
         // Sort values
         if (!Prefs.getBoolean(Constants.PREF_NOTELIST_SEARCH_SORT_OPTION, Constants.CONST_NOTELIST_ACCEDING))
@@ -352,7 +342,7 @@ public class RealmNoteHelper {
                             realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                             realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                             realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                            realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_TEXT, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
+                            realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_TEXT, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
                 }
 
                 if (noteType == Constants.CONST_NOTETYPE_AUDIO && audioNotes) {
@@ -370,7 +360,7 @@ public class RealmNoteHelper {
                                     realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                                     realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                                     realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                                    realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_AUDIO, audioNoteInfoRealmStructs.get(j).getId(),
+                                    realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_AUDIO, audioNoteInfoRealmStructs.get(j).getId(),
                                     audioNoteInfoRealmStructs.get(j).getTitle(), audioNoteInfoRealmStructs.get(j).getDescription(),
                                     new Date(audioNoteInfoRealmStructs.get(j).getId()), false, Constants.CONST_NULL_ZERO));
                         }
@@ -382,7 +372,7 @@ public class RealmNoteHelper {
                                 realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                                 realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                                 realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                                realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_AUDIO, Constants.CONST_NULL_MINUS,
+                                realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_AUDIO, Constants.CONST_NULL_MINUS,
                                 null, null,
                                 null, false, Constants.CONST_NULL_ZERO));
                     }
@@ -395,7 +385,7 @@ public class RealmNoteHelper {
                             realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                             realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                             realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                            realmResult.get(i).getTag(), 0, Constants.CONST_NOTETYPE_PHONECALL, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
+                            realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_PHONECALL, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
                 }
 
             }
@@ -498,7 +488,7 @@ public class RealmNoteHelper {
                     noteInfoTextAudioPhonecalls.get(index).setEndTime(backUpNotesStructs.get(i).getEndTime());
                     noteInfoTextAudioPhonecalls.get(index).setCallType(backUpNotesStructs.get(i).getCallType());
                     noteInfoTextAudioPhonecalls.get(index).setPhoneNumber(backUpNotesStructs.get(i).getPhoneNumber());
-                    noteInfoTextAudioPhonecalls.get(index).setTag(backUpNotesStructs.get(i).getTag());
+                    noteInfoTextAudioPhonecalls.get(index).setColor(backUpNotesStructs.get(i).getTag());
                     noteInfoTextAudioPhonecalls.get(index).setNoteType(backUpNotesStructs.get(i).getNoteType());
 
                     index++;
@@ -520,7 +510,7 @@ public class RealmNoteHelper {
                     noteInfoTextAudioPhonecalls.get(index).setEndTime(backUpNotesStructs.get(i).getEndTime());
                     noteInfoTextAudioPhonecalls.get(index).setCallType(backUpNotesStructs.get(i).getCallType());
                     noteInfoTextAudioPhonecalls.get(index).setPhoneNumber(backUpNotesStructs.get(i).getPhoneNumber());
-                    noteInfoTextAudioPhonecalls.get(index).setTag(backUpNotesStructs.get(i).getTag());
+                    noteInfoTextAudioPhonecalls.get(index).setColor(backUpNotesStructs.get(i).getTag());
                     noteInfoTextAudioPhonecalls.get(index).setNoteType(backUpNotesStructs.get(i).getNoteType());
 
                     index++;

@@ -20,10 +20,37 @@ public class NoteInfoRealmStruct extends RealmObject {
     private Date start_time;
     private Date end_time;
     private int call_type;
-    private int tag;
+    private int color;
     private String phone_number;
     private int note_type;
     private String extras;
+    private String group;
+    private boolean del;
+    private int order;
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public boolean isDel() {
+        return del;
+    }
+
+    public void setDel(boolean del) {
+        this.del = del;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
     public String getExtras() {
         return extras;
@@ -65,12 +92,12 @@ public class NoteInfoRealmStruct extends RealmObject {
         this.start_time = start_time;
     }
 
-    public int getTag() {
-        return tag;
+    public int getColor() {
+        return color;
     }
 
-    public void setTag(int tag) {
-        this.tag = tag;
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public Date getEndTime() {

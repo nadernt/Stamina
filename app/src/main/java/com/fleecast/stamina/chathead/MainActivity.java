@@ -9,9 +9,11 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Entity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
@@ -46,14 +48,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.backup.ActivityBackupHome;
+import com.fleecast.stamina.backup.GroupsListDialog;
+import com.fleecast.stamina.colorpicker.ColorPickerDialog;
+import com.fleecast.stamina.colorpicker.ColorPickerSwatch;
 import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayer;
 import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayerPhone;
 import com.fleecast.stamina.legacyplayer.PlayerServiceLegacy;
@@ -86,6 +95,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
@@ -240,11 +251,8 @@ public class MainActivity extends AppCompatActivity
 
 private void testFucntions(){
 
-    Intent intent = new Intent(MainActivity.this, ActivityBackupHome.class);
 
-    startActivity(intent);
-   // Realm realm = Realm.getDefaultInstance();
-   // realm.writeCopyTo();
+
 
 }
 
@@ -286,7 +294,7 @@ private void testFucntions(){
 
     }
    private void populateUI() {
-       //testFucntions();
+
 
         setContentView(R.layout.activity_main);
 
@@ -295,7 +303,7 @@ private void testFucntions(){
         myApplication.setLauncherDialogNotVisible(false);
 
         mContext = MainActivity.this;
-
+       testFucntions();
        isDeviceSmartPhone = Prefs.getBoolean(Constants.PREF_IS_DEVICE_SMARTPHONE,false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarNoteTakingList);
@@ -330,15 +338,6 @@ private void testFucntions(){
                     Intent intent = new Intent(mContext, ActivityViewNotes.class);
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DBID, noteInfoStruct.getId());
 
-                    if (!noteInfoStruct.getHasAudio()) {
-
-                    } else if (noteInfoStruct.getHasAudio() && noteInfoStruct.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
-
-
-                    } else if (noteInfoStruct.getHasAudio() && (noteInfoStruct.getCallType() > Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL)) {
-
-                    }
-
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_TITLE, noteInfoStruct.getTitle());
                     intent.putExtra(Constants.EXTRA_PORTRAIT_PLAYER_DESCRIPTION, noteInfoStruct.getDescription());
 
@@ -371,19 +370,39 @@ private void testFucntions(){
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        NavigationView navigationViewLeft = (NavigationView) findViewById(R.id.nav_view_left);
+        navigationViewLeft.setNavigationItemSelectedListener(this);
 
 
        if(!isDeviceSmartPhone) {
-           navigationView.getMenu().findItem(R.id.nav_phone_record).setVisible(false);
-           navigationView.getMenu().findItem(R.id.nav_phone_ignorelist).setVisible(false);
+           navigationViewLeft.getMenu().findItem(R.id.nav_phone_record).setVisible(false);
+           navigationViewLeft.getMenu().findItem(R.id.nav_phone_ignorelist).setVisible(false);
        }else {
            if (Prefs.getBoolean(Constants.RECORDER_PHONE_IS_RECORD, false))
-               navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls  ✔");
+               navigationViewLeft.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls  ✔");
            else
-               navigationView.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
+               navigationViewLeft.getMenu().findItem(R.id.nav_phone_record).setTitle("Record Calls   ");
        }
+
+       NavigationView navigationViewRight = (NavigationView) findViewById(R.id.nav_view_right);
+       navigationViewRight.setNavigationItemSelectedListener(this);
+
+       String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux" };
+
+
+       ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+
+       ListView mDrawerList = null;
+       mDrawerList = (ListView)findViewById(R.id.navList);
+
+       mDrawerList.setAdapter(mAdapter);
+
+       mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Toast.makeText(MainActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
+           }
+       });
 
        AppRating.app_launched(this);
 
@@ -791,18 +810,18 @@ private void testFucntions(){
                 String[] items;
                 final RealmContactHelper realmContactHelper = new RealmContactHelper(mContext);
                 if (!item.getHasAudio()) {
-                    items = new String[]{"Edit", "Delete", "Share"};
+                    items = new String[]{"Edit", "Color", "Group","Delete","Share"};
                 } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
-                    items = new String[]{"Edit", "Delete", "Share"};
+                    items = new String[]{"Edit", "Color", "Group", "Delete","Share"};
                 } else {
                     if (!realmContactHelper.checkIfExistsInIgnoreList(item.getPhoneNumber().trim()))
-                        items = new String[]{"Edit", "Delete", "Share", "Call", "Add to ignore"};
+                        items = new String[]{"Edit", "Color", "Group", "Delete", "Share", "Call", "Add to ignore"};
                     else
-                        items = new String[]{"Edit", "Delete", "Share", "Call", "Remove ignore"};
+                        items = new String[]{"Edit", "Color", "Group", "Delete", "Share", "Call", "Remove ignore"};
                 }
-
-                AlertDialog myDialog;
+                final int CONST_Edit=0, CONST_COLOR=1, CONST_GROUP=2, CONST_DELETE=3, CONST_SHARE=4, CONST_CALL=5,CONST_IGNORE=6;
+                final AlertDialog myDialog;
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -813,7 +832,7 @@ private void testFucntions(){
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
+                        if (which == CONST_Edit) {
 
                             if (!item.getHasAudio()) {
 
@@ -894,11 +913,70 @@ private void testFucntions(){
                                 startActivityForResult(intent, Constants.RESULT_CODE_REQUEST_LIST);
                             }
 
-                        } else if (which == 1) {
+                        } else if (which == CONST_COLOR) {
+
+                            final ColorPickerDialog colorPickerDialog = new ColorPickerDialog();
+                            colorPickerDialog.initialize(R.string.color_chooser_dialog_title, new int[] { Color.CYAN, Color.LTGRAY, Color.BLACK, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.RED, Color.GRAY, Color.YELLOW }, Color.YELLOW, 3, 2);
+                            colorPickerDialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
+
+                                @Override
+                                public void onColorSelected(int color) {
+                                    Toast.makeText(MainActivity.this, "selectedColor : " + color, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
+                            colorPickerDialog.show(getSupportFragmentManager(), "colorpicker");
+                        } else if (which == CONST_GROUP) {
+                            String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
+                                    "Jupiter", "Saturn", "Uranus", "Neptune"};
+                            GroupsListDialog groupsListDialog = new GroupsListDialog(mContext,"Filter by Group",true,planets);
+
+                            AlertDialog dlgOfColorAndGroupsFilter;
+
+                            String[] items = {"Title & Descriptions", "Contacts"};
+
+                            if (searchFilter == Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION) {
+                                items[0] = "✔ " + items[0];
+                                items[1] = "     " + items[1];
+                            } else {
+                                items[1] = "✔ " + items[1];
+                                items[0] = "     " + items[0];
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+                            builder.setTitle("Search Filters:");
+                            //builder.setIcon(R.drawable.audio_wave);
+
+                            builder.setItems(items, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (which == 0) {
+                                        Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION);
+                                        searchFilter = Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION;
+                                        menuSearchFilter.setIcon(R.drawable.ic_action_news);
+                                    } else if (which == 1) {
+                                        Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_CONTACTS);
+                                        searchFilter = Constants.CONST_SEARCH_NOTE_CONTACTS;
+                                        menuSearchFilter.setIcon(R.drawable.ic_action_user);
+                                    }
+
+                                }
+                            });
+
+
+                            builder.setCancelable(true);
+                            dlgOfColorAndGroupsFilter = builder.create();
+                            dlgOfColorAndGroupsFilter.show();
+
+
+                    } else if (which == CONST_DELETE) {
 
                             deleteItem(item, false);
 
-                        } else if (which == 2) { //Share
+                        }
+                     else if (which == CONST_SHARE) { //Share
 
                             if (!item.getHasAudio()) {
 
@@ -1126,7 +1204,7 @@ private void testFucntions(){
 
                             }
 
-                        } else if (which == 3) { // Call
+                        } else if (which == CONST_CALL) { // Call
                             try {
                                 if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_CONTACTS)
                                         == PackageManager.PERMISSION_GRANTED) {
@@ -1138,7 +1216,7 @@ private void testFucntions(){
                                 }
                             } catch (Exception e) {
                             }
-                        } else if (which == 4) { //Add to ignore
+                        } else if (which == CONST_IGNORE) { //Add to ignore
 
                             String strContactName = Utility.getContactName(mContext, item.getPhoneNumber().trim());
 

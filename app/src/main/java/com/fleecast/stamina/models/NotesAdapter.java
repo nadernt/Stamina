@@ -1,6 +1,7 @@
 package com.fleecast.stamina.models;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.longClick(noteInfoStructs.get(position), longClickListener);
         holder.tvId.setText(String.valueOf(noteInfoStructs.get(position).getId()));
         holder.title.setText(Utility.ellipsize(noteInfoStructs.get(position).getTitle(),50));
-
         holder.description.setText(Utility.ellipsize(noteInfoStructs.get(position).getDescription(),150));
         holder.create_time.setText(Utility.unixTimeToReadable(noteInfoStructs.get(position).getCreateTimeStamp().getTime() / 1000L));
 
@@ -74,9 +74,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             holder.audioType.setBackgroundResource(R.drawable.text);
             holder.phone_number.setVisibility(View.INVISIBLE);
         }
-
-
-
+        if(noteInfoStructs.get(position).getColor()==Constants.CONST_NULL_ZERO)
+            holder.img_color_of_note.setBackgroundColor(Color.MAGENTA);
     }
 
 
@@ -88,7 +87,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvId, title, description, create_time,phone_number;
-        ImageView audioType;
+        ImageView audioType,img_color_of_note;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -98,6 +97,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             create_time = (TextView) itemView.findViewById(R.id.tvCreateTime);
             phone_number= (TextView) itemView.findViewById(R.id.tvPhoneNumber);
             audioType = (ImageView) itemView.findViewById(R.id.audioType);
+            img_color_of_note = (ImageView) itemView.findViewById(R.id.imgColorOfNote);
         }
 
 

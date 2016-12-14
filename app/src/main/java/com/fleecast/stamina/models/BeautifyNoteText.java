@@ -61,7 +61,7 @@ public class BeautifyNoteText {
             detailsTextDescriptions = noteInfo.getDescription();
         }
 
-        if (noteInfo.getHasAudio() && noteInfo.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
+        if ((noteInfo.getNoteType() == Constants.CONST_NOTETYPE_AUDIO)) {
             detailsHtmlDescriptions = detailsTextDescriptions + "<br><br>" + loadAudioNoteDetailsInHtml(noteInfo);
 
             detailsTextDescriptions += "\n" + loadAudioNoteDetailsInText(noteInfo);

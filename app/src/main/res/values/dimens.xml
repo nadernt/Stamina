@@ -9,4 +9,8 @@
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="color_swatch_large">64.0dip</dimen>
+    <dimen name="color_swatch_small">48.0dip</dimen>
+    <dimen name="color_swatch_margins_large">8.0dip</dimen>
+    <dimen name="color_swatch_margins_small">4.0dip</dimen>
 </resources>

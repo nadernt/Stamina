@@ -615,6 +615,7 @@ public class ActivityBackupHome extends Activity {
                 publishProgress("Copying files...");
 
                 if (reportParameterses[0].isAudioNotes() && analyseDatabase.doWeHaveAudio() && notesListForCopyFile!=null)
+                   // System.out.println(notesListForCopyFile.size());
                     copyAudioNoteFilesForReport(strTmpWorkingDir, notesListForCopyFile);
 
                 if (reportParameterses[0].isPhoneCalls() && analyseDatabase.doWeHavePhoneCall()) {
@@ -806,7 +807,7 @@ public class ActivityBackupHome extends Activity {
                 csvReportArr = report.getReportCSV(chkReportTextNotes.isChecked(),
                         chkReportAudioNotes.isChecked(),
                         chkReportPhonecalls.isChecked(),
-                        chkReportPhonecalls.isChecked());
+                        chkReportTodos.isChecked());
                // cancel(true);
             }
 
@@ -874,6 +875,7 @@ public class ActivityBackupHome extends Activity {
                 if ((notesForCopies.get(i).getNote_type() == Constants.CONST_NOTETYPE_AUDIO)) {
                     File f = new File(String.valueOf(ExternalStorageManager.getWorkingDirectory() +
                             File.separator + notesForCopies.get(i).getId()));
+                    if(f.exists())
                     Utility.copyDirectory(f, new File(strOutFileDirectory + File.separator + "audio"));
                 }
             }
@@ -883,7 +885,8 @@ public class ActivityBackupHome extends Activity {
     public void copyPhoneCallsFilesForReport(String strOutFileDirectory) throws IOException {
         File f = new File(String.valueOf(ExternalStorageManager.getWorkingDirectory() +
                 File.separator + Constants.CONST_PHONE_CALLS_DIRECTORY_NAME));
-        Utility.copyDirectory(f, new File(strOutFileDirectory + File.separator + "phonecalls"));
+            if(f.exists())
+            Utility.copyDirectory(f, new File(strOutFileDirectory + File.separator + "phonecalls"));
 
     }
 
