@@ -9,7 +9,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Entity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -48,7 +47,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -95,8 +93,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
@@ -927,48 +923,20 @@ private void testFucntions(){
 
 
                             colorPickerDialog.show(getSupportFragmentManager(), "colorpicker");
+
+                            /*TextView textView = (TextView) findViewById(R.id.txtHongla);
+                            textView.setText("MMMMMMMMMMMMMM");*/
                         } else if (which == CONST_GROUP) {
                             String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
                                     "Jupiter", "Saturn", "Uranus", "Neptune"};
                             GroupsListDialog groupsListDialog = new GroupsListDialog(mContext,"Filter by Group",true,planets);
 
-                            AlertDialog dlgOfColorAndGroupsFilter;
-
-                            String[] items = {"Title & Descriptions", "Contacts"};
-
-                            if (searchFilter == Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION) {
-                                items[0] = "✔ " + items[0];
-                                items[1] = "     " + items[1];
-                            } else {
-                                items[1] = "✔ " + items[1];
-                                items[0] = "     " + items[0];
-                            }
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-
-                            builder.setTitle("Search Filters:");
-                            //builder.setIcon(R.drawable.audio_wave);
-
-                            builder.setItems(items, new DialogInterface.OnClickListener() {
+                            groupsListDialog.setResultsListener(new GroupsListDialog.ResultsListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (which == 0) {
-                                        Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION);
-                                        searchFilter = Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION;
-                                        menuSearchFilter.setIcon(R.drawable.ic_action_news);
-                                    } else if (which == 1) {
-                                        Prefs.putInt(Constants.PREF_NOTELIST_SEARCH_FILTER, Constants.CONST_SEARCH_NOTE_CONTACTS);
-                                        searchFilter = Constants.CONST_SEARCH_NOTE_CONTACTS;
-                                        menuSearchFilter.setIcon(R.drawable.ic_action_user);
-                                    }
-
+                                public void selectedGroup(String title) {
+                                    System.out.println(title);
                                 }
                             });
-
-
-                            builder.setCancelable(true);
-                            dlgOfColorAndGroupsFilter = builder.create();
-                            dlgOfColorAndGroupsFilter.show();
 
 
                     } else if (which == CONST_DELETE) {
@@ -1104,7 +1072,7 @@ private void testFucntions(){
                                 tv.setTextSize(20);
 
                                 final EditText et = new EditText(mContext);
-                                String etStr = et.getText().toString();
+                                //String etStr = et.getText().toString();
                                 TextView tv1 = new TextView(mContext);
                                 tv1.setPadding(20, 10, 20, 10);
                                 tv1.setText(Utility.fromHTMLVersionCompat("Type <font color='RED'>ASD</font> (case insensitive)",Html.FROM_HTML_MODE_LEGACY));
@@ -1672,7 +1640,7 @@ private void testFucntions(){
             tv.setTextSize(20);
 
             final EditText et = new EditText(mContext);
-            String etStr = et.getText().toString();
+           // String etStr = et.getText().toString();
 
             TextView tv1 = new TextView(mContext);
             tv1.setPadding(20, 10, 20, 10);
@@ -1836,4 +1804,5 @@ private void testFucntions(){
             Toast.makeText(this, "Phone recording enabled", Toast.LENGTH_LONG).show();
         }
     }
+
 }
