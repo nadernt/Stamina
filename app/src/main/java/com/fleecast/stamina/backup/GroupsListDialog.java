@@ -3,23 +3,20 @@ package com.fleecast.stamina.backup;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.text.InputType;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fleecast.stamina.R;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import com.fleecast.stamina.utility.Utility;
 
 /**
  * Created by nnt on 14/12/16.
@@ -28,10 +25,12 @@ import java.util.HashSet;
 public class GroupsListDialog {
 
     private final Context mContext;
+    private final AlertDialog dialog;
     private ResultsListener listener;
 
     public interface ResultsListener {
-        void selectedGroup(String title);
+        void selectedGroup(String selectedGroupTitle);
+        void newGroupAdded(String newGroupTitle);
     }
 
 
@@ -40,108 +39,104 @@ public class GroupsListDialog {
     }
 
 
-    public GroupsListDialog(Context mContext, String titleOfDialog, boolean showAddNewToList, String[] dictionaryOfGroups) {
+    public GroupsListDialog(final Context mContext, String titleOfDialog, boolean showAddNewToList,String desceriptions ,final String[] dictionaryOfGroups) {
 
         this.listener = null;
         this.mContext = mContext;
 
-        final EditText et = new EditText(mContext);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View formElementsView = inflater.inflate(R.layout.group_selection_dialog,
+                null, false);
+
+        final EditText et = (EditText) formElementsView
+                .findViewById(R.id.dlgEdtxtGroupsTitle);
+        final TextView tv = (TextView) formElementsView
+                .findViewById(R.id.dlgTxtGroupsComment);
+
         et.setHint("Or type new group name");
         et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
-        //Filtering double eantries
-        dictionaryOfGroups = new HashSet<String>(Arrays.asList(dictionaryOfGroups)).toArray(new String[0]);
+        ListView listView = (ListView) formElementsView.findViewById(R.id.dlgListGroupsItems);
 
-        ArrayList<String> dictionaryOfGroupsList = new ArrayList<String>();
-        dictionaryOfGroupsList.addAll(Arrays.asList(dictionaryOfGroups));
+        RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, dictionaryOfGroupsList);
+        if(!showAddNewToList) {
 
-
-        ListView listView = new ListView(mContext);
-        listView.setAdapter(listAdapter);
-
-        AlertDialog.Builder addNoteDialogBuilder;
-
-
-        addNoteDialogBuilder = new AlertDialog.Builder(mContext);
-        LinearLayout layout = new LinearLayout(mContext);
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(parms);
-
-        layout.setGravity(Gravity.CLIP_VERTICAL);
-        layout.setPadding(5, 5, 5, 5);
+            relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START, R.id.groups_layout);
+            relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END, R.id.groups_layout);
+            listView.setLayoutParams(relativeParams);
+            et.setVisibility(View.GONE);
+            tv.setVisibility(View.GONE);
+        }
+        else{
+            tv.setVisibility(View.INVISIBLE);
+        }
 
 
-        TextView tvMessage = new TextView(mContext);
+        if(desceriptions==null)
+            tv.setText("");
+        else
+            tv.setText(desceriptions);
 
-        tvMessage.setTextColor(ContextCompat.getColor(mContext, R.color.american_rose));
+        if(dictionaryOfGroups!=null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext,
+                    android.R.layout.simple_list_item_2,
+                    dictionaryOfGroups);
+            listView.setAdapter(adapter);
+        }
+        else{
+            listView.setVisibility(View.GONE);
+            relativeParams.addRule(RelativeLayout.BELOW, R.id.dlgTxtGroupsComment);
+            //relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, R.id.groups_layout);
 
-        layout.addView(tvMessage, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        layout.addView(listView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        layout.addView(et, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            et.setLayoutParams(relativeParams);
+        }
+        AlertDialog.Builder addNoteDialogBuilder = new AlertDialog.Builder(mContext);
 
-
-
-
-        addNoteDialogBuilder.setView(layout);
-
+        addNoteDialogBuilder.setView(formElementsView);
         addNoteDialogBuilder.setTitle(titleOfDialog);
-        addNoteDialogBuilder.setIcon(R.drawable.list);
-        addNoteDialogBuilder.setCancelable(true);
-
-        final AlertDialog dialogListOfGroups = addNoteDialogBuilder.create();
 
         if (showAddNewToList) {
-            addNoteDialogBuilder.setPositiveButton("ADD GROUP",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Do nothing here because we override this button later to change the close behaviour.
-                            //However, we still need this because on older versions of Android unless we
-                            //pass a handler the button doesn't get instantiated
-                        }
-                    });
 
-
-            dialogListOfGroups.show();
-
-            et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            addNoteDialogBuilder.setPositiveButton("Add New Group", new DialogInterface.OnClickListener() {
                 @Override
-                public void onFocusChange(View view, boolean focused) {
-                    if (focused) {
-                        dialogListOfGroups.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                    }
+                public void onClick(DialogInterface dialogInterface, int i) {
+
                 }
             });
 
+        }
 
-            dialogListOfGroups.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+
+
+        dialog = addNoteDialogBuilder.show();
+
+        if (showAddNewToList) {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // This makes sure that the container activity has implemented
-                    // the callback interface. If not, it throws an exception
-                    try {
-                    } catch (ClassCastException e) {
-                        throw new ClassCastException(" must implement OnHeadlineSelectedListener");
+                    String newGroup = et.getText().toString().trim();
+                    if (newGroup == null || newGroup.length() == 0) {
+                        tv.setVisibility(View.VISIBLE);
+                        tv.setText(Utility.fromHTMLVersionCompat("<font color='red'>Add a tag!</font>", Html.FROM_HTML_MODE_LEGACY));
+                        return;
+
+                    } else {
+                        listener.newGroupAdded(newGroup);
+                        dialog.dismiss();
                     }
-                    dialogListOfGroups.dismiss();
 
-
+                    //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
                 }
             });
         }
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 listener.selectedGroup(adapterView.getItemAtPosition(i).toString());
-                dialogListOfGroups.dismiss();
+                dialog.dismiss();
             }
         });
-
-
     }
 }
 

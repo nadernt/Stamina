@@ -66,6 +66,7 @@ import com.fleecast.stamina.legacyplayer.ActivityLegacyPlayerPhone;
 import com.fleecast.stamina.legacyplayer.PlayerServiceLegacy;
 import com.fleecast.stamina.models.NoteInfoStruct;
 import com.fleecast.stamina.models.NotesAdapter;
+import com.fleecast.stamina.models.NotesGroupsDictionary;
 import com.fleecast.stamina.models.RealmContactHelper;
 import com.fleecast.stamina.models.RealmNoteHelper;
 import com.fleecast.stamina.notetaking.ActivityAddAudioNote;
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private RealmNoteHelper realmNoteHelper;
     private ArrayList<NoteInfoStruct> noteInfoStructs;
+    private NotesGroupsDictionary notesGroupsDictionary;
     private String searchString = null;
     private int searchFilter = Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION;
     //private boolean sortOption;
@@ -311,7 +313,7 @@ private void testFucntions(){
 
         noteInfoStructs = new ArrayList<>();
         realmNoteHelper = new RealmNoteHelper(mContext);
-
+        notesGroupsDictionary = new NotesGroupsDictionary(mContext);
 
 
        setPermisions();
@@ -927,17 +929,25 @@ private void testFucntions(){
                             /*TextView textView = (TextView) findViewById(R.id.txtHongla);
                             textView.setText("MMMMMMMMMMMMMM");*/
                         } else if (which == CONST_GROUP) {
-                            String[] planets = new String[] { "Mercury", "Venus", "Earth", "Mars",
-                                    "Jupiter", "Saturn", "Uranus", "Neptune"};
-                            GroupsListDialog groupsListDialog = new GroupsListDialog(mContext,"Filter by Group",true,planets);
 
-                            groupsListDialog.setResultsListener(new GroupsListDialog.ResultsListener() {
-                                @Override
-                                public void selectedGroup(String title) {
-                                    System.out.println(title);
-                                }
-                            });
+                            String [] dictionary  = notesGroupsDictionary.getTagsList();
 
+                            //if(dictionary.length>0) {
+                                GroupsListDialog groupsListDialog = new GroupsListDialog(mContext, "Filter by Group", true, null, dictionary);
+
+                                groupsListDialog.setResultsListener(new GroupsListDialog.ResultsListener() {
+                                    @Override
+                                    public void selectedGroup(String selectedGroupTitle) {
+                                        System.out.println(selectedGroupTitle);
+                                    }
+
+                                    @Override
+                                    public void newGroupAdded(String newGroupTitle) {
+                                        System.out.println(newGroupTitle + " gggggggggggggggg");
+                                    }
+                                });
+
+                            //}
 
                     } else if (which == CONST_DELETE) {
 
