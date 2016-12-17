@@ -2,8 +2,14 @@ package com.fleecast.stamina.models;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -19,7 +25,7 @@ public class NotesGroupsDictionary {
 
     private Realm realm;
     public Context mContext;
-    private String[] dictionaryOfGroups;
+    List<String> al = new ArrayList<>();
 
 
     /**
@@ -31,22 +37,36 @@ public class NotesGroupsDictionary {
         realm = Realm.getDefaultInstance();
         this.mContext = mContext;
         RealmResults<NoteInfoRealmStruct> realmResults = realm.where(NoteInfoRealmStruct.class).findAll();
+        //String [] aa = {"Cheese", "Pepperoni", "Black Olives","1Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives"};
+        //al.addAll(Arrays.asList(aa));
 
-        dictionaryOfGroups = new String[realmResults.size()];
         for (int i=0; i< realmResults.size() ; i++)
         {
-            dictionaryOfGroups [i]=realmResults.get(i).getGroup();
+            String tmp = realmResults.get(i).getGroup();
+            if(tmp!=null)
+            al.add(tmp);
         }
 
         // Trim from duplicated words.
-        dictionaryOfGroups = new HashSet<String>(Arrays.asList(dictionaryOfGroups)).toArray(new String[0]);
+        Set<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        set.addAll(al);
+
+        al = new ArrayList<String>(set);
+        Collections.sort(al, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s1.compareToIgnoreCase(s2);
+            }
+        });
+
     }
 
     public String [] getTagsList(){
 
-        //return new String [] {"Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives","Cheese", "Pepperoni", "Black Olives"};
-return null;
-        //return  dictionaryOfGroups;
+        if(al.size()==0)
+            return null;
+        else
+            return  al.toArray(new String[al.size()]);
     }
 
 }

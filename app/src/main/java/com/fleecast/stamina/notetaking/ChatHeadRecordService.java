@@ -240,7 +240,7 @@ public class ChatHeadRecordService extends Service {
 							// Crazy user deleted message while in the phone call!
 							String title = callNumberForStopByUser;
 							String description = "";
-							realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, end, typeOfCallForStopByUser, callNumberForStopByUser, 0, Constants.CONST_NOTETYPE_PHONECALL);
+							realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, end, typeOfCallForStopByUser, callNumberForStopByUser, Constants.CONST_NOTETYPE_PHONECALL);
 						}
 
 						File file = new File(pathToWorkingDirectory + File.separator + TEMP_FILE);
@@ -272,7 +272,7 @@ public class ChatHeadRecordService extends Service {
 						// Crazy user deleted message while in the phone call!
 						String title = callNumberForStopByUser;
 						String description = "";
-						realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, null, typeOfCallForStopByUser, callNumberForStopByUser, 0, Constants.CONST_NOTETYPE_PHONECALL);
+						realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, null, typeOfCallForStopByUser, callNumberForStopByUser, Constants.CONST_NOTETYPE_PHONECALL);
 					}
 
 					Intent intent = new Intent(getApplicationContext(), ActivityEditPhoneRecordNote.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -331,7 +331,7 @@ public class ChatHeadRecordService extends Service {
 				String description = "";
 				Date end = new Date();
 
-				realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, null, typeOfCallForStopByUser, callNumberForStopByUser, 0, Constants.CONST_NOTETYPE_PHONECALL);
+				realmNoteHelper.addNote(dbId, title, description, true, null, null, dateForStopByUser, null, typeOfCallForStopByUser, callNumberForStopByUser, Constants.CONST_NOTETYPE_PHONECALL);
 
 				//start record
 				recordAudio(true);

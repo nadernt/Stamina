@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity
 
                 realmNoteHelper = new RealmNoteHelper(MainActivity.this);
 
-                realmNoteHelper.addNote(dbId, title, description, false, updateTime, createdTime, null, null, Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL, null, 0, Constants.CONST_NOTETYPE_TEXT);
+                realmNoteHelper.addNote(dbId, title, description, false, updateTime, createdTime, null, null, Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL, null, Constants.CONST_NOTETYPE_TEXT);
             }
 
         ExternalStorageManager.ifWorkingDirIsNotExitMakeIt(this);
@@ -316,7 +316,7 @@ private void testFucntions(){
         notesGroupsDictionary = new NotesGroupsDictionary(mContext);
 
 
-       setPermisions();
+      // setPermisions();
 
         /*recyclerView.dele*/
         recyclerView = (RecyclerView) findViewById(R.id.rvNotes);
@@ -808,15 +808,15 @@ private void testFucntions(){
                 String[] items;
                 final RealmContactHelper realmContactHelper = new RealmContactHelper(mContext);
                 if (!item.getHasAudio()) {
-                    items = new String[]{"Edit", "Color", "Group","Delete","Share"};
+                    items = new String[]{"Edit", "Color", "Manage Groups","Delete","Share"};
                 } else if (item.getHasAudio() && item.getCallType() == Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL) {
 
-                    items = new String[]{"Edit", "Color", "Group", "Delete","Share"};
+                    items = new String[]{"Edit", "Color", "Manage Groups", "Delete","Share"};
                 } else {
                     if (!realmContactHelper.checkIfExistsInIgnoreList(item.getPhoneNumber().trim()))
-                        items = new String[]{"Edit", "Color", "Group", "Delete", "Share", "Call", "Add to ignore"};
+                        items = new String[]{"Edit", "Color", "Manage Groups", "Delete", "Share", "Call", "Add to ignore"};
                     else
-                        items = new String[]{"Edit", "Color", "Group", "Delete", "Share", "Call", "Remove ignore"};
+                        items = new String[]{"Edit", "Color", "Manage Groups", "Delete", "Share", "Call", "Remove ignore"};
                 }
                 final int CONST_Edit=0, CONST_COLOR=1, CONST_GROUP=2, CONST_DELETE=3, CONST_SHARE=4, CONST_CALL=5,CONST_IGNORE=6;
                 final AlertDialog myDialog;
@@ -932,22 +932,33 @@ private void testFucntions(){
 
                             String [] dictionary  = notesGroupsDictionary.getTagsList();
 
-                            //if(dictionary.length>0) {
-                                GroupsListDialog groupsListDialog = new GroupsListDialog(mContext, "Filter by Group", true, null, dictionary);
+                            GroupsListDialog groupsListDialog;
+
+                            String strGrp = realmNoteHelper.getNoteGroupTag(item.getId());
+
+                            if(strGrp!=null)
+                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "<font color='#007fff'> Tagged in:</font> "  + strGrp, dictionary,strGrp);
+                            else
+                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "", dictionary, strGrp);
 
                                 groupsListDialog.setResultsListener(new GroupsListDialog.ResultsListener() {
                                     @Override
                                     public void selectedGroup(String selectedGroupTitle) {
-                                        System.out.println(selectedGroupTitle);
+                                        realmNoteHelper.updateGroupTag(item.getId(),selectedGroupTitle);
+
                                     }
 
                                     @Override
                                     public void newGroupAdded(String newGroupTitle) {
-                                        System.out.println(newGroupTitle + " gggggggggggggggg");
+
+                                        realmNoteHelper.updateGroupTag(item.getId(),newGroupTitle);
+                                    }
+
+                                    @Override
+                                    public void removeGroupFromItem() {
+                                        realmNoteHelper.updateGroupTag(item.getId(),null);
                                     }
                                 });
-
-                            //}
 
                     } else if (which == CONST_DELETE) {
 

@@ -54,7 +54,7 @@ public class RealmNoteHelper {
      */
     public void addNote(int id, String title, String description, boolean has_audio,
                         Date update_time, Date create_time_stamp, Date start_time,
-                        Date end_time, int call_type, String phone_number, int tag,
+                        Date end_time, int call_type, String phone_number,
                         int note_type) {
 
         if (!isExist(id)) {
@@ -76,9 +76,8 @@ public class RealmNoteHelper {
             realm.beginTransaction();
             realm.copyToRealm(noteInfoRealmStruct);
             realm.commitTransaction();
-            showLog("Added ; " + title);
         } else {
-            updateNotes(id, title, description, update_time, tag, note_type);
+            updateNotes(id, title, description, update_time, note_type);
         }
 
     }
@@ -105,19 +104,15 @@ public class RealmNoteHelper {
      * @return
      */
     public NoteInfoRealmStruct getNoteById(int id) {
-
-
         return realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
     }
 
-    public void updateNotes(int id, String title, String description, Date update_time, int tag, int note_type) {
+    public void updateNotes(int id, String title, String description, Date update_time, int note_type) {
         realm.beginTransaction();
-
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
         noteInfoRealmStruct.setTitle(title);
         noteInfoRealmStruct.setDescription(description);
         noteInfoRealmStruct.setUpdateTime(update_time);
-        noteInfoRealmStruct.setColor(tag);
         noteInfoRealmStruct.setNoteType(note_type);
         realm.commitTransaction();
     }
@@ -137,6 +132,27 @@ public class RealmNoteHelper {
 
     }
 
+    public void updateColor(int id, int color) {
+        realm.beginTransaction();
+        NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
+        noteInfoRealmStruct.setColor(color);
+        realm.commitTransaction();
+    }
+
+    public void updateGroupTag(int id, String group) {
+        realm.beginTransaction();
+        NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
+        noteInfoRealmStruct.setGroup(group);
+        realm.commitTransaction();
+    }
+
+    public int getNoteColor(int id){
+        return realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst().getColor();
+    }
+
+    public String getNoteGroupTag(int id){
+        return realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst().getGroup();
+    }
     /**
      * method search all notes
      */

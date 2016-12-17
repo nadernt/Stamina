@@ -31,6 +31,7 @@ public class GroupsListDialog {
     public interface ResultsListener {
         void selectedGroup(String selectedGroupTitle);
         void newGroupAdded(String newGroupTitle);
+        void removeGroupFromItem();
     }
 
 
@@ -39,7 +40,7 @@ public class GroupsListDialog {
     }
 
 
-    public GroupsListDialog(final Context mContext, String titleOfDialog, boolean showAddNewToList,String desceriptions ,final String[] dictionaryOfGroups) {
+    public GroupsListDialog(final Context mContext, String titleOfDialog, boolean showAddNewToList, String desceriptions, final String[] dictionaryOfGroups, String itemGroup) {
 
         this.listener = null;
         this.mContext = mContext;
@@ -73,24 +74,28 @@ public class GroupsListDialog {
         }
 
 
-        if(desceriptions==null)
+        if(desceriptions==null) {
             tv.setText("");
-        else
-            tv.setText(desceriptions);
+        }
+        else {
+            tv.setText(Utility.fromHTMLVersionCompat(desceriptions, Html.FROM_HTML_MODE_LEGACY));
+            tv.setVisibility(View.VISIBLE);
+        }
+
 
         if(dictionaryOfGroups!=null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext,
-                    android.R.layout.simple_list_item_2,
+                    android.R.layout.simple_list_item_1,
                     dictionaryOfGroups);
             listView.setAdapter(adapter);
         }
         else{
             listView.setVisibility(View.GONE);
             relativeParams.addRule(RelativeLayout.BELOW, R.id.dlgTxtGroupsComment);
-            //relativeParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, R.id.groups_layout);
-
+            et.setHint("Type new group name");
             et.setLayoutParams(relativeParams);
         }
+
         AlertDialog.Builder addNoteDialogBuilder = new AlertDialog.Builder(mContext);
 
         addNoteDialogBuilder.setView(formElementsView);
@@ -98,16 +103,19 @@ public class GroupsListDialog {
 
         if (showAddNewToList) {
 
-            addNoteDialogBuilder.setPositiveButton("Add New Group", new DialogInterface.OnClickListener() {
+            addNoteDialogBuilder.setPositiveButton("New", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-
+                    // don't write anything here as we override this function.
                 }
             });
-
+            addNoteDialogBuilder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // don't write anything here as we override this function.
+                }
+            });
         }
-
-
 
         dialog = addNoteDialogBuilder.show();
 
@@ -118,18 +126,30 @@ public class GroupsListDialog {
                     String newGroup = et.getText().toString().trim();
                     if (newGroup == null || newGroup.length() == 0) {
                         tv.setVisibility(View.VISIBLE);
-                        tv.setText(Utility.fromHTMLVersionCompat("<font color='red'>Add a tag!</font>", Html.FROM_HTML_MODE_LEGACY));
-                        return;
-
+                        tv.setText(Utility.fromHTMLVersionCompat("<font color='red'>Type something as group name for selected note.!</font>", Html.FROM_HTML_MODE_LEGACY));
                     } else {
-                        listener.newGroupAdded(newGroup);
-                        dialog.dismiss();
+                        if(!groupAlreadyExist(dictionaryOfGroups,newGroup)) {
+                            listener.newGroupAdded(newGroup);
+                            dialog.dismiss();
+                        }
                     }
 
-                    //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
                 }
             });
+            if(itemGroup!=null && itemGroup.length()>0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        System.out.println("JJJJJJJJJJJJJJJJJjj");
+                        listener.removeGroupFromItem();
+                        dialog.dismiss();
+
+
+                    }
+                });
+            }
         }
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -137,6 +157,21 @@ public class GroupsListDialog {
                 dialog.dismiss();
             }
         });
+    }
+
+    private boolean groupAlreadyExist( String[] dictionaryOfGroups, String newGroup){
+
+        if(dictionaryOfGroups==null)
+            return false;
+
+        for(int i=0; i< dictionaryOfGroups.length; i++)
+        {
+            if(dictionaryOfGroups[i].contentEquals(newGroup))
+                return true;
+        }
+
+        return false;
+
     }
 }
 

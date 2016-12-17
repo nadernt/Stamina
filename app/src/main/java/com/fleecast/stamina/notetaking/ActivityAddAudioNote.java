@@ -403,9 +403,9 @@ public class ActivityAddAudioNote extends AppCompatActivity {
                 createdTime = noteInfoRealmStruct.getCreateTimeStamp();
 
             if (!weAreInEditMode)
-                realmNoteHelper.addNote(dbId, title, description, true, updateTime, createdTime, null, null, Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL, null, 0, Constants.CONST_NOTETYPE_AUDIO);
+                realmNoteHelper.addNote(dbId, title, description, true, updateTime, createdTime, null, null, Constants.PHONE_THIS_IS_NOT_A_PHONE_CALL, null, Constants.CONST_NOTETYPE_AUDIO);
             else
-                realmNoteHelper.updateNotes(dbId, title, description, updateTime, 0, Constants.CONST_NOTETYPE_AUDIO);
+                realmNoteHelper.updateNotes(dbId, title, description, updateTime, Constants.CONST_NOTETYPE_AUDIO);
             myApplication.setAudioNoteSaved(true);
 
             if (showPrompt)
