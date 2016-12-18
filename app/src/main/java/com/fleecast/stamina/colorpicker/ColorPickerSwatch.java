@@ -48,5 +48,7 @@ public class ColorPickerSwatch extends FrameLayout implements View.OnClickListen
 
 	public static abstract interface OnColorSelectedListener {
 		public abstract void onColorSelected(int color);
+		public abstract void onRemoveColorSelected();
+
 	}
 }

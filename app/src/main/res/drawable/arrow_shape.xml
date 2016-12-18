@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+<item>
+    <shape android:shape="rectangle">
+        <size 
+            android:width="100dp"
+            android:height="20dp" />
+        <solid android:color="@color/about_instagram_color" />
+        <corners android:radius="0dp"/>
+    </shape>
+</item>
+
+<item
+    android:top="-10dp"
+    android:bottom="45dp"
+    android:right="-15dp">
+    <rotate
+        android:fromDegrees="45">
+        <shape android:shape="rectangle">
+            <solid android:color="#ffffff" />
+        </shape>
+    </rotate>
+</item>
+
+<item
+    android:top="45dp"
+    android:bottom="-10dp"
+    android:right="-15dp">
+    <rotate
+        android:fromDegrees="-45">
+        <shape android:shape="rectangle">
+            <solid android:color="#ffffff" />
+        </shape>
+    </rotate>
+</item>
+
+</layer-list>

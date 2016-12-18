@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -48,6 +50,21 @@ public class GroupsListDialog {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View formElementsView = inflater.inflate(R.layout.group_selection_dialog,
                 null, false);
+
+        ImageView dlgManageGroupsHelp = (ImageView) formElementsView.findViewById(R.id.dlgManageGroupsHelp);
+
+        dlgManageGroupsHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String strHelp =
+                        "&#8226; Remove does not delete the note. It just removes note from allocated group.<br/>" +
+                        "&#8226; If you tap on a group from the list then your note will be part of the selected group.<br/>" +
+                        "&#8226; You can create a new group then your note will be automatically part of that group.<br/>";
+
+                Utility.showMessage(Utility.fromHTMLVersionCompat(strHelp,Html.FROM_HTML_MODE_LEGACY),"Help",android.R.drawable.ic_dialog_info,mContext);
+            }
+        });
 
         final EditText et = (EditText) formElementsView
                 .findViewById(R.id.dlgEdtxtGroupsTitle);
@@ -100,6 +117,7 @@ public class GroupsListDialog {
 
         addNoteDialogBuilder.setView(formElementsView);
         addNoteDialogBuilder.setTitle(titleOfDialog);
+        addNoteDialogBuilder.setCancelable(true);
 
         if (showAddNewToList) {
 
@@ -109,12 +127,15 @@ public class GroupsListDialog {
                     // don't write anything here as we override this function.
                 }
             });
-            addNoteDialogBuilder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    // don't write anything here as we override this function.
-                }
-            });
+
+            if(itemGroup!=null && itemGroup.length()>0) {
+                addNoteDialogBuilder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // don't write anything here as we override this function.
+                    }
+                });
+            }
         }
 
         dialog = addNoteDialogBuilder.show();
@@ -140,11 +161,8 @@ public class GroupsListDialog {
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("JJJJJJJJJJJJJJJJJjj");
                         listener.removeGroupFromItem();
                         dialog.dismiss();
-
-
                     }
                 });
             }

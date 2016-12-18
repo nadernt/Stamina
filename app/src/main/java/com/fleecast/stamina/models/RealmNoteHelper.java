@@ -195,11 +195,11 @@ public class RealmNoteHelper {
 
                     Date update_time = realmResult.get(i).getUpdateTime();
                     String phoneNumber = realmResult.get(i).getPhoneNumber();
-                    //if(phoneNumber==null)Log.e("GGG",phoneNumber);
+
                     data.add(i, new NoteInfoStruct(id, title, description, has_audio, update_time,
                             create_time_stamp, realmResult.get(i).getStartTime(),
                             realmResult.get(i).getEndTime(), realmResult.get(i).getCallType(),
-                            phoneNumber, 0, 0,realmResult.get(i).getNoteType(),
+                            phoneNumber, realmResult.get(i).getColor(), realmResult.get(i).getOrder(),realmResult.get(i).getNoteType(),
                             realmResult.get(i).getExtras(),realmResult.get(i).getGroup(),
                             realmResult.get(i).isDel()));
                 } catch (Exception e) {

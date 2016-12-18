@@ -13,6 +13,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
@@ -24,8 +27,10 @@ import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +56,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -58,6 +64,7 @@ import android.widget.Toast;
 
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.backup.ActivityBackupHome;
+import com.fleecast.stamina.backup.FilterColors;
 import com.fleecast.stamina.backup.GroupsListDialog;
 import com.fleecast.stamina.colorpicker.ColorPickerDialog;
 import com.fleecast.stamina.colorpicker.ColorPickerSwatch;
@@ -129,6 +136,8 @@ public class MainActivity extends AppCompatActivity
     private CheckBox dontShowAgain;
     private final int OVERLAY_PERMISSION_REQ_CODE = 1324;
     private boolean isDeviceSmartPhone;
+    private ListView mDrawerFiltersList;
+    private FilterColors filterColors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -385,28 +394,140 @@ private void testFucntions(){
        NavigationView navigationViewRight = (NavigationView) findViewById(R.id.nav_view_right);
        navigationViewRight.setNavigationItemSelectedListener(this);
 
-       String[] osArray = { "Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux","Android", "iOS", "Windows", "OS X", "Linux" };
+        filterColors = new FilterColors(new int[] { Color.CYAN,
+               ResourcesCompat.getColor(getResources(), R.color.american_rose, null),
+               ResourcesCompat.getColor(getResources(), R.color.baby_blue, null),
+               ResourcesCompat.getColor(getResources(), R.color.persian_pink, null),
+               ResourcesCompat.getColor(getResources(), R.color.green_apple, null),
+               ResourcesCompat.getColor(getResources(), R.color.orange, null),
+               ResourcesCompat.getColor(getResources(), R.color.viola_purple, null),
+               ResourcesCompat.getColor(getResources(), R.color.slate_gray, null),
+               ResourcesCompat.getColor(getResources(), R.color.chocolate, null),Color.WHITE});
 
-
-       ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-
-       ListView mDrawerList = null;
-       mDrawerList = (ListView)findViewById(R.id.navList);
-
-       mDrawerList.setAdapter(mAdapter);
-
-       mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Toast.makeText(MainActivity.this, "Time for an upgrade!", Toast.LENGTH_SHORT).show();
-           }
-       });
-
+       populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
+       populateColorFilters();
        AppRating.app_launched(this);
 
        //AppRating.showRateDialog(this, null);
 
    }
+
+
+    private void populateColorFilters(){
+
+
+       final ImageButton buttons[] =new ImageButton[10];
+        buttons[0] = (ImageButton)findViewById(R.id.btnFilterColor0);
+        buttons[1] = (ImageButton)findViewById(R.id.btnFilterColor1);
+        buttons[2] = (ImageButton)findViewById(R.id.btnFilterColor2);
+        buttons[3] = (ImageButton)findViewById(R.id.btnFilterColor3);
+        buttons[4] = (ImageButton)findViewById(R.id.btnFilterColor4);
+        buttons[5] = (ImageButton)findViewById(R.id.btnFilterColor5);
+        buttons[6] = (ImageButton)findViewById(R.id.btnFilterColor6);
+        buttons[7] = (ImageButton)findViewById(R.id.btnFilterColor7);
+        buttons[8] = (ImageButton)findViewById(R.id.btnFilterColor8);
+        buttons[9] = (ImageButton)findViewById(R.id.btnFilterColor9);
+
+        setFilterButtonColor(buttons[0],new ShapeDrawable( new OvalShape() ),filterColors.getColor0());
+        setFilterButtonColor(buttons[1],new ShapeDrawable( new OvalShape() ),filterColors.getColor1());
+        setFilterButtonColor(buttons[2],new ShapeDrawable( new OvalShape() ),filterColors.getColor2());
+        setFilterButtonColor(buttons[3],new ShapeDrawable( new OvalShape() ),filterColors.getColor3());
+        setFilterButtonColor(buttons[4],new ShapeDrawable( new OvalShape() ),filterColors.getColor4());
+        setFilterButtonColor(buttons[5],new ShapeDrawable( new OvalShape() ),filterColors.getColor5());
+        setFilterButtonColor(buttons[6],new ShapeDrawable( new OvalShape() ),filterColors.getColor6());
+        setFilterButtonColor(buttons[7],new ShapeDrawable( new OvalShape() ),filterColors.getColor7());
+        setFilterButtonColor(buttons[8],new ShapeDrawable( new OvalShape() ),filterColors.getColor8());
+        setFilterButtonColor(buttons[9],new ShapeDrawable( new OvalShape() ),filterColors.getColor9());
+
+        for (int i = 0; i < (buttons.length - 1); i++)
+        {
+            final ImageButton theButton = buttons[i];
+            theButton.setOnClickListener(new View.OnClickListener()
+            {
+
+                public void onClick(View v) {
+
+                    String uri = "@drawable/ic_colorpicker_swatch_selected";
+
+                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+
+                    Drawable res = getResources().getDrawable(imageResource);
+
+                    for(int i=0;i<buttons.length;i++)
+                        buttons[i].setImageResource(android.R.color.transparent);
+
+                    switch (v.getId()){
+                        case R.id.btnFilterColor0:
+                            buttons[0].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor1:
+                            buttons[1].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor2:
+                            buttons[2].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor3:
+                            buttons[3].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor4:
+                            buttons[4].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor5:
+                            buttons[5].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor6:
+                            buttons[6].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor7:
+                            buttons[7].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor8:
+                            buttons[8].setImageDrawable(res);
+                            break;
+                        case R.id.btnFilterColor9:
+                            buttons[9].setImageDrawable(res);
+                            break;
+                    }
+
+                }
+            });
+        }
+
+    }
+    private void populateRightDrawerFilters( String [] dictionary){
+
+
+        if(dictionary!=null) {
+            ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dictionary);
+
+            mDrawerFiltersList = (ListView) findViewById(R.id.navList);
+
+            mDrawerFiltersList.setAdapter(mAdapter);
+
+            mDrawerFiltersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(MainActivity.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else
+        {
+            if(mDrawerFiltersList!=null)
+            mDrawerFiltersList.setAdapter(null);
+        }
+
+
+    }
+    private void setFilterButtonColor(ImageButton imageButton,ShapeDrawable circle,int color){
+        circle.getPaint().setColor(color);
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            imageButton.setBackgroundDrawable(circle);
+        } else {
+
+            imageButton.setBackground(circle);
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -912,14 +1033,42 @@ private void testFucntions(){
                             }
 
                         } else if (which == CONST_COLOR) {
+                            System.out.println( realmNoteHelper.getNoteColor(item.getId()) + " BBBBBBBBBBBBBBb");
+
+                            boolean remove_enable = realmNoteHelper.getNoteColor(item.getId()) != 0  ? true : false;
 
                             final ColorPickerDialog colorPickerDialog = new ColorPickerDialog();
-                            colorPickerDialog.initialize(R.string.color_chooser_dialog_title, new int[] { Color.CYAN, Color.LTGRAY, Color.BLACK, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.RED, Color.GRAY, Color.YELLOW }, Color.YELLOW, 3, 2);
+
+                            int defaultColor = Color.CYAN;
+
+                            if(remove_enable)
+                                defaultColor = realmNoteHelper.getNoteColor(item.getId());
+
+                            colorPickerDialog.initialize(R.string.color_chooser_dialog_title,
+                                    new int[] {
+                                            Color.CYAN,
+                                            ResourcesCompat.getColor(getResources(), R.color.american_rose, null),
+                                            ResourcesCompat.getColor(getResources(), R.color.baby_blue, null),
+                                            ResourcesCompat.getColor(getResources(), R.color.persian_pink, null),
+                                            ResourcesCompat.getColor(getResources(), R.color.green_apple, null),
+                                            ResourcesCompat.getColor(getResources(), R.color.orange, null),
+                                            ResourcesCompat.getColor(getResources(), R.color.viola_purple, null),
+                                            ResourcesCompat.getColor(getResources(), R.color.slate_gray, null),
+                                            ResourcesCompat.getColor(getResources(), R.color.chocolate, null),
+                                    }
+                                    , defaultColor, 3, 2,remove_enable);
+
                             colorPickerDialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
 
                                 @Override
                                 public void onColorSelected(int color) {
                                     Toast.makeText(MainActivity.this, "selectedColor : " + color, Toast.LENGTH_SHORT).show();
+                                    realmNoteHelper.updateColor(item.getId(),color);
+                                }
+
+                                @Override
+                                public void onRemoveColorSelected() {
+                                    realmNoteHelper.updateColor(item.getId(),Constants.CONST_NULL_ZERO);
                                 }
                             });
 
@@ -934,31 +1083,58 @@ private void testFucntions(){
 
                             GroupsListDialog groupsListDialog;
 
-                            String strGrp = realmNoteHelper.getNoteGroupTag(item.getId());
+                            String strGroup = realmNoteHelper.getNoteGroupTag(item.getId());
 
-                            if(strGrp!=null)
-                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "<font color='#007fff'> Tagged in:</font> "  + strGrp, dictionary,strGrp);
+                            if(strGroup!=null)
+                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "<font color='#007fff'> Tagged in:</font> "  + strGroup, dictionary,strGroup);
                             else
-                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "", dictionary, strGrp);
+                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "", dictionary, strGroup);
 
                                 groupsListDialog.setResultsListener(new GroupsListDialog.ResultsListener() {
                                     @Override
                                     public void selectedGroup(String selectedGroupTitle) {
                                         realmNoteHelper.updateGroupTag(item.getId(),selectedGroupTitle);
 
+                                        Snackbar.make(recyclerView,  Utility.fromHTMLVersionCompat("Item joined to " + "<font color='#ACE5EE'>"+
+                                                Utility.ellipsize(selectedGroupTitle,20) +
+                                                "</font> group!", Html.FROM_HTML_MODE_LEGACY),
+                                                Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+
+                                        notesGroupsDictionary = new NotesGroupsDictionary(mContext);
+                                        populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
+
+
                                     }
 
                                     @Override
                                     public void newGroupAdded(String newGroupTitle) {
-
                                         realmNoteHelper.updateGroupTag(item.getId(),newGroupTitle);
+
+                                        Snackbar.make(recyclerView,  Utility.fromHTMLVersionCompat("Item joined to " + "<font color='#ACE5EE'>"+
+                                                        Utility.ellipsize(newGroupTitle,20) +
+                                                        "</font> group!", Html.FROM_HTML_MODE_LEGACY),
+                                                Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                        notesGroupsDictionary = new NotesGroupsDictionary(mContext);
+                                        populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
+
+
                                     }
 
                                     @Override
                                     public void removeGroupFromItem() {
                                         realmNoteHelper.updateGroupTag(item.getId(),null);
+
+                                        Snackbar.make(recyclerView, "Item removed from group!", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                        notesGroupsDictionary = new NotesGroupsDictionary(mContext);
+                                        populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
+
                                     }
+
                                 });
+
 
                     } else if (which == CONST_DELETE) {
 

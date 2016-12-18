@@ -2,6 +2,7 @@ package com.fleecast.stamina.colorpicker;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -20,13 +21,15 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
 	protected int mSelectedColor;
 	protected int mSize;
 	protected int mTitleResId = R.string.color_picker_default_title;
+	private boolean remove_enable=false;
 
 	private void refreshPalette() {
 		if ((this.mPalette != null) && (this.mColors != null))
 			this.mPalette.drawPalette(this.mColors, this.mSelectedColor);
 	}
 
-	public void initialize(int titleId, int[] colors, int selectedColor, int columns, int size) {
+	public void initialize(int titleId, int[] colors, int selectedColor, int columns, int size,boolean remove_enable) {
+		this.remove_enable = remove_enable;
 		setArguments(titleId, columns, size);
 		setColors(colors, selectedColor);
 	}
@@ -40,6 +43,11 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
 			this.mSelectedColor = selectedColor;
 			this.mPalette.drawPalette(this.mColors, this.mSelectedColor);
 		}
+		dismiss();
+	}
+
+	@Override
+	public void onRemoveColorSelected() {
 		dismiss();
 	}
 
@@ -63,7 +71,18 @@ public class ColorPickerDialog extends DialogFragment implements ColorPickerSwat
 		this.mPalette.init(this.mSize, this.mColumns, this);
 		if (this.mColors != null)
 			showPaletteView();
-		this.mAlertDialog = new AlertDialog.Builder(getActivity()).setTitle(this.mTitleResId).setView(view).create();
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(this.mTitleResId);
+		builder.setView(view);
+		if(remove_enable) {
+			builder.setPositiveButton("Remove Color", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialogInterface, int i) {
+					mListener.onRemoveColorSelected();
+				}
+			});
+		}
+		this.mAlertDialog = builder.create();
 		return this.mAlertDialog;
 	}
 

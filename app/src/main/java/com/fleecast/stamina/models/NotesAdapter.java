@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -74,8 +75,20 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             holder.audioType.setBackgroundResource(R.drawable.text);
             holder.phone_number.setVisibility(View.INVISIBLE);
         }
+
         if(noteInfoStructs.get(position).getColor()==Constants.CONST_NULL_ZERO)
-            holder.img_color_of_note.setBackgroundColor(Color.MAGENTA);
+            holder.img_color_of_note.setBackgroundColor(Color.WHITE);
+        else
+            holder.img_color_of_note.setBackgroundColor(noteInfoStructs.get(position).getColor());
+
+        if(noteInfoStructs.get(position).getGroup() != null) {
+            holder.tvGroup.setText(Utility.ellipsize(noteInfoStructs.get(position).getGroup(),25));
+            holder.tvGroup.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.tvGroup.setVisibility(View.GONE);
+        }
     }
 
 
@@ -86,7 +99,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvId, title, description, create_time,phone_number;
+        TextView tvId, title, description, create_time,phone_number,tvGroup;
         ImageView audioType,img_color_of_note;
 
         public ViewHolder(View itemView) {
@@ -94,6 +107,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             tvId = (TextView) itemView.findViewById(R.id.tvId);
             title = (TextView) itemView.findViewById(R.id.tvTitle);
             description = (TextView) itemView.findViewById(R.id.tvDescription);
+            tvGroup = (TextView) itemView.findViewById(R.id.tvGroup);
             create_time = (TextView) itemView.findViewById(R.id.tvCreateTime);
             phone_number= (TextView) itemView.findViewById(R.id.tvPhoneNumber);
             audioType = (ImageView) itemView.findViewById(R.id.audioType);

@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
@@ -199,6 +200,19 @@ public class Utility {
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
+    public static void showMessage(CharSequence messageToUser, String titleOfDialog, @DrawableRes int iconId, Context context){
+
+        new AlertDialog.Builder(context)
+                .setTitle(titleOfDialog)
+                .setMessage(messageToUser)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(iconId)
                 .show();
 
     }
