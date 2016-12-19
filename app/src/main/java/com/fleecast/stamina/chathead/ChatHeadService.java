@@ -279,13 +279,13 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                                 int x_bound_left = (szWindow.x - removeView.getWidth()) / 2 - 250;
                                 int x_bound_right = (szWindow.x + removeView.getWidth()) / 2 + 100;
 
-                                int y_bound_top = szWindow.y - (removeView.getHeight() + getStatusBarHeight()) - 200;
+                                int y_bound_top = szWindow.y - (removeView.getHeight() + Utility.getStatusBarHeight(getApplicationContext())) - 200;
 
                                 if ((x_cord_Destination >= x_bound_left && x_cord_Destination <= x_bound_right) && y_cord_Destination >= y_bound_top) {
                                     inBounded = true;
 
                                     layoutParams.x = (szWindow.x - chatheadView.getWidth()) / 2;
-                                    layoutParams.y = szWindow.y - (remove_img_width + getStatusBarHeight()) - chatheadImg.getHeight();
+                                    layoutParams.y = szWindow.y - (remove_img_width + Utility.getStatusBarHeight(getApplicationContext())) - chatheadImg.getHeight();
 
                                     if (removeImg.getLayoutParams().height == remove_img_height) {
                                         removeImg.getLayoutParams().height = (int) (remove_img_height * 1.5);
@@ -295,7 +295,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                                         int x_cord_remove = (int) ((szWindow.x - (remove_img_height * 1.5)) / 2);
                                         int differencesInSizeOfIcons = (removeImg.getLayoutParams().height - chatheadView.getHeight()) / 2;
-                                        int y_cord_remove = ((WindowManager.LayoutParams) chatheadView.getLayoutParams()).y - getStatusBarHeight() - differencesInSizeOfIcons;
+                                        int y_cord_remove = ((WindowManager.LayoutParams) chatheadView.getLayoutParams()).y - Utility.getStatusBarHeight(getApplicationContext()) - differencesInSizeOfIcons;
                                         param_remove.x = x_cord_remove;
 
                                         param_remove.y = y_cord_remove;
@@ -313,7 +313,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
                                     WindowManager.LayoutParams param_remove = (WindowManager.LayoutParams) removeView.getLayoutParams();
                                     int x_cord_remove = (szWindow.x - removeView.getWidth()) / 2;
-                                    int y_cord_remove = szWindow.y - (removeView.getHeight() + getStatusBarHeight());
+                                    int y_cord_remove = szWindow.y - (removeView.getHeight() + Utility.getStatusBarHeight(getApplicationContext()));
 
                                     param_remove.x = x_cord_remove;
                                     param_remove.y = y_cord_remove;
@@ -565,7 +565,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
     private void positionMiddleLaunchpadButtons() {
 
-        float yPosOfMidButtons  = (float)(((szWindow.y/4)-getStatusBarHeight()/2) - 32);
+        float yPosOfMidButtons  = (float)(((szWindow.y/4)-Utility.getStatusBarHeight(getApplicationContext())/2) - 32);
         note_take_text_img.setY(yPosOfMidButtons) ;
         help_img.setY(yPosOfMidButtons);
 
@@ -858,8 +858,8 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
                 txtView.setVisibility(View.GONE);
             }
 
-            if(layoutParams.y + (chatheadView.getHeight() + getStatusBarHeight()) > szWindow.y){
-                layoutParams.y = szWindow.y- (chatheadView.getHeight() + getStatusBarHeight());
+            if(layoutParams.y + (chatheadView.getHeight() + Utility.getStatusBarHeight(getApplicationContext())) > szWindow.y){
+                layoutParams.y = szWindow.y- (chatheadView.getHeight() + Utility.getStatusBarHeight(getApplicationContext()));
                 windowManager.updateViewLayout(chatheadView, layoutParams);
             }
 
@@ -997,12 +997,6 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
       }*/
 
 
-    private int getStatusBarHeight() {
-        int statusBarHeight = (int) Math.ceil(25 * getApplicationContext().getResources().getDisplayMetrics().density);
-        // Log.e("DBG", "statusBarHeight " + statusBarHeight);
-
-        return statusBarHeight;
-    }
 
     private void chathead_click(){
         if(LauncherDialogActivity.active){
@@ -1065,7 +1059,7 @@ public class ChatHeadService extends Service implements OnScreenChangesEventList
 
         WindowManager.LayoutParams param_remove = (WindowManager.LayoutParams) removeView.getLayoutParams();
         int x_cord_remove = (szWindow.x - removeView.getWidth()) / 2;
-        int y_cord_remove = szWindow.y - (removeView.getHeight() + getStatusBarHeight() );
+        int y_cord_remove = szWindow.y - (removeView.getHeight() + Utility.getStatusBarHeight(getApplicationContext()) );
 
         param_remove.x = x_cord_remove;
         param_remove.y = y_cord_remove;

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Constants;
 import com.fleecast.stamina.utility.Utility;
@@ -46,47 +47,41 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.click(noteInfoStructs.get(position), clickListener);
         holder.longClick(noteInfoStructs.get(position), longClickListener);
         holder.tvId.setText(String.valueOf(noteInfoStructs.get(position).getId()));
-        holder.title.setText(Utility.ellipsize(noteInfoStructs.get(position).getTitle(),50));
-        holder.description.setText(Utility.ellipsize(noteInfoStructs.get(position).getDescription(),150));
+        holder.title.setText(Utility.ellipsize(noteInfoStructs.get(position).getTitle(), 50));
+        holder.description.setText(Utility.ellipsize(noteInfoStructs.get(position).getDescription(), 150));
         holder.create_time.setText(Utility.unixTimeToReadable(noteInfoStructs.get(position).getCreateTimeStamp().getTime() / 1000L));
 
-       // Log.e("DBG",noteInfoStructs.get(position).getHasAudio() + "");
-        if(noteInfoStructs.get(position).getHasAudio()) {
+        // Log.e("DBG",noteInfoStructs.get(position).getHasAudio() + "");
+        if (noteInfoStructs.get(position).getHasAudio()) {
 
-            String contactNmae = Utility.ellipsize(Utility.getContactName(context,noteInfoStructs.get(position).getPhoneNumber()),20);
+            String contactNmae = Utility.ellipsize(Utility.getContactName(context, noteInfoStructs.get(position).getPhoneNumber()), 20);
 
-            if(noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_OUTGOING) {
+            if (noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_OUTGOING) {
                 holder.audioType.setBackgroundResource(R.drawable.outcoming_call);
                 holder.phone_number.setVisibility(View.VISIBLE);
                 holder.phone_number.setText(contactNmae);
-            }
-            else if(noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_INCOMING) {
+            } else if (noteInfoStructs.get(position).getCallType() == Constants.RECORDS_IS_INCOMING) {
                 holder.audioType.setBackgroundResource(R.drawable.incoming_calls);
                 holder.phone_number.setVisibility(View.VISIBLE);
                 holder.phone_number.setText(contactNmae);
-            }
-            else {
+            } else {
                 holder.audioType.setBackgroundResource(R.drawable.audio_wave);
                 holder.phone_number.setVisibility(View.INVISIBLE);
             }
-        }
-        else
-        {
+        } else {
             holder.audioType.setBackgroundResource(R.drawable.text);
             holder.phone_number.setVisibility(View.INVISIBLE);
         }
 
-        if(noteInfoStructs.get(position).getColor()==Constants.CONST_NULL_ZERO)
+        if (noteInfoStructs.get(position).getColor() == Constants.CONST_NULL_ZERO)
             holder.img_color_of_note.setBackgroundColor(Color.WHITE);
         else
             holder.img_color_of_note.setBackgroundColor(noteInfoStructs.get(position).getColor());
 
-        if(noteInfoStructs.get(position).getGroup() != null) {
-            holder.tvGroup.setText(Utility.ellipsize(noteInfoStructs.get(position).getGroup(),25));
+        if (noteInfoStructs.get(position).getGroup() != null) {
+            holder.tvGroup.setText(Utility.ellipsize(noteInfoStructs.get(position).getGroup(), 25));
             holder.tvGroup.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             holder.tvGroup.setVisibility(View.GONE);
         }
     }
@@ -99,8 +94,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvId, title, description, create_time,phone_number,tvGroup;
-        ImageView audioType,img_color_of_note;
+        TextView tvId, title, description, create_time, phone_number, tvGroup;
+        ImageView audioType, img_color_of_note;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -109,7 +104,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             description = (TextView) itemView.findViewById(R.id.tvDescription);
             tvGroup = (TextView) itemView.findViewById(R.id.tvGroup);
             create_time = (TextView) itemView.findViewById(R.id.tvCreateTime);
-            phone_number= (TextView) itemView.findViewById(R.id.tvPhoneNumber);
+            phone_number = (TextView) itemView.findViewById(R.id.tvPhoneNumber);
             audioType = (ImageView) itemView.findViewById(R.id.audioType);
             img_color_of_note = (ImageView) itemView.findViewById(R.id.imgColorOfNote);
         }
@@ -140,6 +135,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         return noteInfoStructs.get(i);
     }
 
+    public void updateItemAtPosition(NoteInfoStruct modifiedNoteInfoStruct) {
+        for (int j = 0; j < noteInfoStructs.size(); j++) {
+            if (noteInfoStructs.get(j).getId() == modifiedNoteInfoStruct.getId()) {
+                noteInfoStructs.set(j, modifiedNoteInfoStruct);
+                this.notifyItemChanged(j);
+                break;
+            }
+        }
+    }
+
     public void removeItem(int i) {
         noteInfoStructs.remove(i);
         this.notifyItemRemoved(i);
@@ -148,6 +153,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public interface OnItemClickListener {
         void onClick(NoteInfoStruct noteInfoStruct);
     }
+
     public interface OnItemLongClickListener {
         void onLongClick(NoteInfoStruct noteInfoStruct);
     }

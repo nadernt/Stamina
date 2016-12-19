@@ -156,19 +156,16 @@ public class RealmNoteHelper {
     /**
      * method search all notes
      */
-    public ArrayList<NoteInfoStruct> findAllNotes(String searchString, int searchOption) {
+    public ArrayList<NoteInfoStruct> findAllNotes(String searchString, int searchOption,int searchColor, String searchGroup) {
         ArrayList<NoteInfoStruct> data = new ArrayList<>();
         RealmResults<NoteInfoRealmStruct> realmResult = null;
         if (searchString != null) {
             switch (searchOption) {
                 case Constants.CONST_SEARCH_NOTE_TITLE_AND_DESCRIPTION:
-
                     realmResult = realm.where(NoteInfoRealmStruct.class).contains("title", searchString, Case.INSENSITIVE).or().contains("description", searchString, Case.INSENSITIVE).findAll();
-
                     break;
                 case Constants.CONST_SEARCH_NOTE_CONTACTS:
                     realmResult = realm.where(NoteInfoRealmStruct.class).contains("phone_number", searchString, Case.INSENSITIVE).or().contains("description", searchString, Case.INSENSITIVE).findAll();
-
                     break;
             }
 
@@ -176,6 +173,11 @@ public class RealmNoteHelper {
             realmResult = realm.where(NoteInfoRealmStruct.class).findAll();
         }
 
+        if (searchGroup != null) {
+            realmResult = realmResult.where().equalTo("group", searchGroup, Case.INSENSITIVE).findAll();
+        } else if (searchColor != Constants.CONST_NULL_ZERO) {
+            realmResult = realmResult.where().equalTo("color", searchColor).findAll();
+        }
 
         if (realmResult.size() > 0) {
 

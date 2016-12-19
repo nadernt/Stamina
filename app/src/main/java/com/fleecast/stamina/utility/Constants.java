@@ -159,6 +159,7 @@ public class Constants {
     public static final String PREF_NOTELIST_SHOW_TEXT_NOTE = "PrefNotelistShowTextNote";
     public static final String PREF_NOTELIST_SHOW_AUDIO_NOTE = "PrefNotelistShowAudioNote";
     public static final String PREF_NOTELIST_SHOW_PHONE_RECORD = "PrefNotelistShowPhoneRecords";
+    public static final String PREF_AUTO_CLOSE_RIGHT_DRAWER = "PrefAutoCloseRightDrawer";
     public static final int RESULT_CODE_REQUEST_LIST = 777;
     public static final String PHONE_RECORDER_CHATHEAD_Y = "PhoneRecorderChatheadY";
     public static final String PHONE_RECORDER_CHATHEAD_X = "PhoneRecorderChatheadX";

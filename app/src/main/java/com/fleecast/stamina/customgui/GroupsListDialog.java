@@ -1,4 +1,4 @@
-package com.fleecast.stamina.backup;
+package com.fleecast.stamina.customgui;
 
 import android.app.AlertDialog;
 import android.content.Context;

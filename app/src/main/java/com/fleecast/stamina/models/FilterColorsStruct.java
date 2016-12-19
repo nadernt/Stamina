@@ -1,10 +1,10 @@
-package com.fleecast.stamina.backup;
+package com.fleecast.stamina.models;
 
 /**
  * Created by nnt on 18/12/16.
  */
 
-public class FilterColors {
+public class FilterColorsStruct {
     private final int color0;
     private final int color1;
     private final int color2;
@@ -17,7 +17,7 @@ public class FilterColors {
     private final int color9;
 
 
-    public FilterColors(int[] colors) {
+    public FilterColorsStruct(int[] colors) {
         this.color0 = colors[0];
         this.color1 = colors[1];
         this.color2 = colors[2];
@@ -65,5 +65,7 @@ public class FilterColors {
     }
 
     public int getColor9() { return color9; }
-
+public int [] getAllColors(){
+        return new int[]{color0,color1,color2,color3,color4,color5,color6,color7,color8};
+    }
 }

@@ -190,6 +190,11 @@ public class Utility {
         return now;
     }*/
 
+   public static int getStatusBarHeight(Context mContext) {
+       int statusBarHeight = (int) Math.ceil(25 * mContext.getResources().getDisplayMetrics().density);
+       return statusBarHeight;
+   }
+
     public static void showMessage(CharSequence messageToUser, String titleOfDialog, Context context){
 
         new AlertDialog.Builder(context)
