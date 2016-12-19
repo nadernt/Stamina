@@ -20,6 +20,10 @@ import android.widget.TextView;
 import com.fleecast.stamina.R;
 import com.fleecast.stamina.utility.Utility;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by nnt on 14/12/16.
  */
@@ -42,7 +46,7 @@ public class GroupsListDialog {
     }
 
 
-    public GroupsListDialog(final Context mContext, String titleOfDialog, boolean showAddNewToList, String desceriptions, final String[] dictionaryOfGroups, String itemGroup) {
+    public GroupsListDialog(final Context mContext, String titleOfDialog, boolean showAddNewToList, String desceriptions, final String[] dictionaryOfGroups, String itemGroup,final boolean renameGroup) {
 
         this.listener = null;
         this.mContext = mContext;
@@ -57,14 +61,41 @@ public class GroupsListDialog {
             @Override
             public void onClick(View view) {
 
-                String strHelp =
-                        "&#8226; Remove does not delete the note. It just removes note from allocated group.<br/>" +
-                        "&#8226; If you tap on a group from the list then your note will be part of the selected group.<br/>" +
-                        "&#8226; You can create a new group then your note will be automatically part of that group.<br/>";
+                String strHelp ="";
+                if(!renameGroup) {
+                    strHelp =
+                            "&#8226; Remove does not delete the note. It just removes note from allocated group.<br/>" +
+                                    "&#8226; If you tap on a group from the list then your note will be part of the selected group.<br/>" +
+                                    "&#8226; You can create a new group then your note will be automatically part of that group.<br/>";
+                }
+                else
+                {
+                    strHelp =
+                            "&#8226; Remove does not delete the notes. It deletes the group title from notes.<br/>";
+                    if(dictionaryOfGroups!=null)
+                    strHelp +="&#8226; If you tap on a group from the list then all of your notes will remove from group A and then will be transferred to the new selected group (group B).<br/>";
+                    strHelp +="&#8226; You can create a new group then all of similar notes will be automatically part of new group.<br/>";
+                }
 
                 Utility.showMessage(Utility.fromHTMLVersionCompat(strHelp,Html.FROM_HTML_MODE_LEGACY),"Help",android.R.drawable.ic_dialog_info,mContext);
             }
         });
+
+
+       /* List<String> list = new ArrayList<String>(Arrays.asList(dictionaryOfGroups));
+        if(dictionaryOfGroups.length>1) {
+
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).contentEquals(itemGroup)) {
+                    list.remove(i);
+                    break;
+                }
+            }
+
+        }
+*/
+        //final String[] dicGroups = list.toArray(dictionaryOfGroups);
+
 
         final EditText et = (EditText) formElementsView
                 .findViewById(R.id.dlgEdtxtGroupsTitle);
@@ -73,12 +104,13 @@ public class GroupsListDialog {
 
         et.setHint("Or type new group name");
         et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-
+        if(renameGroup)
+        et.setText(itemGroup);
         ListView listView = (ListView) formElementsView.findViewById(R.id.dlgListGroupsItems);
 
         RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        if(!showAddNewToList) {
+        /*if(!showAddNewToList) {
 
             relativeParams.addRule(RelativeLayout.ALIGN_PARENT_START, R.id.groups_layout);
             relativeParams.addRule(RelativeLayout.ALIGN_PARENT_END, R.id.groups_layout);
@@ -86,9 +118,9 @@ public class GroupsListDialog {
             et.setVisibility(View.GONE);
             tv.setVisibility(View.GONE);
         }
-        else{
+        else{*/
             tv.setVisibility(View.INVISIBLE);
-        }
+        //}
 
 
         if(desceriptions==null) {

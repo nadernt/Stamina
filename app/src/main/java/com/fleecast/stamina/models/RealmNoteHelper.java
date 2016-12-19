@@ -139,10 +139,27 @@ public class RealmNoteHelper {
         realm.commitTransaction();
     }
 
-    public void updateGroupTag(int id, String group) {
+    public void updateSingleNoteGroupTag(int id, String group) {
         realm.beginTransaction();
         NoteInfoRealmStruct noteInfoRealmStruct = realm.where(NoteInfoRealmStruct.class).equalTo("id", id).findFirst();
         noteInfoRealmStruct.setGroup(group);
+        realm.commitTransaction();
+    }
+
+    public void updateAGroupTag(String oldGroup, String newGroup,boolean optionDelete) {
+        realm.beginTransaction();
+        RealmResults<NoteInfoRealmStruct> noteInfoRealmStruct;
+
+
+         noteInfoRealmStruct= realm.where(NoteInfoRealmStruct.class).equalTo("group", oldGroup, Case.INSENSITIVE).findAll();
+
+        for (int i =0  ; i < noteInfoRealmStruct.size() ; i++) {
+            if(optionDelete)
+                noteInfoRealmStruct.get(i).setGroup(null);
+            else
+                noteInfoRealmStruct.get(i).setGroup(newGroup);
+        }
+
         realm.commitTransaction();
     }
 
@@ -368,8 +385,6 @@ public class RealmNoteHelper {
                     RealmResults<AudioNoteInfoRealmStruct> audioNoteInfoRealmStructs = realmAudioNoteHelper.findAllAudioNotesByParentId(realmResult.get(i).getId());
 
                     if (audioNoteInfoRealmStructs.size() > 0) {
-
-                        System.out.println("HGHGHGHGHGHGHGH");
 
                         for (int j = 0; j < audioNoteInfoRealmStructs.size(); j++) {
 

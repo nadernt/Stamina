@@ -8,11 +8,11 @@
         app:showAsAction="collapseActionView|always"
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:layout_width="wrap_content" />
-    <item android:id="@+id/action_add_no"
+<!--    <item android:id="@+id/action_add_no"
         android:title="Search filter"
         android:icon="@drawable/ic_action_filter"
         app:showAsAction="collapseActionView|always"
-        android:layout_width="wrap_content" />
+        android:layout_width="wrap_content" />-->
     <item android:id="@+id/action_add_note_search_filter"
         android:title="Search filter"
         android:icon="@drawable/ic_action_filter"

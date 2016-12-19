@@ -8,8 +8,6 @@
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingBottom="5dp"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:weightSum="1">
@@ -100,7 +98,8 @@
             android:id="@+id/imgBtnCleanGroupFilter"
             android:background="@color/about_instagram_color"
             android:layout_alignParentRight="true"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_marginRight="16dp" />
 
         <Switch
             android:text="Auto Close "
@@ -108,7 +107,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/swFilterAutoClose"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="16dp" />
 
     </RelativeLayout>
 

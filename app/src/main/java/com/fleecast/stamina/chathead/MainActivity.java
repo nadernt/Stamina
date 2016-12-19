@@ -104,7 +104,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
@@ -364,7 +366,7 @@ private void testFucntions(){
            }
        });
 
-      // setPermisions();
+       setPermisions();
 
         /*recyclerView.dele*/
         recyclerView = (RecyclerView) findViewById(R.id.rvNotes);
@@ -440,15 +442,17 @@ private void testFucntions(){
        layoutParams.setMargins(0, Utility.getStatusBarHeight(mContext), 0, 0);
        gridColorFiltersContainer.setLayoutParams(layoutParams);
 
-        filterColorsStruct = new FilterColorsStruct(new int[] { Color.CYAN,
+        filterColorsStruct = new FilterColorsStruct(new int[] {
+               ResourcesCompat.getColor(getResources(), R.color.rich_black, null),
                ResourcesCompat.getColor(getResources(), R.color.american_rose, null),
-               ResourcesCompat.getColor(getResources(), R.color.baby_blue, null),
+               ResourcesCompat.getColor(getResources(), R.color.azure, null),
                ResourcesCompat.getColor(getResources(), R.color.persian_pink, null),
                ResourcesCompat.getColor(getResources(), R.color.green_apple, null),
                ResourcesCompat.getColor(getResources(), R.color.orange, null),
                ResourcesCompat.getColor(getResources(), R.color.viola_purple, null),
                ResourcesCompat.getColor(getResources(), R.color.slate_gray, null),
-               ResourcesCompat.getColor(getResources(), R.color.chocolate, null),Color.WHITE});
+               ResourcesCompat.getColor(getResources(), R.color.chocolate, null),
+               Color.WHITE});
 
        populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
        populateColorFilters();
@@ -467,6 +471,7 @@ private void testFucntions(){
 
         //mDrawerFiltersList.setItemChecked(position, true);
 
+        if(mDrawerFiltersList!=null)
         for (int i = 0; i < mDrawerFiltersList.getChildCount(); i++) {
             mDrawerFiltersList.getChildAt(i).setBackgroundColor(mDrawerFiltersList.getSolidColor());
         }
@@ -588,6 +593,78 @@ private void testFucntions(){
             mDrawerFiltersList = (ListView) findViewById(R.id.navList);
 
             mDrawerFiltersList.setAdapter(mAdapter);
+
+            mDrawerFiltersList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                   final String oldGroupName = adapterView.getItemAtPosition(i).toString();
+
+                    String [] dictionary  = notesGroupsDictionary.getTagsList();
+
+                    if(dictionary.length==Constants.CONST_NULL_ZERO)
+                        return true;
+
+                    List<String> list = new ArrayList<String>(Arrays.asList(dictionary));
+
+                    if(dictionary.length>1) {
+
+                        for (int j = 0; j < list.size(); j++) {
+                            if (list.get(j).contentEquals(oldGroupName)) {
+                                list.remove(j);
+                                break;
+                            }
+                        }
+
+                    }
+
+                    String[] grpDic = new String[list.size()];
+                    grpDic = list.toArray(grpDic);
+
+                    GroupsListDialog groupsListDialog;
+
+                    if(dictionary.length>1) {
+                        groupsListDialog = new GroupsListDialog(mContext, "Groups Management", true, "<font color='red'> Rename or delete group:</font> " + oldGroupName, grpDic, oldGroupName, true);
+                    }
+                    else
+                    {
+                        groupsListDialog = new GroupsListDialog(mContext, "Groups Management", true, "<font color='red'> Rename or delete group:</font> " + oldGroupName, null, oldGroupName, true);
+                    }
+
+                    groupsListDialog.setResultsListener(new GroupsListDialog.ResultsListener() {
+                        @Override
+                        public void selectedGroup(String selectedGroupTitle) {
+                            realmNoteHelper.updateAGroupTag(oldGroupName,selectedGroupTitle,false);
+                            notesGroupsDictionary = new NotesGroupsDictionary(mContext);
+                            populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
+                            cleanFilters(true);
+                            setRecyclerView();
+
+                        }
+
+                        @Override
+                        public void newGroupAdded(String newGroupTitle) {
+                            realmNoteHelper.updateAGroupTag(oldGroupName,newGroupTitle,false);
+                            notesGroupsDictionary = new NotesGroupsDictionary(mContext);
+                            populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
+                            cleanFilters(true);
+                            setRecyclerView();
+                        }
+
+                        @Override
+                        public void removeGroupFromItem() {
+                            realmNoteHelper.updateAGroupTag(oldGroupName,null,true);
+                            notesGroupsDictionary = new NotesGroupsDictionary(mContext);
+                            populateRightDrawerFilters(notesGroupsDictionary.getTagsList());
+                            cleanFilters(true);
+                            setRecyclerView();
+                        }
+
+                    });
+
+                    return false;
+                }
+            });
 
             mDrawerFiltersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -1186,14 +1263,14 @@ private void testFucntions(){
                             String strGroup = realmNoteHelper.getNoteGroupTag(item.getId());
 
                             if(strGroup!=null)
-                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "<font color='#007fff'> Tagged in:</font> "  + strGroup, dictionary,strGroup);
+                                groupsListDialog = new GroupsListDialog(mContext, "Item Group Management", true, "<font color='#007fff'> Tagged in:</font> "  + strGroup, dictionary,strGroup,false);
                             else
-                                groupsListDialog = new GroupsListDialog(mContext, "Groups", true, "", dictionary, strGroup);
+                                groupsListDialog = new GroupsListDialog(mContext, "Item Group Management", true, "", dictionary, strGroup,false);
 
                                 groupsListDialog.setResultsListener(new GroupsListDialog.ResultsListener() {
                                     @Override
                                     public void selectedGroup(String selectedGroupTitle) {
-                                        realmNoteHelper.updateGroupTag(item.getId(),selectedGroupTitle);
+                                        realmNoteHelper.updateSingleNoteGroupTag(item.getId(),selectedGroupTitle);
 
                                        /* Snackbar.make(recyclerView,  Utility.fromHTMLVersionCompat("Item joined to " + "<font color='#ACE5EE'>"+
                                                 Utility.ellipsize(selectedGroupTitle,20) +
@@ -1210,7 +1287,7 @@ private void testFucntions(){
 
                                     @Override
                                     public void newGroupAdded(String newGroupTitle) {
-                                        realmNoteHelper.updateGroupTag(item.getId(),newGroupTitle);
+                                        realmNoteHelper.updateSingleNoteGroupTag(item.getId(),newGroupTitle);
 
                                     /*    Snackbar.make(recyclerView,  Utility.fromHTMLVersionCompat("Item joined to " + "<font color='#ACE5EE'>"+
                                                         Utility.ellipsize(newGroupTitle,20) +
@@ -1227,7 +1304,7 @@ private void testFucntions(){
 
                                     @Override
                                     public void removeGroupFromItem() {
-                                        realmNoteHelper.updateGroupTag(item.getId(),null);
+                                        realmNoteHelper.updateSingleNoteGroupTag(item.getId(),null);
 
                                         Snackbar.make(recyclerView, "Item removed from group!", Snackbar.LENGTH_LONG)
                                                 .setAction("Action", null).show();
