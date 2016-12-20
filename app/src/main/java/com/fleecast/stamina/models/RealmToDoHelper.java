@@ -170,7 +170,9 @@ public class RealmToDoHelper {
 
         for (int i=0; i<query.size();i++){
 
-            data.add(i,new TodoParentRealmStruct(query.get(i).getId(),query.get(i).getTitle(),query.get(i).getCreateTimeStamp(),query.get(i).getHasDone()));
+            data.add(i,new TodoParentRealmStruct(query.get(i).getId(),query.get(i).getTitle(),
+                    query.get(i).getCreateTimeStamp(),query.get(i).getHasDone(),
+                    query.get(i).getColor(),query.get(i).getGroup(),query.get(i).getExtras(),query.get(i).isDel(),query.get(i).getOrder()));
 
         }
         return data;
@@ -191,7 +193,9 @@ public class RealmToDoHelper {
 
         for (int i=0; i<query.size();i++){
 
-            data.add(i,new TodoChildRealmStruct(query.get(i).getId(),query.get(i).getParentId(),query.get(i).getTitle(),query.get(i).getCreateTimeStamp(),query.get(i).getHasDone(),query.get(i).getOrder()));
+            data.add(i,new TodoChildRealmStruct(query.get(i).getId(),query.get(i).getParentId(),
+                    query.get(i).getTitle(),query.get(i).getCreateTimeStamp(),query.get(i).getHasDone(),
+                    query.get(i).getOrder(),query.get(i).getColor(),query.get(i).getGroup(),query.get(i).getExtras(),query.get(i).isDel()));
 
         }
         return data;
@@ -206,7 +210,9 @@ public class RealmToDoHelper {
         for (int i=0; i<query.size();i++){
 
             if(!query.get(i).getHasDone())
-                data.add(new TodoChildRealmStruct(query.get(i).getId(),query.get(i).getParentId(),query.get(i).getTitle(),query.get(i).getCreateTimeStamp(),query.get(i).getHasDone(),query.get(i).getOrder()));
+                data.add(new TodoChildRealmStruct(query.get(i).getId(),query.get(i).getParentId(),query.get(i).getTitle(),
+                        query.get(i).getCreateTimeStamp(),query.get(i).getHasDone(),query.get(i).getOrder(),
+                        query.get(i).getColor(),query.get(i).getGroup(),query.get(i).getExtras(),query.get(i).isDel()));
         }
         return data;
     }

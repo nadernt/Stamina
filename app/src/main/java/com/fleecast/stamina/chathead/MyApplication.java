@@ -90,7 +90,7 @@ public class MyApplication extends Application{
         RealmConfiguration configRealm = new RealmConfiguration.Builder()
                 // Version of the database
                 .name("megan.realm")
-                .schemaVersion(2)
+                .schemaVersion(1)
                 .migration(new DataMigration())
                 .build();
 
@@ -105,7 +105,7 @@ public class MyApplication extends Application{
 
 
 
-    public void reInitEverything(){
+    /*public void reInitEverything(){
         blLauncherDlgVisibility =false;
         appJustLaunchedByUser = 0 ;
         currentGroupFilter = -1;
@@ -114,7 +114,7 @@ public class MyApplication extends Application{
         mostUsedAppsStruct = new ArrayList<>();
         mostRecentUsedAppsStruct = new ArrayList<>();
 
-    }
+    }*/
 
     public boolean getIsAppsListLoading() {
         return isAppsListIsLoading;
@@ -312,52 +312,58 @@ public class MyApplication extends Application{
 
             // Take schema
             RealmSchema schema = realm.getSchema();
-/*            private int id;
-            private String title;
-            private boolean has_audio;
-            private Date create_time_stamp;
-            private String description;
-            private Date update_time;
-            private Date start_time;
-            private Date end_time;
-            private int call_type;
-            private int tag;
-            private String phone_number;
-            private int order;*/
-            // Create a new schema if the version 0
-            if (oldVersion != newVersion) {
-                /*schema.create("NoteInfoRealmStruct")
-                        .addField("id", Integer.class)
-                        .addField("title", String.class)
-                        .addField("description", String.class)
-                        .addField("has_audio",boolean.class)
-                        .addField("start_time", Date.class)
-                        .addField("create_time_stamp", Date.class)
-                        .addField("update_time", Date.class)
-                        .addField("end_time", Date.class)
-                        .addField("phone_number", String.class)
-                        .addField("call_type", Integer.class)
-                        .addField("tag", Integer.class)
-                        .addField("note_type", Integer.class)
-                        .addField("extras", String.class);*/
-
+           /* if ( newVersion ==1) {
                 RealmObjectSchema personSchema = schema.get("NoteInfoRealmStruct");
                 personSchema
-                        .renameField("tag", "color");
-                personSchema
-                        .addField("group", String.class);
-                personSchema
-                        .addField("order", int.class);
-              /*  */
-                personSchema
-                        .addField("del", boolean.class);
-               /* personSchema
-                        .setNullable("del", false);*/
-
+                        .addField("extras", String.class);
 
                 oldVersion++;
             }
 
+
+            // Create a new schema if the version 0
+            if (newVersion==2) {
+
+
+                RealmObjectSchema personSchema1 = schema.get("NoteInfoRealmStruct");
+                personSchema1
+                        .renameField("tag", "color");
+                personSchema1
+                        .addField("group", String.class);
+                personSchema1
+                        .addField("order", int.class);
+                personSchema1
+                        .addField("del", boolean.class);
+
+                oldVersion++;
+            }
+
+            if (newVersion ==3) {
+
+                RealmObjectSchema personSchema2 = schema.get("TodoParentRealmStruct");
+                personSchema2
+                        .addField("color", int.class);
+                personSchema2
+                        .addField("group", String.class);
+                personSchema2
+                        .addField("extras", String.class);
+                personSchema2
+                        .addField("del", boolean.class);
+                personSchema2
+                        .addField("order", int.class);
+
+                RealmObjectSchema personSchema3 = schema.get("TodoChildRealmStruct");
+                personSchema3
+                        .addField("color", int.class);
+                personSchema3
+                        .addField("group", String.class);
+                personSchema3
+                        .addField("extras", String.class);
+                personSchema3
+                        .addField("del", boolean.class);
+
+                oldVersion++;
+            }*/
         }
     }
 }

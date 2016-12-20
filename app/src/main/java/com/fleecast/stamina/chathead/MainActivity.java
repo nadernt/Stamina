@@ -314,6 +314,7 @@ private void testFucntions(){
     }
    private void populateUI() {
 
+       System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
         setContentView(R.layout.activity_main);
 

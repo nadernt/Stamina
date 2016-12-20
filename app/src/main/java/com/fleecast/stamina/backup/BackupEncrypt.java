@@ -31,10 +31,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class BackupEncrypt {
 
     private static final String salt = "t784";
-    private static final String cryptPassword = "";
-    private static final String fileToBeCrypted = "c:\\Temp\\sampleFile.conf";
-    private static final String fileToBeDecrypted = "c:\\Temp\\sampleFile.conf.crypt";
-    private static final String fileDecryptedOutput = "c:\\Temp\\sampleFile.conf.decrypted";
 
     public void WriteBackUp(File outputFile, ArrayList<BackUpNotesStruct> noteInfoStructs) {
 

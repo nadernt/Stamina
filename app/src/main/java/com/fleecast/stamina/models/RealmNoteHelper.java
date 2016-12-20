@@ -377,7 +377,8 @@ public class RealmNoteHelper {
                             realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                             realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                             realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                            realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_TEXT, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
+                            realmResult.get(i).getColor(),realmResult.get(i).getGroup(),realmResult.get(i).getExtras(),realmResult.get(i).isDel(),
+                            realmResult.get(i).getOrder(), Constants.CONST_NOTETYPE_TEXT, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
                 }
 
                 if (noteType == Constants.CONST_NOTETYPE_AUDIO && audioNotes) {
@@ -393,7 +394,8 @@ public class RealmNoteHelper {
                                     realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                                     realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                                     realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                                    realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_AUDIO, audioNoteInfoRealmStructs.get(j).getId(),
+                                    realmResult.get(i).getColor(),realmResult.get(i).getGroup(),realmResult.get(i).getExtras(),realmResult.get(i).isDel(),
+                                    realmResult.get(i).getOrder(),Constants.CONST_NOTETYPE_AUDIO, audioNoteInfoRealmStructs.get(j).getId(),
                                     audioNoteInfoRealmStructs.get(j).getTitle(), audioNoteInfoRealmStructs.get(j).getDescription(),
                                     new Date(audioNoteInfoRealmStructs.get(j).getId()), false, Constants.CONST_NULL_ZERO));
                         }
@@ -405,7 +407,8 @@ public class RealmNoteHelper {
                                 realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                                 realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                                 realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                                realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_AUDIO, Constants.CONST_NULL_MINUS,
+                                realmResult.get(i).getColor(),realmResult.get(i).getGroup(),realmResult.get(i).getExtras(),realmResult.get(i).isDel(),
+                                realmResult.get(i).getOrder(), Constants.CONST_NOTETYPE_AUDIO, Constants.CONST_NULL_MINUS,
                                 null, null,
                                 null, false, Constants.CONST_NULL_ZERO));
                     }
@@ -418,7 +421,8 @@ public class RealmNoteHelper {
                             realmResult.get(i).getUpdateTime(), realmResult.get(i).getCreateTimeStamp(),
                             realmResult.get(i).getStartTime(), realmResult.get(i).getEndTime(),
                             realmResult.get(i).getCallType(), realmResult.get(i).getPhoneNumber(),
-                            realmResult.get(i).getColor(), 0, Constants.CONST_NOTETYPE_PHONECALL, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
+                            realmResult.get(i).getColor(),realmResult.get(i).getGroup(),realmResult.get(i).getExtras(),realmResult.get(i).isDel(),
+                            realmResult.get(i).getOrder(), Constants.CONST_NOTETYPE_PHONECALL, Constants.CONST_NULL_MINUS, null, null, null, false, Constants.CONST_NULL_MINUS));
                 }
 
             }
@@ -438,7 +442,8 @@ public class RealmNoteHelper {
                                     null, false,
                                     realmResultTodo.get(i).getCreateTimeStamp(), realmResultTodo.get(i).getCreateTimeStamp(),
                                     realmResultTodo.get(i).getCreateTimeStamp(), realmResultTodo.get(i).getCreateTimeStamp(), Constants.CONST_NULL_MINUS,
-                                    null, Constants.CONST_NULL_ZERO, 0, Constants.CONST_NOTETYPE_TODO, todoChildRealmStructs.get(j).getId(),
+                                    null,0,null,null,false,
+                                    Constants.CONST_NULL_ZERO, Constants.CONST_NOTETYPE_TODO, todoChildRealmStructs.get(j).getId(),
                                     todoChildRealmStructs.get(j).getTitle(), null, todoChildRealmStructs.get(j).getCreateTimeStamp(), todoChildRealmStructs.get(j).getHasDone(), todoChildRealmStructs.get(j).getOrder()));
                         }
 
@@ -521,7 +526,11 @@ public class RealmNoteHelper {
                     noteInfoTextAudioPhonecalls.get(index).setEndTime(backUpNotesStructs.get(i).getEndTime());
                     noteInfoTextAudioPhonecalls.get(index).setCallType(backUpNotesStructs.get(i).getCallType());
                     noteInfoTextAudioPhonecalls.get(index).setPhoneNumber(backUpNotesStructs.get(i).getPhoneNumber());
-                    noteInfoTextAudioPhonecalls.get(index).setColor(backUpNotesStructs.get(i).getTag());
+                    noteInfoTextAudioPhonecalls.get(index).setColor(backUpNotesStructs.get(i).getColor());
+                    noteInfoTextAudioPhonecalls.get(index).setGroup(backUpNotesStructs.get(i).getGroup());
+                    noteInfoTextAudioPhonecalls.get(index).setExtras(backUpNotesStructs.get(i).getExtras());
+                    noteInfoTextAudioPhonecalls.get(index).setDel(backUpNotesStructs.get(i).isDel());
+                    noteInfoTextAudioPhonecalls.get(index).setOrder(backUpNotesStructs.get(i).getOrder());
                     noteInfoTextAudioPhonecalls.get(index).setNoteType(backUpNotesStructs.get(i).getNoteType());
 
                     index++;
@@ -543,7 +552,11 @@ public class RealmNoteHelper {
                     noteInfoTextAudioPhonecalls.get(index).setEndTime(backUpNotesStructs.get(i).getEndTime());
                     noteInfoTextAudioPhonecalls.get(index).setCallType(backUpNotesStructs.get(i).getCallType());
                     noteInfoTextAudioPhonecalls.get(index).setPhoneNumber(backUpNotesStructs.get(i).getPhoneNumber());
-                    noteInfoTextAudioPhonecalls.get(index).setColor(backUpNotesStructs.get(i).getTag());
+                    noteInfoTextAudioPhonecalls.get(index).setColor(backUpNotesStructs.get(i).getColor());
+                    noteInfoTextAudioPhonecalls.get(index).setGroup(backUpNotesStructs.get(i).getGroup());
+                    noteInfoTextAudioPhonecalls.get(index).setExtras(backUpNotesStructs.get(i).getExtras());
+                    noteInfoTextAudioPhonecalls.get(index).setDel(backUpNotesStructs.get(i).isDel());
+                    noteInfoTextAudioPhonecalls.get(index).setOrder(backUpNotesStructs.get(i).getOrder());
                     noteInfoTextAudioPhonecalls.get(index).setNoteType(backUpNotesStructs.get(i).getNoteType());
 
                     index++;

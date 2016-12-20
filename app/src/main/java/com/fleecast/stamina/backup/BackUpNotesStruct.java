@@ -3,7 +3,7 @@ package com.fleecast.stamina.backup;
 import java.io.Serializable;
 import java.util.Date;
 
-public class BackUpNotesStruct  implements Serializable {
+public class BackUpNotesStruct implements Serializable {
 
 
     private int id;
@@ -16,7 +16,7 @@ public class BackUpNotesStruct  implements Serializable {
     private Date start_time;
     private Date end_time;
     private int call_type;
-    private int tag;
+    private int color;
     private String phone_number;
     private int order;
     private String child_title;
@@ -25,11 +25,17 @@ public class BackUpNotesStruct  implements Serializable {
     private String child_description;
     private int child_order;
     private Date child_create_time_stamp;
+    private String group;
+    private String extras;
+    private boolean del;
 
     public BackUpNotesStruct(int id, String title, String description, boolean has_audio,
                              Date update_time, Date create_time_stamp, Date start_time,
-                             Date end_time, int call_type, String phone_number, int tag,
-                             int order, int note_type, int id_child, String child_title, String child_description,Date child_create_time_stamp, boolean todo_done,int child_order) {
+                             Date end_time, int call_type, String phone_number,
+                             int color, String group, String extras, boolean del,
+                             int order, int note_type, int id_child,
+                             String child_title, String child_description, Date child_create_time_stamp,
+                             boolean todo_done, int child_order) {
         this.call_type = call_type;
         this.create_time_stamp = create_time_stamp;
         this.description = description;
@@ -39,16 +45,19 @@ public class BackUpNotesStruct  implements Serializable {
         this.order = order;
         this.phone_number = phone_number;
         this.start_time = start_time;
-        this.tag = tag;
+        this.color = color;
         this.title = title;
         this.update_time = update_time;
-        this.note_type=note_type;
+        this.note_type = note_type;
         this.child_title = child_title;
         this.child_description = child_description;
         this.todo_done = todo_done;
         this.id_child = id_child;
-        this.child_order=child_order;
-        this.child_create_time_stamp=child_create_time_stamp;
+        this.child_order = child_order;
+        this.child_create_time_stamp = child_create_time_stamp;
+        this.group = group;
+        this.extras = extras;
+        this.del = del;
 
     }
 
@@ -93,12 +102,12 @@ public class BackUpNotesStruct  implements Serializable {
         this.start_time = start_time;
     }
 
-    public int getTag() {
-        return tag;
+    public int getColor() {
+        return color;
     }
 
-    public void setTag(int tag) {
-        this.tag = tag;
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public Date getEndTime() {
@@ -120,6 +129,7 @@ public class BackUpNotesStruct  implements Serializable {
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -131,9 +141,11 @@ public class BackUpNotesStruct  implements Serializable {
     public void setNoteType(int note_type) {
         this.note_type = note_type;
     }
+
     public Date getCreateTimeStamp() {
         return create_time_stamp;
     }
+
     public void setCreateTimeStamp(Date create_time_stamp) {
         this.create_time_stamp = create_time_stamp;
     }
@@ -162,6 +174,7 @@ public class BackUpNotesStruct  implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
     public boolean getTodoDone() {
         return todo_done;
     }
@@ -201,5 +214,30 @@ public class BackUpNotesStruct  implements Serializable {
     public void setChild_create_time_stamp(Date child_create_time_stamp) {
         this.child_create_time_stamp = child_create_time_stamp;
     }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
+    }
+
+    public boolean isDel() {
+        return del;
+    }
+
+    public void setDel(boolean del) {
+        this.del = del;
+    }
+
 }
 
