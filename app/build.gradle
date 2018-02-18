@@ -2,14 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
 android {
-    signingConfigs {
-        release_config {
-            keyAlias 'stamina_key'
-            keyPassword 'c:\\sahraravand@3'
-            storeFile file('/home/nnt/Dropbox/app_key/stamina_key.jks')
-            storePassword 'c:\\sahraravand@3'
-        }
-    }
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
